@@ -1,0 +1,56 @@
+body {
+  background-color: #282c34;
+  padding: 20px;
+  font-family: monospace;
+}
+.App {
+  color: white;
+}
+.Input {
+  font-family: monospace;
+  color: white;
+  background: black;
+  border: 0;
+  padding: 10px;
+  width: 80%;
+  font-size: larger;
+}
+.Header {
+
+    /* width: 100vw; */
+    position: relative;
+
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.Button {
+    background-color: unset;
+    border-radius: 8px;
+    border-width: 0;
+    color: dodgerblue;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: center;
+    transition: all 200ms;
+    vertical-align: baseline;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    text-decoration:underline;
+}
+.Button:hover {
+    text-decoration: none;
+}
+p {
+    overflow-wrap: break-word;
+}
