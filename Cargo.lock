@@ -81,6 +81,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "btc-inspect"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "console_error_panic_hook",
+ "dotenv",
+ "hex",
+ "num",
+ "reqwest",
+ "rfc6979",
+ "ripemd",
+ "sha1",
+ "sha2",
+ "wasm-bindgen",
+ "wasm-bindgen-test",
+]
+
+[[package]]
 name = "bumpalo"
 version = "3.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -727,12 +745,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "murmur3"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9252111cf132ba0929b6f8e030cac2a24b507f3a4d6db6fb2896f27b354c714b"
-
-[[package]]
 name = "native-tls"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1014,25 +1026,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bd124222d17ad93a644ed9d011a40f4fb64aa54275c08cc216524a9ea82fb09f"
 dependencies = [
  "digest",
-]
-
-[[package]]
-name = "rust-wasm-react"
-version = "0.1.0"
-dependencies = [
- "chrono",
- "console_error_panic_hook",
- "dotenv",
- "hex",
- "murmur3",
- "num",
- "reqwest",
- "rfc6979",
- "ripemd",
- "sha1",
- "sha2",
- "wasm-bindgen",
- "wasm-bindgen-test",
 ]
 
 [[package]]

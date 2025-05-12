@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import init, {r_load_tx} from "btc-inspect";
+import init, {r_try_command} from "btc-inspect";
 import { useState } from 'react';
 
 function App() {
@@ -13,8 +13,8 @@ function App() {
   }, []);
 
   function handleFetch() {
-    var tx = r_load_tx("044cfbd82d5cc479aba7df00c3c066a6052ce4da6d8af9d5fa8f229d35919644")
-    setRaw(tx.r_tx_raw())
+    var raw = r_try_command()
+    setRaw(raw)
   }
     function handleClear() {
         setRaw("")
@@ -23,11 +23,9 @@ function App() {
     <div className="App">
         <div className="Header">
             <input className="Input"
-                   value="044cfbd82d5cc479aba7df00c3c066a6052ce4da6d8af9d5fa8f229d35919644"
                    placeholder={"Transaction ID"}
             />
         </div>
-
         <button className="Button" onClick={() => handleFetch()} >
           Fetch Transaction
         </button>

@@ -1,18 +1,33 @@
-mod utils;
-mod load_transaction;
+extern crate core;
 
 use wasm_bindgen::prelude::*;
-use crate::load_transaction::Tx;
-// #[wasm_bindgen]
-// extern "C" {
-//     fn alert(s: &str);
-// }
+use crate::tx::Tx;
+use std::{io::{Cursor, Read}};
+
+mod utils;
+pub mod point_scalar;
+pub mod field_element;
+pub mod point;
+pub mod secp256k1;
+pub mod signature;
+pub mod private_key;
+pub mod helpers;
+pub mod tx;
+pub mod tx_input;
+pub mod tx_output;
+pub mod script;
+pub mod tx_fetcher;
+pub mod block;
+pub mod merkle_tree;
+pub mod merkle_block;
 
 #[wasm_bindgen]
-pub fn r_uppercase(str: String) -> String {
-    str.to_uppercase()
+pub fn r_try_command() -> String {
+    "0100000001813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff02a135ef01000000001976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac99c39800000000001976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac19430600".to_string()
 }
-#[wasm_bindgen]
-pub fn r_load_tx(id: String) -> Tx {
-    Tx::new(id, "0200000001c0991c761944c46f6759a248c430c11469a1caed3ffc0941f984065558433f15000000006a4730440220013d94fb505f2a40e3a2ec03bae715d11b5603691b3c2f281997b9d7e5dd7407022001ab320c0e9cb29ba92695be46c372f7d3881dac641d5f96bd2e6b7ffedff36d012103938dc19b318fc549ca6dcbc85ec6d77e3006426d544a9aef2b48b30cb7beb76ffdffffff01e4d5c70100000000160014bdf69ce4a150aa1b689ea8397c7090907c62ddc800000000".to_string())
-}
+// #[wasm_bindgen]
+// pub fn t_try_tx() -> Tx {
+//     let raw_tx = hex::decode("0100000001813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff02a135ef01000000001976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac99c39800000000001976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac19430600").unwrap();
+//     let mut stream = Cursor::new(raw_tx);
+//     Tx::parse(&mut stream, true).unwrap()
+// }
