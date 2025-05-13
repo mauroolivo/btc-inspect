@@ -1,6 +1,6 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import init, {r_try_command} from "btc-inspect";
+import init, {r_try_command, r_tx_json} from "btc-inspect";
 import { useState } from 'react';
 
 function App() {
@@ -31,6 +31,12 @@ function App() {
         </button>
         <button className="Button" onClick={() => handleClear()} >
             Clear
+        </button>
+        <button className="Button" onClick={() => {
+            let tx_json = JSON.parse(r_tx_json());
+            console.log(tx_json);
+        }} >
+            json
         </button>
         <p>
           {raw}

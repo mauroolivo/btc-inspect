@@ -92,6 +92,7 @@ dependencies = [
  "reqwest",
  "rfc6979",
  "ripemd",
+ "serde_json",
  "sha1",
  "sha2",
  "wasm-bindgen",
