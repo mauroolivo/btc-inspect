@@ -54,3 +54,9 @@ body {
 p {
     overflow-wrap: break-word;
 }
+.TableHead {
+    color: coral;
+    min-width: 100px;
+}
+
+table { width: 300px; }

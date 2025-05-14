@@ -1,10 +1,10 @@
 import './App.css';
 import React, { useEffect } from 'react';
-import init, {r_try_command, r_tx_json} from "btc-inspect";
+import init, {r_tx_json} from "btc-inspect";
 import { useState } from 'react';
 
 function App() {
-  const [raw, setRaw] = useState("")
+  const [txJson, setTxJson] = useState(null)
   useEffect(() => {
     const runWasm = async () => {
       await init();
@@ -13,11 +13,45 @@ function App() {
   }, []);
 
   function handleFetch() {
-    var raw = r_try_command()
-    setRaw(raw)
+        let tx_json = JSON.parse(r_tx_json());
+        console.log(tx_json);
+        setTxJson(tx_json)
   }
     function handleClear() {
-        setRaw("")
+        setTxJson(null)
+    }
+    function Table() {
+        if (txJson == null) {
+            return <p></p>;
+        } else {
+            return (
+            <table>
+                <tbody>
+                <tr>
+                    <th></th>
+                    <th></th>
+                </tr>
+                <tr>
+                    <td className="TableHead">Raw Tx</td>
+                    <td>{txJson.raw}</td>
+                </tr>
+
+                <tr>
+                    <td className="TableHead">Tx ID</td>
+                    <td>{txJson.hash}</td>
+                </tr>
+                <tr>
+                    <td className="TableHead">version</td>
+                    <td>02000000...</td>
+                </tr>
+                <tr>
+                    <td className="TableHead">marker</td>
+                    <td>0001... <i>segwit</i></td>
+                </tr>
+                </tbody>
+            </table>
+            )
+        }
     }
   return (
     <div className="App">
@@ -32,15 +66,7 @@ function App() {
         <button className="Button" onClick={() => handleClear()} >
             Clear
         </button>
-        <button className="Button" onClick={() => {
-            let tx_json = JSON.parse(r_tx_json());
-            console.log(tx_json);
-        }} >
-            json
-        </button>
-        <p>
-          {raw}
-        </p>
+        <Table />
     </div>
   );
 }
