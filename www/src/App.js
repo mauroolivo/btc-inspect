@@ -25,31 +25,28 @@ function App() {
             return <p></p>;
         } else {
             return (
-            <table>
-                <tbody>
+                <table><tbody>
                 <tr>
-                    <th></th>
-                    <th></th>
-                </tr>
-                <tr>
-                    <td className="TableHead">Raw Tx</td>
+                    <td className="Col1">Raw Tx</td>
+                    <td className="Col2">{txJson.raw.length / 2}</td>
                     <td>{txJson.raw}</td>
                 </tr>
-
                 <tr>
-                    <td className="TableHead">Tx ID</td>
+                    <td className="Col1">Tx ID</td>
+                    <td className="Col2">{txJson.hash.length / 2}</td>
                     <td>{txJson.hash}</td>
                 </tr>
                 <tr>
-                    <td className="TableHead">version</td>
-                    <td>02000000...</td>
+                    <td className="Col1">version</td>
+                    <td className="Col2"></td>
+                    <td>02000000 ({txJson.version})</td>
                 </tr>
                 <tr>
-                    <td className="TableHead">marker</td>
-                    <td>0001... <i>segwit</i></td>
+                    <td className="Col1">marker</td>
+                    <td className="Col2">2</td>
+                    <td>0001</td>
                 </tr>
-                </tbody>
-            </table>
+                </tbody></table>
             )
         }
     }

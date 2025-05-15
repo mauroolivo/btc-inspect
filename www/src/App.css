@@ -54,9 +54,17 @@ body {
 p {
     overflow-wrap: break-word;
 }
-.TableHead {
-    color: coral;
-    min-width: 100px;
-}
 
-table { width: 300px; }
+.Col1 {
+    min-width: 100px;
+    background-color: darkslategray;
+    vertical-align: top;
+}
+.Col2 {
+    min-width: 50px;
+    vertical-align: top;
+}
+td {
+    word-break: break-word;
+    padding: 5px;
+}

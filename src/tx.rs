@@ -9,6 +9,7 @@ use crate::helpers::hash256::hash256;
 use crate::helpers::sig_hash::SIGHASH_ALL;
 use crate::private_key::PrivateKey;
 use crate::script::Script;
+use serde_json::json;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Tx {
@@ -21,6 +22,7 @@ pub struct Tx {
     hash_prevouts: Option<Vec<u8>>,
     hash_sequence: Option<Vec<u8>>,
     hash_outputs: Option<Vec<u8>>,
+    tx_json: serde_json::Value,
 }
 
 impl Tx {
@@ -35,6 +37,7 @@ impl Tx {
             hash_prevouts: None,
             hash_sequence: None,
             hash_outputs: None,
+            tx_json: json!(null),
         }
     }
     pub fn version(&self) -> u32 {
@@ -48,6 +51,9 @@ impl Tx {
     }
     pub fn locktime(&self) -> u32 {
         self.locktime
+    }
+    pub fn tx_json(&self) -> serde_json::Value {
+        self.tx_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>, testnet: bool) -> Result<Self, std::io::Error> {
         let mut buffer = [0; 4];
@@ -108,6 +114,12 @@ impl Tx {
         stream.read(&mut buffer).unwrap();
         let locktime = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
+        let mut tx_json = json!({});
+        tx_json["varsion"] = json!(version);
+        tx_json["locktime"] = json!(locktime);
+        tx_json["hash"] = json!("hash_not_available");
+        tx_json["raw"] = json!("raw_not_available");
+
         Ok(Tx {
             version,
             inputs,
@@ -118,6 +130,7 @@ impl Tx {
             hash_prevouts: None,
             hash_sequence: None,
             hash_outputs: None,
+            tx_json: tx_json.clone(),
         })
     }
     fn parse_legacy(stream: &mut Cursor<Vec<u8>>, testnet: bool) -> Result<Self, std::io::Error> {
@@ -144,6 +157,12 @@ impl Tx {
         stream.read(&mut buffer).unwrap();
         let locktime = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
+        let mut tx_json = json!({});
+        tx_json["varsion"] = json!(version);
+        tx_json["locktime"] = json!(locktime);
+        tx_json["hash"] = json!("hash_not_available");
+        tx_json["raw"] = json!("raw_not_available");
+
         Ok(Tx {
             version,
             inputs,
@@ -154,6 +173,7 @@ impl Tx {
             hash_prevouts: None,
             hash_sequence: None,
             hash_outputs: None,
+            tx_json: tx_json.clone(),
         })
     }
     pub fn serialize(&self) -> Vec<u8> {
