@@ -38,12 +38,10 @@ pub fn r_tx_json() -> String {
     let raw_tx = hex::decode(tx_str).unwrap();
     let mut stream = Cursor::new(raw_tx.clone());
     let tx = Tx::parse(&mut stream, true).unwrap();
-    // let mut tx_json = json!({
-    //     "varsion": tx.version(),
-    //     "locktime": tx.locktime(),
-    //     "hash": hex::encode( tx.hash() ).to_string(),
-    //     "raw": tx_str,
-    // });
-    // tx_json["new"] = json!("123456");
-    tx.tx_json().to_string()
+
+    let mut tx_json = json!({});
+    tx_json = tx.tx_json();
+    tx_json["raw"] = json!(tx_str);
+    tx_json["hash"] = json!(hex::encode( tx.hash() ).to_string());
+    tx_json.to_string()
 }
