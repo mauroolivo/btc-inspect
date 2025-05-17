@@ -65,15 +65,19 @@ impl Tx {
         if buffer[0] == 0x00 { // segwit marker
             is_segwit = true;
         }
+        // start parse
         let mut buffer = [0; 4];
         stream.read(&mut buffer)?;
         let version = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
+        let version_hex = hex::encode(buffer.as_slice());
+        let mut marker_hex = "";
         if is_segwit {
             let mut buffer = [0; 2];
             stream.read(&mut buffer)?;
             if buffer != [0x00,0x01] { // segwit marker
                 panic!("invalid segwit marker");
             }
+            marker_hex = "0001";
         }
         let mut inputs: Vec<TxInput> = Vec::new();
         let mut outputs: Vec<TxOutput> = Vec::new();
@@ -113,12 +117,18 @@ impl Tx {
         let mut buffer = vec![0; 4];
         stream.read(&mut buffer).unwrap();
         let locktime = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
+        let locktime_hex = hex::encode(buffer.as_slice());
 
-        let mut tx_json = json!({});
-        tx_json["varsion"] = json!(version);
-        tx_json["locktime"] = json!(locktime);
-        tx_json["hash"] = json!("hash_not_available");
-        tx_json["raw"] = json!("raw_not_available");
+        let mut tx_json = json!({
+            "version": version,
+            "version_hex": version_hex,
+            "marker_hex": marker_hex,
+            "is_segwit": is_segwit,
+            "locktime": locktime,
+            "locktime_hex": locktime_hex,
+            "num_inputs": inputs.len(),
+            "num_outputs": outputs.len(),
+        });
 
         Ok(Tx {
             version,

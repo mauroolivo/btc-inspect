@@ -68,3 +68,7 @@ td {
     word-break: break-word;
     padding: 5px;
 }
+td table {
+    border: 1px solid darkslateblue;
+
+}

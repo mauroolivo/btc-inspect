@@ -20,6 +20,22 @@ function App() {
     function handleClear() {
         setTxJson(null)
     }
+    function Inputs() {
+        const listItems = txJson.inputs.map((item, idx) =>
+            (<div key={idx}><p>Input {idx}</p><table><tbody>
+                <tr key="0">
+                    <td className="Col1">prev tx ID</td>
+                    <td>{item["prev_tx"]}</td>
+                </tr>
+                <tr key="1">
+                    <td className="Col1">prev index</td>
+                    <td>{item["prev_index"]}</td>
+                </tr>
+                </tbody>
+                </table></div>
+            ));
+        return (<>{listItems}</>)
+    }
     function Table() {
         if (txJson == null) {
             return <p></p>;
@@ -27,9 +43,9 @@ function App() {
             return (
                 <table><tbody>
                 <tr>
-                    <td className="Col1">Raw Tx</td>
-                    <td className="Col2">{txJson.raw.length / 2}</td>
-                    <td>{txJson.raw}</td>
+                    <td className="Col1">Tx Hex</td>
+                    <td className="Col2">{txJson.hex.length / 2}</td>
+                    <td>{txJson.hex}</td>
                 </tr>
                 <tr>
                     <td className="Col1">Tx ID</td>
@@ -38,15 +54,33 @@ function App() {
                 </tr>
                 <tr>
                     <td className="Col1">version</td>
-                    <td className="Col2"></td>
-                    <td>02000000 ({txJson.version})</td>
+                    <td className="Col2">{txJson.version_hex.length / 2}</td>
+                    <td>{txJson.version_hex} ({txJson.version})</td>
                 </tr>
                 <tr>
                     <td className="Col1">marker</td>
-                    <td className="Col2">2</td>
-                    <td>0001</td>
+                    <td className="Col2">{txJson.version_hex.length / 2}</td>
+                    <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
                 </tr>
+                <tr>
+                    <td className="Col1">inputs</td>
+                    <td className="Col2">{txJson.num_inputs}</td>
+                    <td><Inputs /></td>
+                </tr>
+                <tr>
+                    <td className="Col1">outputs</td>
+                    <td className="Col2"></td>
+                    <td>{txJson.num_outputs}</td>
+                </tr>
+                <tr>
+                    <td className="Col1">locktime</td>
+                    <td className="Col2">{txJson.locktime_hex.length / 2}</td>
+                    <td>{txJson.locktime_hex} ({txJson.locktime})</td>
+                </tr>
+
+
                 </tbody></table>
+
             )
         }
     }

@@ -4,6 +4,7 @@ use num::{BigUint, ToPrimitive};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::tx_fetcher::TxFetcher;
 use crate::tx::Tx;
+use serde_json::json;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct TxInput {
@@ -12,6 +13,7 @@ pub struct TxInput {
     pub script_sig: Script,
     sequence: u32,
     pub witness: Option<Vec<Vec<u8>>>,
+    tx_in_json: serde_json::Value,
 }
 impl TxInput {
     pub fn new(prev_tx: Vec<u8>, prev_index: u32, script_sig: Script, sequence: u32) -> Self {
@@ -21,7 +23,11 @@ impl TxInput {
             script_sig: script_sig,
             sequence: sequence,
             witness: None,
+            tx_in_json: json!(null),
         }
+    }
+    pub fn get_json(&self) -> serde_json::Value {
+        self.tx_in_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>) -> Result<Self, Error> {
         let mut buffer = vec![0; 32];
@@ -39,12 +45,19 @@ impl TxInput {
         stream.read(&mut buffer)?;
         let sequence = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
+        let mut tx_in_json = json!({
+            "prev_tx": hex::encode(&prev_tx),
+            "prev_index": prev_index,
+
+            "sequence": sequence,
+        });
         Ok(TxInput {
             prev_tx,
             prev_index,
             script_sig: script_sig,
             witness: None,
             sequence,
+            tx_in_json: tx_in_json.clone(),
         })
     }
     pub fn serialize(&self) -> Vec<u8> {
