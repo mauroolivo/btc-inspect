@@ -6,19 +6,25 @@ use num::{BigUint, ToPrimitive};
 use sha2::{Digest, Sha256};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::helpers::op_codes::*;
-
+use serde_json::json;
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Script {
     pub cmds: Vec<Vec<u8>>,
+    script_json: serde_json::Value,
 }
 impl Script {
     pub fn new(cmds: Vec<Vec<u8>>) -> Self {
-        Self { cmds: cmds }
+        Self { cmds: cmds, script_json: json!({}) }
     }
 }
 impl Script {
+    pub fn get_json(&self) -> serde_json::Value {
+        self.script_json.clone()
+    }
     pub fn parse(stream: &mut Cursor<Vec<u8>>) -> Result<Script, Error> {
         let mut cmds = vec![];
+        let mut cmd_list_json: Vec<String> = vec![];
+
         let mut count = 0;
         let length = read_varint(stream)?; // length of entire script
         while count < length {
@@ -32,7 +38,9 @@ impl Script {
                     let n = current_byte;
                     let mut cmd = vec![0u8; n as usize];
                     stream.read(&mut cmd)?;
-                    cmds.push(cmd);
+                    cmds.push(cmd.clone());
+                    cmd_list_json.push(op_code_pushdata_name(n));
+                    cmd_list_json.push(hex::encode(cmd));
                     count += n as u64;
                 }
                 OP_PUSHDATA1 => {
@@ -43,6 +51,7 @@ impl Script {
                     stream.read(&mut cmd)?;
                     cmds.push(cmd);
                     count += ln as u64 + 1;
+                    panic!("TODO HANDLE OP_PUSHDATA1 IN JSON")
                 }
                 OP_PUSHDATA2 => {
                     let mut buffer = [0; 2];
@@ -52,6 +61,7 @@ impl Script {
                     stream.read(&mut cmd)?;
                     cmds.push(cmd);
                     count += ln as u64 + 2;
+                    panic!("TODO HANDLE OP_PUSHDATA2 IN JSON")
                 }
                 _ => {
                     let op_code = current_byte;
@@ -65,7 +75,8 @@ impl Script {
                 "parsing script failed",
             ));
         }
-        Ok(Script { cmds })
+        let script_json = json!( cmd_list_json );
+        Ok(Script { cmds, script_json })
     }
     fn raw_serialize(&self) -> Vec<u8> {
         let mut result = vec![];
@@ -276,7 +287,8 @@ impl Script {
         cmds.push(h160);
         cmds.push(vec![0x88]); // OP_EQUALVERIFY
         cmds.push(vec![0xac]); // OP_CHECKSIG
-        Script{cmds:cmds}
+        let script_json = json!({});
+        Script{cmds:cmds, script_json}
     }
     pub fn is_p2pkh_script_pubkey(&self) -> bool {
         self.cmds.len() == 5 && self.cmds[0] == [0x76] && self.cmds[1] == [0xa9] && self.cmds[2].len() == 20 && self.cmds[3] == [0x88] && self.cmds[4] == [0xac]

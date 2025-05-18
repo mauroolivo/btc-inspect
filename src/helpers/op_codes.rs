@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use num::BigUint;
+use num::{BigUint, ToPrimitive};
 use sha2::{Digest, Sha256};
 use sha1::Sha1;
 use ripemd::{Ripemd160};
@@ -15,6 +15,12 @@ pub fn is_op(cmd: &Vec<u8>) -> bool {
         }
     }
     false
+}
+pub fn op_code_pushdata_name(n: u8) -> String {
+    if n > 75 {
+        panic!("op_code_pushdata_name out of range");
+    }
+    format!("OP_PUSHBYTES_{}", n.to_u32().unwrap())
 }
 pub fn op_code_names() -> HashMap<u8, &'static str> {
     let mut op_code_names = HashMap::new();

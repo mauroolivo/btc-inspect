@@ -50,7 +50,9 @@ pub fn r_tx_json() -> String {
         let mut tx_in_json = json!({});
         tx_in_json = input.get_json();
         inputs_json_list.push(tx_in_json);
+
     }
     tx_json["inputs"] = json!(inputs_json_list);
+
     tx_json.to_string()
 }

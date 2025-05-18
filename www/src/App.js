@@ -20,6 +20,12 @@ function App() {
     function handleClear() {
         setTxJson(null)
     }
+    function ScriptItems({items}) {
+        const list = items.map((item, idx) =>
+            (<p key={idx}>{item}</p>)
+        );
+        return (<>{list}</>)
+    }
     function Inputs() {
         const listItems = txJson.inputs.map((item, idx) =>
             (<div key={idx}><p>Input {idx}</p><table><tbody>
@@ -30,6 +36,14 @@ function App() {
                 <tr key="1">
                     <td className="Col1">prev index</td>
                     <td>{item["prev_index"]}</td>
+                </tr>
+                <tr key="2">
+                    <td className="Col1">scriptSig</td>
+                    <td><ScriptItems items={item["script_json"]}/></td>
+                </tr>
+                <tr key="3">
+                    <td className="Col1">sequence</td>
+                    <td>{item["sequence_hex"]}</td>
                 </tr>
                 </tbody>
                 </table></div>

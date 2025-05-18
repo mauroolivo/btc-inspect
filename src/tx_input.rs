@@ -48,8 +48,8 @@ impl TxInput {
         let mut tx_in_json = json!({
             "prev_tx": hex::encode(&prev_tx),
             "prev_index": prev_index,
-
-            "sequence": sequence,
+            "script_json": script_sig.get_json(),
+            "sequence_hex": hex::encode(int_to_little_endian(BigUint::from(sequence), 4u32)),
         });
         Ok(TxInput {
             prev_tx,
