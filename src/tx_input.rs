@@ -50,6 +50,7 @@ impl TxInput {
             "prev_index": prev_index,
             "script_json": script_sig.get_json(),
             "sequence_hex": hex::encode(int_to_little_endian(BigUint::from(sequence), 4u32)),
+            "is_rbf": (sequence < ( 0xffffffff - 1))
         });
         Ok(TxInput {
             prev_tx,

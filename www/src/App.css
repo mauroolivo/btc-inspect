@@ -51,6 +51,10 @@ body {
 .Button:hover {
     text-decoration: none;
 }
+.Button:disabled {
+    text-decoration: none;
+    color: darkgray;
+}
 p {
     overflow-wrap: break-word;
 }
