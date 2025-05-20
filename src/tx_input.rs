@@ -45,11 +45,12 @@ impl TxInput {
         stream.read(&mut buffer)?;
         let sequence = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
+        buffer.reverse();
         let mut tx_in_json = json!({
             "prev_tx": hex::encode(&prev_tx),
             "prev_index": prev_index,
             "script_json": script_sig.get_json(),
-            "sequence_hex": hex::encode(int_to_little_endian(BigUint::from(sequence), 4u32)),
+            "sequence_hex": hex::encode(buffer),
             "is_rbf": (sequence < ( 0xffffffff - 1))
         });
         Ok(TxInput {
