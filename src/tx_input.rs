@@ -13,7 +13,7 @@ pub struct TxInput {
     pub script_sig: Script,
     sequence: u32,
     pub witness: Option<Vec<Vec<u8>>>,
-    tx_in_json: serde_json::Value,
+    pub tx_in_json: serde_json::Value,
 }
 impl TxInput {
     pub fn new(prev_tx: Vec<u8>, prev_index: u32, script_sig: Script, sequence: u32) -> Self {

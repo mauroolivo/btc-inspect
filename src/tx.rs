@@ -96,21 +96,28 @@ impl Tx {
 
         if is_segwit {
             for tx_in in inputs.iter_mut() {
+                let mut items_json: Vec<String> = vec![];
                 if let Ok(num_items) = read_varint(stream) {
 
                     let mut items: Vec<Vec<u8>> = vec![];
                     for _ in 0..num_items {
                         if let Ok(item_len) = read_varint(stream) {
                             if item_len == 0 {
-                                items.push(vec![0])
+                                items.push(vec![0]);
+                                items_json.push(hex::encode(vec![0]));
                             } else {
                                 let mut buffer: Vec<u8> = vec![0;item_len as usize];
                                 stream.read(&mut buffer)?;
-                                items.push(buffer)
+                                items.push(buffer.clone());
+                                items_json.push(hex::encode(buffer));
                             }
                         }
                     }
                     tx_in.witness = Some(items);
+                    let mut tx_in_json = tx_in.get_json();
+                    tx_in_json["witness"] = json!(items_json);
+                    tx_in.tx_in_json = tx_in_json;
+                    //tx_in.witness_json = json!(cmd_list_json);
                 }
             }
         }
