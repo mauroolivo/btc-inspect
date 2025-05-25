@@ -36,6 +36,10 @@ function App() {
             input = "ae8032eb2f698ff3e7a06deea33bcbf463466e84515c688940fe4a4e7dc4d966"
         } else if (n === 3) {
             input = "0b6461de422c46a221db99608fcbe0326e4f2325ebf2a47c9faf660ed61ee6a4"
+        } else if (n === 4) {
+            input = "479edb958c2eb314078de498e8d70241fe58e30b71f46489c02820b21cb2d822"
+        } else if (n === 5) {
+            input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
         }
         handleFetch(input)
         setInputValue(input)
@@ -44,7 +48,15 @@ function App() {
         setTxJson(null)
         setInputValue("")
     }
-
+    function Samples() {
+        return (<ul>
+            <li><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button></li>
+            <li><button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button></li>
+            <li><button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button></li>
+            <li><button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button></li>
+            <li><button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button></li>
+        </ul>)
+    }
     function ScriptItems({items}) {
         if (items === undefined) {
             return <p></p>
@@ -69,7 +81,7 @@ function App() {
                             <td>{item["prev_index"]}</td>
                         </tr>
                         <tr key="2">
-                            <td className="Col1">scriptSig</td>
+                            <td className="Col1">ScriptSig</td>
                             <td><ScriptItems items={item["script_json"]}/></td>
                         </tr>
                         <tr key="3">
@@ -86,7 +98,25 @@ function App() {
             ));
         return (<>{listItems}</>)
     }
-
+    function Outputs() {
+        const listItems = txJson.outputs.map((item, idx) =>
+            (<div key={idx}><p>Output {idx}</p>
+                    <table>
+                        <tbody>
+                        <tr key="0">
+                            <td className="Col1">Amount</td>
+                            <td>{item["amount"]}</td>
+                        </tr>
+                        <tr key="1">
+                            <td className="Col1">ScriptPubKey</td>
+                            <td><ScriptItems items={item["script_json"]}/></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            ));
+        return (<>{listItems}</>)
+    }
     function Table() {
         if (txJson == null) {
             return <p></p>;
@@ -121,8 +151,8 @@ function App() {
                     </tr>
                     <tr>
                         <td className="Col1">outputs</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.num_outputs}</td>
+                        <td className="Col2">{txJson.num_outputs}</td>
+                        <td><Outputs/></td>
                     </tr>
                     <tr>
                         <td className="Col1">locktime</td>
@@ -153,11 +183,7 @@ function App() {
             <button className="Button" onClick={() => handleClear()}>
                 Clear
             </button>
-            <ul>
-                <li><button className="Button" onClick={() => handleSample(1)}>sample 1</button></li>
-                <li><button className="Button" onClick={() => handleSample(2)}>sample 2</button></li>
-                <li><button className="Button" onClick={() => handleSample(3)}>sample 3</button></li>
-            </ul>
+            <Samples/>
             <Table/>
         </div>
     );

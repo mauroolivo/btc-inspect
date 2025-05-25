@@ -53,9 +53,14 @@ pub fn r_tx_json(tx_str: String) -> String {
         let mut tx_in_json = json!({});
         tx_in_json = input.get_json();
         inputs_json_list.push(tx_in_json);
-
     }
     tx_json["inputs"] = json!(inputs_json_list);
-
+    let mut outputs_json_list: Vec<serde_json::value::Value> = vec![];
+    for output in tx.tx_outs() {
+        let mut tx_out_json = json!({});
+        tx_out_json = output.get_json();
+        outputs_json_list.push(tx_out_json);
+    }
+    tx_json["outputs"] = json!(outputs_json_list);
     tx_json.to_string()
 }
