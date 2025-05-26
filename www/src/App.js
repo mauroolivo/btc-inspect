@@ -1,6 +1,8 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
 import init, {r_tx_json} from "btc-inspect";
+import { PiArrowCircleRight } from "react-icons/pi";
+import { PiCodeFill } from "react-icons/pi";
 
 function App() {
     const [inputValue, setInputValue] = useState('');
@@ -44,6 +46,10 @@ function App() {
         handleFetch(input)
         setInputValue(input)
     }
+    function handleNewInput(input) {
+        handleFetch(input)
+        setInputValue(input)
+    }
     function handleClear() {
         setTxJson(null)
         setInputValue("")
@@ -62,7 +68,7 @@ function App() {
             return <p></p>
         }
         const list = items.map((item, idx) =>
-            (<p key={idx}>{item}</p>)
+            (<p key={idx}><span className="IsByte">{item}</span></p>)
         );
         return (<>{list}</>)
     }
@@ -74,7 +80,7 @@ function App() {
                         <tbody>
                         <tr key="0">
                             <td className="Col1">prev tx ID</td>
-                            <td>{item["prev_tx"]}</td>
+                            <td>{item["prev_tx"]} <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}><PiArrowCircleRight /></button></td>
                         </tr>
                         <tr key="1">
                             <td className="Col1">prev index</td>

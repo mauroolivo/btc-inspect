@@ -55,8 +55,29 @@ body {
     text-decoration: none;
     color: darkgray;
 }
+.ButtonImg {
+    background-color: unset;
+    color: dodgerblue;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 0;
+    list-style: none;
+    border: 0;
+    margin: 0;
+    text-align: center;
+    transition: all 200ms;
+    vertical-align: baseline;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
 p {
     overflow-wrap: break-word;
+    padding: 0;
+    margin: 0;
 }
 
 .Col1 {
@@ -80,4 +101,7 @@ ul {
     list-style: none;
     padding: 0;
     margin: 0;
+}
+.IsByte:hover {
+    color: coral;
 }
