@@ -49,9 +49,10 @@ impl Script {
                     let ln = little_endian_to_int(buffer.as_slice()).to_u16().unwrap();
                     let mut cmd = vec![0; ln.to_usize().unwrap()];
                     stream.read(&mut cmd)?;
-                    cmds.push(cmd);
+                    cmds.push(cmd.clone());
+                    cmd_list_json.push("OP_PUSHDATA1".to_string());
+                    cmd_list_json.push(hex::encode(cmd));
                     count += ln as u64 + 1;
-                    panic!("TODO HANDLE OP_PUSHDATA1 IN JSON")
                 }
                 OP_PUSHDATA2 => {
                     let mut buffer = [0; 2];
@@ -59,9 +60,11 @@ impl Script {
                     let ln = little_endian_to_int(buffer.as_slice()).to_u16().unwrap();
                     let mut cmd = vec![0; ln.to_usize().unwrap()];
                     stream.read(&mut cmd)?;
-                    cmds.push(cmd);
+                    cmds.push(cmd.clone());
+                    cmd_list_json.push("OP_PUSHDATA2".to_string());
+                    cmd_list_json.push(hex::encode(cmd));
                     count += ln as u64 + 2;
-                    panic!("TODO HANDLE OP_PUSHDATA2 IN JSON")
+
                 }
                 _ => {
                     let op_code = current_byte;

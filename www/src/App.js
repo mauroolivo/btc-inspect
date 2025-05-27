@@ -42,6 +42,8 @@ function App() {
             input = "479edb958c2eb314078de498e8d70241fe58e30b71f46489c02820b21cb2d822"
         } else if (n === 5) {
             input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
+        } else if (n === 6) {
+            input = "8670ed595dfee2c2fd10419f00711eed7ee7c3ea7c3a3a6ed3bccc3b835a2795"
         }
         handleFetch(input)
         setInputValue(input)
@@ -61,6 +63,7 @@ function App() {
             <li><button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button></li>
             <li><button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button></li>
             <li><button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button></li>
+            <li><button className="Button" onClick={() => handleSample(6)}>sample 6 (P2SH multisig)</button></li>
         </ul>)
     }
     function ScriptItems({items}) {
