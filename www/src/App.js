@@ -24,8 +24,7 @@ function App() {
             .then((response) => response.text())
             .then((data) => {
                 let tx_json = JSON.parse(r_tx_json(data));
-
-                console.log(tx_json.inputs[0])
+                console.log(tx_json)
                 setTxJson(tx_json)
             })
             .catch((error) => console.log(error));
@@ -56,15 +55,18 @@ function App() {
         setTxJson(null)
         setInputValue("")
     }
+    function validate() {
+        const listItems = txJson.inputs.map((item, idx) => { return item["prev_tx"] })
+        console.log(listItems)
+    }
     function Samples() {
-        return (<ul>
-            <li><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button></li>
-            <li><button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button></li>
-            <li><button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button></li>
-            <li><button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button></li>
-            <li><button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button></li>
-            <li><button className="Button" onClick={() => handleSample(6)}>sample 6 (P2SH multisig)</button></li>
-        </ul>)
+        return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
+            <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button>
+            <button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button>
+            <button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button>
+            <button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button>
+            <button className="Button" onClick={() => handleSample(6)}>sample 6 (P2SH multisig)</button>
+        </p>)
     }
     function ScriptItems({items}) {
         if (items === undefined) {
@@ -131,45 +133,48 @@ function App() {
             return <p></p>;
         } else {
             return (
-                <table>
-                    <tbody>
-                    <tr>
-                        <td className="Col1">Tx Hex</td>
-                        <td className="Col2">{txJson.hex.length / 2}</td>
-                        <td>{txJson.hex}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Tx ID</td>
-                        <td className="Col2">{txJson.hash.length / 2}</td>
-                        <td>{txJson.hash}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">version</td>
-                        <td className="Col2">{txJson.version_hex.length / 2}</td>
-                        <td>{txJson.version_hex} ({txJson.version})</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">marker</td>
-                        <td className="Col2">{txJson.version_hex.length / 2}</td>
-                        <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">inputs</td>
-                        <td className="Col2">{txJson.num_inputs}</td>
-                        <td><Inputs/></td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">outputs</td>
-                        <td className="Col2">{txJson.num_outputs}</td>
-                        <td><Outputs/></td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">locktime</td>
-                        <td className="Col2">{txJson.locktime_hex.length / 2}</td>
-                        <td>{txJson.locktime_hex} ({txJson.locktime})</td>
-                    </tr>
-                    </tbody>
-                </table>
+                <>
+                    <button className="Button" onClick={() => validate()}>Validate</button>
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td className="Col1">Tx Hex</td>
+                            <td className="Col2">{txJson.hex.length / 2}</td>
+                            <td>{txJson.hex}</td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">Tx ID</td>
+                            <td className="Col2">{txJson.hash.length / 2}</td>
+                            <td>{txJson.hash}</td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">version</td>
+                            <td className="Col2">{txJson.version_hex.length / 2}</td>
+                            <td>{txJson.version_hex} ({txJson.version})</td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">marker</td>
+                            <td className="Col2">{txJson.version_hex.length / 2}</td>
+                            <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">inputs</td>
+                            <td className="Col2">{txJson.num_inputs}</td>
+                            <td><Inputs/></td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">outputs</td>
+                            <td className="Col2">{txJson.num_outputs}</td>
+                            <td><Outputs/></td>
+                        </tr>
+                        <tr>
+                            <td className="Col1">locktime</td>
+                            <td className="Col2">{txJson.locktime_hex.length / 2}</td>
+                            <td>{txJson.locktime_hex} ({txJson.locktime})</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </>
             )
         }
     }
