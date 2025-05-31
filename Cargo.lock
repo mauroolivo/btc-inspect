@@ -96,6 +96,7 @@ dependencies = [
  "sha1",
  "sha2",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
  "wasm-bindgen-test",
 ]
 

@@ -10,19 +10,9 @@ pub struct TxFetcher {
 
 impl TxFetcher {
     pub fn new(testnet: bool) -> Self {
-
-        dotenv::dotenv().ok();
-        let base_url: String = std::env::var("BASE_URL")
-            .expect("Missing .env file or value");
-        let tnt = if testnet == true {
-            "/testnet"
-        } else {
-            ""
-        };
-
-        TxFetcher{api_url: format!("{}{}/api", base_url, tnt), testnet }
+        TxFetcher{api_url: "https://blockstream.info/api".to_string(), testnet }
     }
-    /*pub async fn fetch_async(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
+    pub async fn fetch_async(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
 
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);
 
@@ -40,11 +30,6 @@ impl TxFetcher {
             Ok(result) => {
                 println!("{:#?}", result);
                 let raw_tx = hex::decode(result).unwrap();
-                // coming soon segwit
-                // if raw_tx[4] == 0 {
-                //    raw_tx.remove(4);
-                //    raw_tx.remove(4);
-                // }
                 let mut stream = Cursor::new(raw_tx);
                 let tx = Tx::parse(&mut stream, false).unwrap();
                 Ok(tx)
@@ -55,6 +40,7 @@ impl TxFetcher {
             }
         }
     }
+    /*
     pub fn fetch_sync(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
 
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);

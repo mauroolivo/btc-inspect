@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {r_tx_json} from "btc-inspect";
+import init, {r_tx_json_from_id} from "btc-inspect";
 import { PiArrowCircleRight } from "react-icons/pi";
 import { PiCodeFill } from "react-icons/pi";
 
@@ -16,18 +16,24 @@ function App() {
 
     function handleFetch(input) {
         setTxJson(null)
-
-        fetch(`https://blockstream.info/api/tx/${input}/hex`, {
-            method: "GET",
-            headers: {},
-        })
-            .then((response) => response.text())
-            .then((data) => {
-                let tx_json = JSON.parse(r_tx_json(data));
-                console.log(tx_json)
-                setTxJson(tx_json)
-            })
-            .catch((error) => console.log(error));
+        console.log(input)
+        r_tx_json_from_id(input).then(tx_json_str => {
+            let tx_json = JSON.parse(tx_json_str);
+            console.log(tx_json)
+            setTxJson(tx_json)
+        }
+        )
+        // fetch(`https://blockstream.info/api/tx/${input}/hex`, {
+        //     method: "GET",
+        //     headers: {},
+        // })
+        //     .then((response) => response.text())
+        //     .then((data) => {
+        //         let tx_json = JSON.parse(r_tx_json(data));
+        //         console.log(tx_json)
+        //         setTxJson(tx_json)
+        //     })
+        //     .catch((error) => console.log(error));
     }
     function handleSample(n) {
         let input = ""
