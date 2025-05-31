@@ -85,15 +85,15 @@ impl TxInput {
     pub fn script_sig(&self) -> Script {
         self.script_sig.clone()
     }
-/*    pub fn fetch_tx(&self, testnet: bool) -> Result<Tx, reqwest::Error> {
+    pub async fn fetch_tx_async(&self, testnet: bool) -> Result<Tx, reqwest::Error> {
         let tx_id = hex::encode(self.prev_tx().to_vec());
         let tf = TxFetcher::new(testnet);
-        let result = tf.fetch_sync(tx_id.as_str());
+        let result = tf.fetch_async(tx_id.as_str()).await;
         match result {
             Ok(tx) => Ok(tx),
             Err(e) => Err(e)
         }
-    }*/
+    }
     pub fn value(&self, testnet: bool) -> u64 {
         /*
         let tx = self.fetch_tx(testnet).unwrap();

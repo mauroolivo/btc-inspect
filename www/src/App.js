@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {r_tx_json_from_id} from "btc-inspect";
+import init, {r_tx_json_from_id, verify_tx} from "btc-inspect";
 import { PiArrowCircleRight } from "react-icons/pi";
 import { PiCodeFill } from "react-icons/pi";
 
@@ -62,8 +62,13 @@ function App() {
         setInputValue("")
     }
     function validate() {
+        /*
         const listItems = txJson.inputs.map((item, idx) => { return item["prev_tx"] })
         console.log(listItems)
+        */
+        verify_tx(inputValue).then(res => {
+            console.log(res)
+        })
     }
     function Samples() {
         return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
