@@ -70,8 +70,7 @@ pub fn r_tx_json(tx_str: String) -> String {
 #[wasm_bindgen]
 pub async fn r_tx_json_from_id(tx_id: String) -> String {
 
-
-    let tx = get(tx_id.clone()).await;
+    let tx = Tx::new_from_id(tx_id).await;
 
     let mut tx_json = json!({});
     tx_json = tx.tx_json();
@@ -92,10 +91,4 @@ pub async fn r_tx_json_from_id(tx_id: String) -> String {
     }
     tx_json["outputs"] = json!(outputs_json_list);
     tx_json.to_string()
-}
-pub async fn get(tx_str: String) -> Tx  {
-    let tx_id = tx_str.as_str();
-    let tf = TxFetcher::new(false);
-    let tx = tf.fetch_async(tx_id).await.unwrap();
-    tx
 }

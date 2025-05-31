@@ -10,6 +10,7 @@ use crate::helpers::sig_hash::SIGHASH_ALL;
 use crate::private_key::PrivateKey;
 use crate::script::Script;
 use serde_json::json;
+use crate::tx_fetcher::TxFetcher;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Tx {
@@ -39,6 +40,12 @@ impl Tx {
             hash_outputs: None,
             tx_json: json!(null),
         }
+    }
+    pub async fn new_from_id(tx_id_str: String) -> Tx  {
+        let tx_id = tx_id_str.as_str();
+        let tf = TxFetcher::new(false);
+        let tx = tf.fetch_async(tx_id).await.unwrap();
+        tx
     }
     pub fn version(&self) -> u32 {
         self.version
