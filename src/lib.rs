@@ -96,10 +96,9 @@ pub async fn r_tx_json_from_id(tx_id: String) -> String {
 pub async fn verify_tx(tx_id: String) -> String {
     let mut tx = Tx::new_from_id(tx_id).await;
 
-    tx.id()
-    // if tx.verify() {
-    //    return "valid".to_string();
-    // } else { return "invalid".to_string(); }
+    if tx.verify_async().await == true {
+        return "valid".to_string();
+    } else { return "invalid".to_string(); }
 
 
 }

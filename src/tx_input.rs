@@ -94,19 +94,13 @@ impl TxInput {
             Err(e) => Err(e)
         }
     }
-    pub fn value(&self, testnet: bool) -> u64 {
-        /*
-        let tx = self.fetch_tx(testnet).unwrap();
+    pub async fn value(&self, testnet: bool) -> u64 {
+        let mut tx = self.fetch_tx_async(testnet).await.unwrap();
         tx.tx_outs()[self.prev_index as usize].amount()
-        */
-        0
     }
-    pub fn script_pubkey(&self, testnet: bool) -> Script {
-        /*
-        let tx = self.fetch_tx(testnet).unwrap();
+    pub async fn script_pubkey(&self, testnet: bool) -> Script {
+        let mut tx = self.fetch_tx_async(testnet).await.unwrap();
         tx.tx_outs()[self.prev_index as usize].script_pubkey()
-         */
-        Script::new(vec![])
     }
 }
 

@@ -253,18 +253,19 @@ impl Tx {
         hash.reverse();
         hash.to_vec()
     }
-    pub fn fee(&self) -> i64 {
+    pub async fn fee(&self) -> i64 {
+
         let mut sum_tx_ins: u64 = 0;
         let mut sum_tx_outs: u64 = 0;
         for tx_in in self.tx_ins() {
-            sum_tx_ins += tx_in.value(self.testnet)
+            sum_tx_ins += tx_in.value(self.testnet).await.to_u64().unwrap();
         }
         for tx_out in self.tx_outs() {
             sum_tx_outs += tx_out.amount()
         }
         sum_tx_ins as i64 - sum_tx_outs as i64
     }
-    pub fn sig_hash(&self, input_index: usize, redeem_script: Option<Script>) -> BigUint {
+    pub async fn sig_hash(&self, input_index: usize, redeem_script: Option<Script>) -> BigUint {
         let mut result = Vec::new();
         result.extend(int_to_little_endian(BigUint::from(self.version), 4));
         let num_ins = encode_varint(self.inputs.len() as u64).unwrap();
@@ -283,7 +284,7 @@ impl Tx {
 
                     None => {
                         println!("NO REDEEM");
-                        let tx_input = TxInput::new(tx_in.prev_tx(), tx_in.prev_index(), tx_in.script_pubkey(self.testnet), tx_in.sequence());
+                        let tx_input = TxInput::new(tx_in.prev_tx(), tx_in.prev_index(), tx_in.script_pubkey(self.testnet).await, tx_in.sequence());
                         result.extend(tx_input.serialize());
                     }
                 }
@@ -302,7 +303,7 @@ impl Tx {
         let z = BigUint::from_bytes_be(hash.as_slice());
         z
     }
-    pub fn sig_hash_bip143(&mut self, input_index: usize, redeem_script: Option<Script>, witness_script: Option<Script>) -> BigUint {
+    pub async fn sig_hash_bip143(&mut self, input_index: usize, redeem_script: Option<Script>, witness_script: Option<Script>) -> BigUint {
 
         let pr = self.hash_prevouts().unwrap();
         let se = self.hash_sequence().unwrap();
@@ -329,12 +330,14 @@ impl Tx {
             let h160 = script.cmds[1].clone();
             script_code = Script::p2pkh_script(h160).serialize();
         } else {
-            let script = tx_in.script_pubkey(self.testnet);
+            let script = tx_in.script_pubkey(self.testnet).await;
             let h160 = script.cmds[1].clone();
             script_code = Script::p2pkh_script(h160).serialize();
         }
         s.extend(script_code.clone());
-        s.extend(int_to_little_endian(BigUint::from(tx_in.value(self.testnet)), 8));
+
+        s.extend(int_to_little_endian(BigUint::from(tx_in.value(self.testnet).await), 8));
+
         s.extend(int_to_little_endian(BigUint::from(tx_in.sequence()), 4));
         s.extend(self.hash_outputs().unwrap());
         s.extend(int_to_little_endian(BigUint::from(self.locktime), 4));
@@ -345,10 +348,10 @@ impl Tx {
         BigUint::from_bytes_be(hash.as_slice())
     }
 
-    pub fn verify_input(&mut self, input_index: usize) -> bool {
+    pub async fn verify_input(&mut self, input_index: usize) -> bool {
         let tx_ins = self.tx_ins(); //[input_index];
         let tx_in = &tx_ins[input_index];
-        let prev_script_pubkey = tx_in.script_pubkey(self.testnet);
+        let prev_script_pubkey = tx_in.script_pubkey(self.testnet).await;
 
         let mut z: BigUint = BigUint::zero();
         let mut witness: Option<Vec<Vec<u8>>> = None;
@@ -368,7 +371,7 @@ impl Tx {
                     redeem_script = Some(script.clone());
 
                     if script.is_p2wpkh_script_pubkey() {
-                        z = self.sig_hash_bip143(input_index, redeem_script.clone(), None);
+                        z = self.sig_hash_bip143(input_index, redeem_script.clone(), None).await;
                         witness = tx_in.witness.clone();
                     } else if redeem_script.clone().unwrap().is_p2wsh_script_pubkey() {
                         let mut raw_witness: Vec<u8> = vec![];
@@ -378,10 +381,10 @@ impl Tx {
                         raw_witness.extend(cmd);
                         let mut w_stream = Cursor::new(raw_witness);
                         let witness_script = Script::parse(&mut w_stream).unwrap();
-                        z = self.sig_hash_bip143(input_index, None, Some(witness_script));
+                        z = self.sig_hash_bip143(input_index, None, Some(witness_script)).await;
                         witness = tx_in.clone().witness;
                     } else {
-                        z = self.sig_hash(input_index, redeem_script.clone());
+                        z = self.sig_hash(input_index, redeem_script.clone()).await;
                         witness = None;
                     }
                 }
@@ -395,7 +398,7 @@ impl Tx {
 
             if prev_script_pubkey.is_p2wpkh_script_pubkey() {
 
-                z = self.sig_hash_bip143(input_index, None, None);
+                z = self.sig_hash_bip143(input_index, None, None).await;
                 witness = tx_in.clone().witness;
 
             } else if prev_script_pubkey.is_p2wsh_script_pubkey() {
@@ -407,10 +410,10 @@ impl Tx {
                 raw_witness.extend(cmd);
                 let mut w_stream = Cursor::new(raw_witness);
                 let witness_script = Script::parse(&mut w_stream).unwrap();
-                z = self.sig_hash_bip143(input_index, None, Some(witness_script));
+                z = self.sig_hash_bip143(input_index, None, Some(witness_script)).await;
                 witness = tx_in.clone().witness;
             } else {
-                z = self.sig_hash(input_index, None);
+                z = self.sig_hash(input_index, None).await;
                 witness = None;
             }
         }
@@ -428,21 +431,23 @@ impl Tx {
         let combined_script = ss + pp;
         combined_script.evaluate(&z.clone(), &witness.clone())
     }
-    pub fn verify(&mut self) -> bool {
-        if self.fee() < 0 {
+
+    pub async fn verify_async(&mut self) -> bool {
+        if self.fee().await.to_i64().unwrap() < 0i64 {
             println!("----------> fee is negative");
             return false;
         }
 
         for i in 0..self.tx_ins().len() {
-            if !self.verify_input(i) {
-                println!("----------> input is invalid {}/{}", i, self.tx_ins().len());
-                return false;
-            }
+             if !self.verify_input(i).await {
+                 println!("----------> input is invalid {}/{}", i, self.tx_ins().len());
+                 return false;
+             }
         }
         true
     }
     pub fn sign_input(&mut self, input_index: usize, private_key: &PrivateKey) -> bool {
+        /*
         let z = self.sig_hash(input_index, None);
         let der = private_key.sign(&z).der();
         let mut sig: Vec<u8> = vec![];
@@ -455,6 +460,9 @@ impl Tx {
         let combined_script = Script::new(cmds);
         self.inputs[input_index].script_sig = combined_script;
         self.verify_input(input_index)
+        TODO: make verify_input async
+         */
+        false
     }
     pub fn is_coinbase(&self) -> bool {
         if self.tx_ins().len() != 1 || self.tx_ins().len() == 0 {
