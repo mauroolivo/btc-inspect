@@ -2,7 +2,7 @@ use std::f32::consts::E;
 use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
 use crate::tx::Tx;
-
+use serde_json::json;
 pub struct TxFetcher {
     api_url: String,
     testnet: bool,
@@ -29,9 +29,12 @@ impl TxFetcher {
         match response {
             Ok(result) => {
                 println!("{:#?}", result);
-                let raw_tx = hex::decode(result).unwrap();
-                let mut stream = Cursor::new(raw_tx);
-                let tx = Tx::parse(&mut stream, false).unwrap();
+                let raw_tx = hex::decode(result.clone()).unwrap();
+                let mut stream = Cursor::new(raw_tx.clone());
+                let mut tx = Tx::parse(&mut stream, false).unwrap();
+                let mut tx_json = tx.tx_json();
+                tx_json["hex"] = json!(result);
+                tx.tx_json = tx_json;
                 Ok(tx)
             }
             Err(e) => {

@@ -23,7 +23,7 @@ pub struct Tx {
     hash_prevouts: Option<Vec<u8>>,
     hash_sequence: Option<Vec<u8>>,
     hash_outputs: Option<Vec<u8>>,
-    tx_json: serde_json::Value,
+    pub(crate) tx_json: serde_json::Value,
 }
 
 impl Tx {

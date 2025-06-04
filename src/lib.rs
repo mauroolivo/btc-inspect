@@ -74,7 +74,6 @@ pub async fn r_tx_json_from_id(tx_id: String) -> String {
 
     let mut tx_json = json!({});
     tx_json = tx.tx_json();
-    tx_json["hex"] = json!(hex::encode( tx.hash() ).to_string());
     tx_json["hash"] = json!(hex::encode( tx.hash() ).to_string());
     let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
     for input in tx.tx_ins() {
