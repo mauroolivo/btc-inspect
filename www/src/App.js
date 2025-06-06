@@ -23,17 +23,6 @@ function App() {
             setTxJson(tx_json)
         }
         )
-        // fetch(`https://blockstream.info/api/tx/${input}/hex`, {
-        //     method: "GET",
-        //     headers: {},
-        // })
-        //     .then((response) => response.text())
-        //     .then((data) => {
-        //         let tx_json = JSON.parse(r_tx_json(data));
-        //         console.log(tx_json)
-        //         setTxJson(tx_json)
-        //     })
-        //     .catch((error) => console.log(error));
     }
     function handleSample(n) {
         let input = ""
@@ -62,10 +51,6 @@ function App() {
         setInputValue("")
     }
     function validate() {
-        /*
-        const listItems = txJson.inputs.map((item, idx) => { return item["prev_tx"] })
-        console.log(listItems)
-        */
         verify_tx(inputValue).then(res => {
             console.log(res)
         })
