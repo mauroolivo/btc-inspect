@@ -5,6 +5,7 @@ use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
 use std::{io::{Cursor, Read}};
 use tx_fetcher::TxFetcher;
+use crate::utils::set_panic_hook;
 
 mod utils;
 pub mod point_scalar;
@@ -22,6 +23,7 @@ pub mod tx_fetcher;
 pub mod block;
 pub mod merkle_tree;
 pub mod merkle_block;
+extern crate console_error_panic_hook;
 
 #[wasm_bindgen]
 pub fn r_try_command() -> String {
@@ -69,6 +71,7 @@ pub fn r_tx_json(tx_str: String) -> String {
 */
 #[wasm_bindgen]
 pub async fn r_tx_json_from_id(tx_id: String) -> String {
+    set_panic_hook();
 
     let tx = Tx::new_from_id(tx_id).await;
 
