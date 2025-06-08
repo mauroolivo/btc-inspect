@@ -3,6 +3,8 @@ use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
 use crate::tx::Tx;
 use serde_json::json;
+use crate::cache::HASHMAP;
+
 pub struct TxFetcher {
     api_url: String,
     testnet: bool,
@@ -16,33 +18,63 @@ impl TxFetcher {
 
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);
 
-        println!("{}", url);
-        log::info!("Fetch: {:?}", url);
+        let mut hashmap = HASHMAP.lock().unwrap();
 
-        let client = reqwest::Client::new();
-        let response = client
-            .get(url)
-            .send()
-            .await
-            .unwrap()
-            .text()
-            .await;
-        match response {
-            Ok(result) => {
-                println!("{:#?}", result);
-                let raw_tx = hex::decode(result.clone()).unwrap();
+        let data = hashmap.get(&tx_id.to_string());
+        match data {
+            Some(data) => {
+                log::info!("RETURNING FROM CACHE: {:?}", tx_id.clone());
+                let raw_tx = hex::decode(data.clone()).unwrap();
                 let mut stream = Cursor::new(raw_tx.clone());
                 let mut tx = Tx::parse(&mut stream, false).unwrap();
                 let mut tx_json = tx.tx_json();
-                tx_json["hex"] = json!(result);
+                tx_json["hex"] = json!(data.clone());
                 tx.tx_json = tx_json;
-                Ok(tx)
+                let res = Ok::<Tx, reqwest::Error>(tx);
+                res
             }
-            Err(e) => {
-                println!("Error: {}", e);
-                Err(reqwest::Error::from(e))
+            _ => {
+                // log::info!("{:#?}", hashmap);
+
+                println!("{}", url);
+                log::info!("FETCH: {:?}", tx_id.clone());
+
+                let client = reqwest::Client::new();
+                let response = client
+                    .get(url)
+                    .send()
+                    .await
+                    .unwrap()
+                    .text()
+                    .await;
+                match response {
+                    Ok(result) => {
+                        println!("{:#?}", result);
+                        let raw_tx = hex::decode(result.clone()).unwrap();
+
+                        log::info!("ADDING: {:#?}", tx_id);
+                        let tid = tx_id.clone();
+                        let k = format!("{}", tid);
+                        hashmap.insert(k.clone(), result.clone());
+
+                        let mut stream = Cursor::new(raw_tx.clone());
+                        let mut tx = Tx::parse(&mut stream, false).unwrap();
+                        let mut tx_json = tx.tx_json();
+                        tx_json["hex"] = json!(result);
+                        tx.tx_json = tx_json;
+                        Ok(tx)
+                    }
+                    Err(e) => {
+                        println!("Error: {}", e);
+                        Err(reqwest::Error::from(e))
+                    }
+                }
+
+
             }
         }
+
+
     }
     /*
     pub fn fetch_sync(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {

@@ -23,6 +23,8 @@ pub mod tx_fetcher;
 pub mod block;
 pub mod merkle_tree;
 pub mod merkle_block;
+pub mod cache;
+
 extern crate console_error_panic_hook;
 extern crate wasm_log;
 #[wasm_bindgen]

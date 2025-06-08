@@ -16,10 +16,10 @@ function App() {
 
     function handleFetch(input) {
         setTxJson(null)
-        console.log(input)
+
         r_tx_json_from_id(input).then(tx_json_str => {
             let tx_json = JSON.parse(tx_json_str);
-            console.log(tx_json)
+            // console.log(tx_json)
             setTxJson(tx_json)
         }
         )
