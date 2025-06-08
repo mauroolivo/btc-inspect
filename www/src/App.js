@@ -1,8 +1,7 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {r_tx_json_from_id, verify_tx} from "btc-inspect";
+import init, {init_app, r_tx_json_from_id, verify_tx} from "btc-inspect";
 import { PiArrowCircleRight } from "react-icons/pi";
-import { PiCodeFill } from "react-icons/pi";
 
 function App() {
     const [inputValue, setInputValue] = useState('');
@@ -10,6 +9,7 @@ function App() {
     useEffect(() => {
         const runWasm = async () => {
             await init();
+            init_app();
         };
         runWasm();
     }, []);

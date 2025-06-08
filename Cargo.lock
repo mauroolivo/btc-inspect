@@ -88,6 +88,7 @@ dependencies = [
  "console_error_panic_hook",
  "dotenv",
  "hex",
+ "log",
  "num",
  "reqwest",
  "rfc6979",
@@ -98,6 +99,7 @@ dependencies = [
  "wasm-bindgen",
  "wasm-bindgen-futures",
  "wasm-bindgen-test",
+ "wasm-log",
 ]
 
 [[package]]
@@ -1602,6 +1604,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "wasm-log"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "def95b2a762924804037f77e3de791f1c177d6ecbe0385a64e519bd7902a5f81"
+dependencies = [
+ "log",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

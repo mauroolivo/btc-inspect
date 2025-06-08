@@ -17,6 +17,7 @@ impl TxFetcher {
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);
 
         println!("{}", url);
+        log::info!("Fetch: {:?}", url);
 
         let client = reqwest::Client::new();
         let response = client
