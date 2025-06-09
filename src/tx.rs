@@ -44,7 +44,17 @@ impl Tx {
     pub async fn new_from_id(tx_id_str: String) -> Tx  {
         let tx_id = tx_id_str.as_str();
         let tf = TxFetcher::new(false);
-        let tx = tf.fetch_async(tx_id).await.unwrap();
+        let mut tx = tf.fetch_async(tx_id).await.unwrap();
+
+        if let fee = tx.fee().await {
+            log::info!("fee is available");
+            let mut tx_json = json!({});
+            tx_json = tx.tx_json();
+            tx_json["fee"] = json!(fee);
+            tx.tx_json = tx_json;
+        } else {
+            log::info!("fee is not available");
+        }
         tx
     }
     pub fn version(&self) -> u32 {

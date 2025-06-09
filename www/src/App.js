@@ -19,7 +19,7 @@ function App() {
 
         r_tx_json_from_id(input).then(tx_json_str => {
             let tx_json = JSON.parse(tx_json_str);
-            // console.log(tx_json)
+            console.log(tx_json)
             setTxJson(tx_json)
         }
         )
@@ -49,11 +49,6 @@ function App() {
     function handleClear() {
         setTxJson(null)
         setInputValue("")
-    }
-    function validate() {
-        verify_tx(inputValue).then(res => {
-            console.log(res)
-        })
     }
     function Samples() {
         return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
@@ -124,48 +119,64 @@ function App() {
             ));
         return (<>{listItems}</>)
     }
+    function Summary() {
+        return (
+            <table>
+                <tbody>
+                <tr key="0">
+                    <td className="Col1">Fee</td>
+                    <td>{txJson.fee.toLocaleString()} sats</td>
+                </tr>
+                </tbody>
+            </table>
+        )
+    }
     function Table() {
         if (txJson == null) {
             return <p></p>;
         } else {
             return (
                 <>
-                    <button className="Button" onClick={() => validate()}>Validate</button>
                     <table>
                         <tbody>
                         <tr>
+                            <td className="Col1">Summary</td>
+                            <td className="Col2"></td>
+                            <td><Summary/></td>
+                        </tr>
+                        <tr>
                             <td className="Col1">Tx Hex</td>
-                            <td className="Col2">{txJson.hex.length / 2}</td>
+                            <td className="Col2"></td>
                             <td>{txJson.hex}</td>
                         </tr>
                         <tr>
                             <td className="Col1">Tx ID</td>
-                            <td className="Col2">{txJson.hash.length / 2}</td>
+                            <td className="Col2"></td>
                             <td>{txJson.hash}</td>
                         </tr>
                         <tr>
                             <td className="Col1">version</td>
-                            <td className="Col2">{txJson.version_hex.length / 2}</td>
+                            <td className="Col2"></td>
                             <td>{txJson.version_hex} ({txJson.version})</td>
                         </tr>
                         <tr>
                             <td className="Col1">marker</td>
-                            <td className="Col2">{txJson.version_hex.length / 2}</td>
+                            <td className="Col2"></td>
                             <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
                         </tr>
                         <tr>
-                            <td className="Col1">inputs</td>
-                            <td className="Col2">{txJson.num_inputs}</td>
+                            <td className="Col1">inputs: {txJson.num_inputs}</td>
+                            <td className="Col2"></td>
                             <td><Inputs/></td>
                         </tr>
                         <tr>
-                            <td className="Col1">outputs</td>
-                            <td className="Col2">{txJson.num_outputs}</td>
+                            <td className="Col1">outputs: {txJson.num_outputs}</td>
+                            <td className="Col2"></td>
                             <td><Outputs/></td>
                         </tr>
                         <tr>
                             <td className="Col1">locktime</td>
-                            <td className="Col2">{txJson.locktime_hex.length / 2}</td>
+                            <td className="Col2"></td>
                             <td>{txJson.locktime_hex} ({txJson.locktime})</td>
                         </tr>
                         </tbody>
