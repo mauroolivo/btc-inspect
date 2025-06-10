@@ -127,6 +127,18 @@ function App() {
                     <td className="Col1">Fee</td>
                     <td>{txJson.fee.toLocaleString()} sats</td>
                 </tr>
+                <tr key="1">
+                    <td className="Col1">Bytes</td>
+                    <td>{txJson.non_witness_bytes + txJson.witness_bytes}</td>
+                </tr>
+                <tr key="2">
+                    <td className="Col1">Weight Units</td>
+                    <td>{txJson.non_witness_bytes * 4 + txJson.witness_bytes}</td>
+                </tr>
+                <tr key="3">
+                    <td className="Col1">Virtual Bytes</td>
+                    <td>{txJson.non_witness_bytes + txJson.witness_bytes * 0.25}</td>
+                </tr>
                 </tbody>
             </table>
         )

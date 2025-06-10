@@ -73,6 +73,9 @@ impl Tx {
         self.tx_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>, testnet: bool) -> Result<Self, std::io::Error> {
+        let mut lenght_non_w_b = 0u32;
+        let mut lenght_w_b = 0u32;
+        lenght_non_w_b += 4;
         let mut buffer = [0; 4];
         stream.read(&mut buffer)?;
         let mut buffer = [0; 1];
@@ -90,6 +93,7 @@ impl Tx {
         let mut marker_hex = "";
         if is_segwit {
             let mut buffer = [0; 2];
+            lenght_non_w_b += 2;
             stream.read(&mut buffer)?;
             if buffer != [0x00,0x01] { // segwit marker
                 panic!("invalid segwit marker");
@@ -152,6 +156,8 @@ impl Tx {
             "locktime_hex": locktime_hex,
             "num_inputs": inputs.len(),
             "num_outputs": outputs.len(),
+            "non_witness_bytes": lenght_non_w_b,
+            "witness_bytes": lenght_w_b,
         });
 
         Ok(Tx {
