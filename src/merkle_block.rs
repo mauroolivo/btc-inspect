@@ -44,7 +44,7 @@ impl MerkleBlock {
         let total = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
         let mut hashes: Vec<Vec<u8>> = vec![];
         if let Ok(number_of_tx_hashes) = read_varint(stream) {
-            for _ in 0..number_of_tx_hashes {
+            for _ in 0..number_of_tx_hashes.value {
                 let mut buffer = [0; 32];
                 stream.read(&mut buffer)?;
                 let mut hash = buffer.to_vec();
@@ -54,7 +54,7 @@ impl MerkleBlock {
         }
         let mut flags: Vec<u8> = vec![];
         if let Ok(lenght_flags_field) = read_varint(stream) {
-            let mut buffer: Vec<u8> = vec![0u8; lenght_flags_field as usize];
+            let mut buffer: Vec<u8> = vec![0u8; lenght_flags_field.value as usize];
             stream.read(&mut buffer)?;
             flags = buffer.to_vec();
         }

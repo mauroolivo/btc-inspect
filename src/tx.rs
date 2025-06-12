@@ -75,6 +75,7 @@ impl Tx {
     pub fn parse(stream: &mut Cursor<Vec<u8>>, testnet: bool) -> Result<Self, std::io::Error> {
         let mut length_non_w_b = 0u32;
         let mut length_w_b = 0u32;
+
         length_non_w_b += 4;
         let mut buffer = [0; 4];
         stream.read(&mut buffer)?;
@@ -92,8 +93,8 @@ impl Tx {
         let version_hex = hex::encode(buffer.as_slice());
         let mut marker_hex = "";
         if is_segwit {
-            let mut buffer = [0; 2];
             length_non_w_b += 2;
+            let mut buffer = [0; 2];
             stream.read(&mut buffer)?;
             if buffer != [0x00,0x01] { // segwit marker
                 panic!("invalid segwit marker");
@@ -104,13 +105,20 @@ impl Tx {
         let mut outputs: Vec<TxOutput> = Vec::new();
 
         if let Ok(num_inputs) = read_varint(stream) {
-            for _ in 0..num_inputs {
-                inputs.push(TxInput::parse(stream).unwrap());
+            length_non_w_b += num_inputs.bytes as u32;
+            for _ in 0..num_inputs.value {
+                let input = TxInput::parse(stream).unwrap();
+                let x = input.clone().tx_in_json;
+                let val = x.get("length").unwrap().as_u64().unwrap();
+
+                length_non_w_b += val as u32;
+                inputs.push(input.clone());
             }
         }
         //let mut outputs = vec![];
         if let Ok(num_outputs) = read_varint(stream) {
-            for _ in 0..num_outputs {
+            length_non_w_b += num_outputs.bytes as u32;
+            for _ in 0..num_outputs.value {
                 outputs.push(TxOutput::parse(stream).unwrap());
             }
         }
@@ -121,13 +129,13 @@ impl Tx {
                 if let Ok(num_items) = read_varint(stream) {
 
                     let mut items: Vec<Vec<u8>> = vec![];
-                    for _ in 0..num_items {
+                    for _ in 0..num_items.value {
                         if let Ok(item_len) = read_varint(stream) {
-                            if item_len == 0 {
+                            if item_len.value == 0 {
                                 items.push(vec![0]);
                                 items_json.push(hex::encode(vec![0]));
                             } else {
-                                let mut buffer: Vec<u8> = vec![0;item_len as usize];
+                                let mut buffer: Vec<u8> = vec![0;item_len.value as usize];
                                 stream.read(&mut buffer)?;
                                 items.push(buffer.clone());
                                 items_json.push(hex::encode(buffer));

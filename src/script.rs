@@ -27,7 +27,7 @@ impl Script {
 
         let mut count = 0;
         let length = read_varint(stream)?; // length of entire script
-        while count < length {
+        while count < length.value {
             let mut current = [0u8; 1];
             stream.read(&mut current)?;
             count += 1;
@@ -72,7 +72,7 @@ impl Script {
                 }
             }
         }
-        if count != length {
+        if count != length.value {
             return Err(Error::new(
                 std::io::ErrorKind::InvalidData,
                 "parsing script failed",

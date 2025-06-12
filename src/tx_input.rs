@@ -30,17 +30,26 @@ impl TxInput {
         self.tx_in_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>) -> Result<Self, Error> {
+        let mut length: u32 = 0;
+        length += 32;
         let mut buffer = vec![0; 32];
         stream.read(&mut buffer)?;
         buffer.reverse();
         let prev_tx = buffer.clone();
 
+        length += 4;
         let mut buffer = vec![0; 4];
         stream.read(&mut buffer)?;
         let prev_index = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
+        // manca la lunghezza di script_sig
+        //
+        //
+        //
+        //
         let script_sig = Script::parse(stream)?;
 
+        length += 4; //sequence
         let mut buffer = vec![0; 4];
         stream.read(&mut buffer)?;
         let sequence = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
@@ -51,7 +60,8 @@ impl TxInput {
             "prev_index": prev_index,
             "script_json": script_sig.get_json(),
             "sequence_hex": hex::encode(buffer),
-            "is_rbf": (sequence < ( 0xffffffff - 1))
+            "is_rbf": (sequence < ( 0xffffffff - 1)),
+            "length": length,
         });
         Ok(TxInput {
             prev_tx,

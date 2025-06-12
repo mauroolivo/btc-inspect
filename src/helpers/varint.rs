@@ -3,7 +3,12 @@ use num::{BigUint, ToPrimitive};
 use std::net::TcpStream;
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 
-pub fn read_varint_tcp(stream: &mut TcpStream) -> Result<u64, std::io::Error> {
+pub struct VarInt {
+    pub value: u64,
+    pub bytes: u8
+}
+
+pub fn read_varint_tcp(stream: &mut TcpStream) -> Result<VarInt, std::io::Error> {
     let mut buffer = [0; 1];
     stream.read(&mut buffer)?;
     let i = buffer[0];
@@ -13,25 +18,25 @@ pub fn read_varint_tcp(stream: &mut TcpStream) -> Result<u64, std::io::Error> {
         0xfd => {
             let mut buffer = [0; 2];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 2})
         }
         // 0xfe > 4 bytes
         0xfe => {
             let mut buffer = [0; 4];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 4})
         }
         // 0xff 8 bytes
         0xff => {
             let mut buffer = [0; 8];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 8})
         }
         // the integer
-        _ => Ok(u64::from(i)),
+        _ => Ok(VarInt{value: u64::from(i), bytes: 1}),
     }
 }
-pub fn read_varint(stream: &mut Cursor<Vec<u8>>) -> Result<u64, std::io::Error> {
+pub fn read_varint(stream: &mut Cursor<Vec<u8>>) -> Result<VarInt, std::io::Error> {
     let mut buffer = [0; 1];
     stream.read(&mut buffer)?;
     let i = buffer[0];
@@ -41,22 +46,22 @@ pub fn read_varint(stream: &mut Cursor<Vec<u8>>) -> Result<u64, std::io::Error> 
         0xfd => {
             let mut buffer = [0; 2];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 2})
         }
         // 0xfe > 4 bytes
         0xfe => {
             let mut buffer = [0; 4];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 4})
         }
         // 0xff 8 bytes
         0xff => {
             let mut buffer = [0; 8];
             stream.read(&mut buffer)?;
-            Ok(little_endian_to_int(buffer.as_slice()).to_u64().unwrap())
+            Ok(VarInt{value: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(), bytes: 8})
         }
         // the integer
-        _ => Ok(u64::from(i)),
+        _ => Ok(VarInt{value: u64::from(i), bytes: 1}),
     }
 }
 pub fn encode_varint(i: u64) -> Result<Vec<u8>, std::io::Error> {
@@ -106,7 +111,7 @@ mod tests {
         for (input, expected_output) in test_cases {
             let mut cursor = Cursor::new(input);
             let result = read_varint(&mut cursor).unwrap();
-            assert_eq!(result, expected_output);
+            assert_eq!(result.value, expected_output);
         }
     }
     #[test]
