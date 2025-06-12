@@ -84,7 +84,7 @@ function App() {
                         </tr>
                         <tr key="2">
                             <td className="Col1">ScriptSig</td>
-                            <td><ScriptItems items={item["script_json"]}/></td>
+                            <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
                         </tr>
                         <tr key="3">
                             <td className="Col1">witness</td>
@@ -111,7 +111,7 @@ function App() {
                         </tr>
                         <tr key="1">
                             <td className="Col1">ScriptPubKey</td>
-                            <td><ScriptItems items={item["script_json"]}/></td>
+                            <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
                         </tr>
                         </tbody>
                     </table>

@@ -10,7 +10,7 @@ use serde_json::json;
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Script {
     pub cmds: Vec<Vec<u8>>,
-    script_json: serde_json::Value,
+    pub(crate) script_json: serde_json::Value,
 }
 impl Script {
     pub fn new(cmds: Vec<Vec<u8>>) -> Self {
@@ -24,9 +24,11 @@ impl Script {
     pub fn parse(stream: &mut Cursor<Vec<u8>>) -> Result<Script, Error> {
         let mut cmds = vec![];
         let mut cmd_list_json: Vec<String> = vec![];
+        let mut script_length: u32 = 0;
 
         let mut count = 0;
         let length = read_varint(stream)?; // length of entire script
+        script_length += length.bytes as u32 + length.value as u32;
         while count < length.value {
             let mut current = [0u8; 1];
             stream.read(&mut current)?;
@@ -78,7 +80,7 @@ impl Script {
                 "parsing script failed",
             ));
         }
-        let script_json = json!( cmd_list_json );
+        let script_json = json!( {"script_length": script_length, "cmd_list_json": cmd_list_json});
         Ok(Script { cmds, script_json })
     }
     fn raw_serialize(&self) -> Vec<u8> {

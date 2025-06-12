@@ -119,7 +119,12 @@ impl Tx {
         if let Ok(num_outputs) = read_varint(stream) {
             length_non_w_b += num_outputs.bytes as u32;
             for _ in 0..num_outputs.value {
-                outputs.push(TxOutput::parse(stream).unwrap());
+                let output = TxOutput::parse(stream).unwrap();
+                let x = output.clone().tx_out_json;
+                let val = x.get("length").unwrap().as_u64().unwrap();
+
+                length_non_w_b += val as u32;
+                outputs.push(output.clone());
             }
         }
 
@@ -150,6 +155,7 @@ impl Tx {
                 }
             }
         }
+        length_non_w_b += 4u32; // locktime
         let mut buffer = vec![0; 4];
         stream.read(&mut buffer).unwrap();
         let locktime = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();

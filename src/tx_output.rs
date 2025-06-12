@@ -9,7 +9,7 @@ use serde_json::json;
 pub struct TxOutput {
     amount: u64,
     script_pubkey: Script,
-    tx_out_json: serde_json::Value,
+    pub tx_out_json: serde_json::Value,
 }
 impl TxOutput {
     pub fn new(amount: u64, script_pubkey: Script) -> TxOutput {
@@ -23,12 +23,21 @@ impl TxOutput {
         self.tx_out_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>) -> Result<Self, std::io::Error> {
+        let mut length: u32 = 0;
+        length += 8;
         let mut buffer = [0; 8];
         stream.read(&mut buffer)?;
+
         let script_pubkey = Script::parse(stream)?;
+
+        let json = script_pubkey.script_json.clone();
+        let val = json.get("script_length").unwrap().as_u64().unwrap();
+        length += val as u32; // script_pubkey length
+
         let mut tx_out_json = json!({
             "amount": little_endian_to_int(buffer.as_slice()).to_u64().unwrap(),
             "script_json": script_pubkey.get_json(),
+            "length": length,
         });
         Ok(TxOutput {
             amount: little_endian_to_int(buffer.as_slice()).to_u64().unwrap(),

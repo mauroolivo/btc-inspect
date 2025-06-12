@@ -42,12 +42,10 @@ impl TxInput {
         stream.read(&mut buffer)?;
         let prev_index = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
-        // manca la lunghezza di script_sig
-        //
-        //
-        //
-        //
         let script_sig = Script::parse(stream)?;
+        let json = script_sig.script_json.clone();
+        let val = json.get("script_length").unwrap().as_u64().unwrap();
+        length += val as u32; // scriptsig length
 
         length += 4; //sequence
         let mut buffer = vec![0; 4];
