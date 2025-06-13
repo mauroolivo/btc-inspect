@@ -93,7 +93,7 @@ impl Tx {
         let version_hex = hex::encode(buffer.as_slice());
         let mut marker_hex = "";
         if is_segwit {
-            length_non_w_b += 2;
+            length_w_b += 2;
             let mut buffer = [0; 2];
             stream.read(&mut buffer)?;
             if buffer != [0x00,0x01] { // segwit marker
@@ -132,10 +132,13 @@ impl Tx {
             for tx_in in inputs.iter_mut() {
                 let mut items_json: Vec<String> = vec![];
                 if let Ok(num_items) = read_varint(stream) {
+                    length_w_b += num_items.bytes as u32;
 
                     let mut items: Vec<Vec<u8>> = vec![];
                     for _ in 0..num_items.value {
                         if let Ok(item_len) = read_varint(stream) {
+                            length_w_b += item_len.bytes as u32;
+                            length_w_b += item_len.value as u32;
                             if item_len.value == 0 {
                                 items.push(vec![0]);
                                 items_json.push(hex::encode(vec![0]));
