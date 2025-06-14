@@ -125,7 +125,7 @@ function App() {
                 <tbody>
                 <tr key="0">
                     <td className="Col1">Fee</td>
-                    <td>{txJson.fee.toLocaleString()} sats</td>
+                    <td>{txJson.fee} sats</td>
                     <td></td>
                 </tr>
                 <tr key="1">
@@ -142,6 +142,21 @@ function App() {
                     <td className="Col1">Virtual Bytes</td>
                     <td>{txJson.non_witness_bytes + txJson.witness_bytes * 0.25}</td>
                     <td>{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</td>
+                </tr>
+                <tr key="3">
+                    <td className="Col1">Fee rate</td>
+                    <td>{Number(txJson.fee / (txJson.non_witness_bytes + txJson.witness_bytes * 0.25)).toFixed(2)} sats/vBytes</td>
+                    <td></td>
+                </tr>
+                <tr key="4">
+                    <td className="Col1">SegWit</td>
+                    <td>{txJson.is_segwit ? "YES" : "NO"}</td>
+                    <td></td>
+                </tr>
+                <tr key="5">
+                    <td className="Col1">RBF</td>
+                    <td>{txJson.is_rbf ? "YES" : "NO"}</td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>

@@ -104,13 +104,16 @@ impl Tx {
         let mut inputs: Vec<TxInput> = Vec::new();
         let mut outputs: Vec<TxOutput> = Vec::new();
 
+        let mut is_rbf = false;
         if let Ok(num_inputs) = read_varint(stream) {
             length_non_w_b += num_inputs.bytes as u32;
             for _ in 0..num_inputs.value {
                 let input = TxInput::parse(stream).unwrap();
                 let x = input.clone().tx_in_json;
                 let val = x.get("length").unwrap().as_u64().unwrap();
-
+                if input.sequence() < ( 0xffffffff - 1) {
+                    is_rbf = true;
+                }
                 length_non_w_b += val as u32;
                 inputs.push(input.clone());
             }
@@ -169,6 +172,7 @@ impl Tx {
             "version_hex": version_hex,
             "marker_hex": marker_hex,
             "is_segwit": is_segwit,
+            "is_rbf": is_rbf,
             "locktime": locktime,
             "locktime_hex": locktime_hex,
             "num_inputs": inputs.len(),
