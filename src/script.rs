@@ -42,9 +42,6 @@ impl Script {
                     stream.read(&mut cmd)?;
                     cmds.push(cmd.clone());
                     cmd_list_json.push(op_code_pushdata_name(n));
-
-                    log::info!("-------> {:?}", n);
-
                     cmd_list_json.push(hex::encode(cmd));
                     count += n as u64;
                 }
@@ -73,18 +70,12 @@ impl Script {
                 }
                 _ => {
                     let op_code = current_byte;
-
-                    log::info!("------->xxxx {:?}", current_byte);
-
                     cmds.push(vec![op_code]);
-                    match current_byte {
-                        OP_0 => {
-                            cmd_list_json.push("OP_0".to_string());
-                        }
-                        OP_1 => {
-                            cmd_list_json.push("OP_1".to_string());
-                        }
-                        _ => {}
+                    if is_op(&vec![op_code]) {
+                        let op_code_names = op_code_names();
+                        cmd_list_json.push(op_code_names[&op_code].to_string());
+                    } else {
+                        panic!("OP not handled: {:?}", op_code);
                     }
                 }
             }
