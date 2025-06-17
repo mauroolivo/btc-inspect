@@ -131,17 +131,17 @@ function App() {
                 <tr key="1">
                     <td className="Col1">Bytes</td>
                     <td>{txJson.non_witness_bytes + txJson.witness_bytes}</td>
-                    <td>{txJson.non_witness_bytes} + {txJson.witness_bytes}</td>
+                    <td><span className="Supplement">{txJson.non_witness_bytes} + {txJson.witness_bytes}</span></td>
                 </tr>
                 <tr key="2">
                     <td className="Col1">Weight Units</td>
                     <td>{txJson.non_witness_bytes * 4 + txJson.witness_bytes}</td>
-                    <td>{txJson.non_witness_bytes} x 4 + {txJson.witness_bytes} x 1</td>
+                    <td><span className="Supplement">{txJson.non_witness_bytes} x 4 + {txJson.witness_bytes} x 1</span></td>
                 </tr>
                 <tr key="3">
                     <td className="Col1">Virtual Bytes</td>
                     <td>{txJson.non_witness_bytes + txJson.witness_bytes * 0.25}</td>
-                    <td>{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</td>
+                    <td><span className="Supplement">{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</span></td>
                 </tr>
                 <tr key="4">
                     <td className="Col1">Fee rate</td>

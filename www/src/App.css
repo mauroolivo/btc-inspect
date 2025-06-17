@@ -97,6 +97,9 @@ td table {
     border: 1px solid darkslateblue;
 
 }
+td span.Supplement {
+    color: cadetblue;
+}
 ul {
     list-style: none;
     padding: 0;
