@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, r_tx_json_from_id, verify_tx} from "btc-inspect";
+import init, {init_app, r_tx_json_from_id} from "btc-inspect";
 import { PiArrowCircleRight } from "react-icons/pi";
 
 function App() {
@@ -107,7 +107,7 @@ function App() {
                         <tbody>
                         <tr key="0">
                             <td className="Col1">Amount</td>
-                            <td>{item["amount"]}</td>
+                            <td>{item["amount"]} sats</td>
                         </tr>
                         <tr key="1">
                             <td className="Col1">ScriptPubKey</td>
