@@ -1,7 +1,7 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
 import init, {init_app, r_tx_json_from_id} from "btc-inspect";
-import { PiArrowCircleRight } from "react-icons/pi";
+import { PiLinkBold } from "react-icons/pi";
 
 function App() {
     const [inputValue, setInputValue] = useState('');
@@ -76,7 +76,7 @@ function App() {
                         <tbody>
                         <tr key="0">
                             <td className="Col1">prev tx ID</td>
-                            <td>{item["prev_tx"]} <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}><PiArrowCircleRight /></button></td>
+                            <td>{item["prev_tx"]} <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}><PiLinkBold /></button></td>
                         </tr>
                         <tr key="1">
                             <td className="Col1">prev index</td>
