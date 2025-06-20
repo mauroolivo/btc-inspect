@@ -52,7 +52,7 @@ function App() {
     }
     function Samples() {
         return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
-            <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button>
+            {/* <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button> */}
             <button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button>
             <button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button>
             <button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button>

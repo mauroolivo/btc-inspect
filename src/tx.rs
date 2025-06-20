@@ -55,6 +55,14 @@ impl Tx {
         } else {
             log::info!("fee is not available");
         }
+
+        for i in 0..tx.tx_ins().len() {
+            if !tx.verify_input(i).await {
+                println!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
+
+            }
+        }
+
         tx
     }
     pub fn version(&self) -> u32 {
@@ -386,6 +394,9 @@ impl Tx {
     }
 
     pub async fn verify_input(&mut self, input_index: usize) -> bool {
+
+        log::info!("verify_input");
+
         let tx_ins = self.tx_ins(); //[input_index];
         let tx_in = &tx_ins[input_index];
         let prev_script_pubkey = tx_in.script_pubkey(self.testnet).await;
@@ -394,6 +405,7 @@ impl Tx {
         let mut witness: Option<Vec<Vec<u8>>> = None;
         let mut redeem_script: Option<Script> = None;
 
+        let mut out_type = "undefined".to_string();
         if prev_script_pubkey.is_p2sh_script_pubkey() {
             // the last cmd in a p2sh is the RedeemScript
             let mut script_sig = tx_in.script_sig.clone();
@@ -408,6 +420,8 @@ impl Tx {
                     redeem_script = Some(script.clone());
 
                     if script.is_p2wpkh_script_pubkey() {
+
+                        out_type = "p2wpkh".to_string();
                         z = self.sig_hash_bip143(input_index, redeem_script.clone(), None).await;
                         witness = tx_in.witness.clone();
                     } else if redeem_script.clone().unwrap().is_p2wsh_script_pubkey() {
@@ -435,6 +449,7 @@ impl Tx {
 
             if prev_script_pubkey.is_p2wpkh_script_pubkey() {
 
+                out_type = "p2wpkh".to_string();
                 z = self.sig_hash_bip143(input_index, None, None).await;
                 witness = tx_in.clone().witness;
 
@@ -450,6 +465,7 @@ impl Tx {
                 z = self.sig_hash_bip143(input_index, None, Some(witness_script)).await;
                 witness = tx_in.clone().witness;
             } else {
+                out_type = "p2pkh".to_string();
                 z = self.sig_hash(input_index, None).await;
                 witness = None;
             }
@@ -465,6 +481,7 @@ impl Tx {
         // println!("ss: {}", ss.clone());
         // println!("pp: {}", pp.clone());
 
+        log::info!("out_type: {:?}", out_type);
         let combined_script = ss + pp;
         combined_script.evaluate(&z.clone(), &witness.clone())
     }
@@ -474,6 +491,8 @@ impl Tx {
             println!("----------> fee is negative");
             return false;
         }
+
+        log::info!("verify_async");
 
         for i in 0..self.tx_ins().len() {
              if !self.verify_input(i).await {
