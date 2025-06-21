@@ -57,13 +57,3 @@ pub async fn r_tx_json_from_id(tx_id: String) -> String {
     tx_json["outputs"] = json!(outputs_json_list);
     tx_json.to_string()
 }
-// #[wasm_bindgen]
-// pub async fn verify_tx(tx_id: String) -> String {
-//     let mut tx = Tx::new_from_id(tx_id).await;
-//
-//     if tx.verify_async().await == true {
-//         return "valid".to_string();
-//     } else { return "invalid".to_string(); }
-//
-//
-// }

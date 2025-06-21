@@ -11,6 +11,9 @@ use crate::private_key::PrivateKey;
 use crate::script::Script;
 use serde_json::json;
 use crate::tx_fetcher::TxFetcher;
+use crate::helpers::out_type::OutputType;
+use crate::helpers::out_type::OutputType::{p2pkh, p2wpkh, undef};
+use crate::helpers::verify_input_res::VerifyInputRes;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Tx {
@@ -57,12 +60,17 @@ impl Tx {
         }
 
         for i in 0..tx.tx_ins().len() {
-            if !tx.verify_input(i).await {
+            let res = tx.verify_input(i).await;
+            if res.is_valid == false {
                 println!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
-
+            }
+            match res.script_pubkey {
+                Some(result) => {}
+                None => {
+                    println!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
+                }
             }
         }
-
         tx
     }
     pub fn version(&self) -> u32 {
@@ -393,7 +401,7 @@ impl Tx {
         BigUint::from_bytes_be(hash.as_slice())
     }
 
-    pub async fn verify_input(&mut self, input_index: usize) -> bool {
+    pub async fn verify_input(&mut self, input_index: usize) -> VerifyInputRes {
 
         log::info!("verify_input");
 
@@ -405,7 +413,7 @@ impl Tx {
         let mut witness: Option<Vec<Vec<u8>>> = None;
         let mut redeem_script: Option<Script> = None;
 
-        let mut out_type = "undefined".to_string();
+        let mut out_type: OutputType = undef;
         if prev_script_pubkey.is_p2sh_script_pubkey() {
             // the last cmd in a p2sh is the RedeemScript
             let mut script_sig = tx_in.script_sig.clone();
@@ -421,7 +429,7 @@ impl Tx {
 
                     if script.is_p2wpkh_script_pubkey() {
 
-                        out_type = "p2wpkh".to_string();
+                        out_type = p2wpkh;
                         z = self.sig_hash_bip143(input_index, redeem_script.clone(), None).await;
                         witness = tx_in.witness.clone();
                     } else if redeem_script.clone().unwrap().is_p2wsh_script_pubkey() {
@@ -449,7 +457,7 @@ impl Tx {
 
             if prev_script_pubkey.is_p2wpkh_script_pubkey() {
 
-                out_type = "p2wpkh".to_string();
+                out_type = p2wpkh;
                 z = self.sig_hash_bip143(input_index, None, None).await;
                 witness = tx_in.clone().witness;
 
@@ -465,7 +473,7 @@ impl Tx {
                 z = self.sig_hash_bip143(input_index, None, Some(witness_script)).await;
                 witness = tx_in.clone().witness;
             } else {
-                out_type = "p2pkh".to_string();
+                out_type = p2pkh;
                 z = self.sig_hash(input_index, None).await;
                 witness = None;
             }
@@ -480,28 +488,29 @@ impl Tx {
         // println!("witness 1 : {:?}", hex::encode(w2));
         // println!("ss: {}", ss.clone());
         // println!("pp: {}", pp.clone());
-
-        log::info!("out_type: {:?}", out_type);
+        log::info!("prev output scriptPubKey: {}", pp.clone());
+        log::info!("out_type: {}", out_type);
         let combined_script = ss + pp;
-        combined_script.evaluate(&z.clone(), &witness.clone())
+        let is_valid = combined_script.evaluate(&z.clone(), &witness.clone());
+        VerifyInputRes::new(is_valid, None)
     }
 
-    pub async fn verify_async(&mut self) -> bool {
-        if self.fee().await.to_i64().unwrap() < 0i64 {
-            println!("----------> fee is negative");
-            return false;
-        }
-
-        log::info!("verify_async");
-
-        for i in 0..self.tx_ins().len() {
-             if !self.verify_input(i).await {
-                 println!("----------> input is invalid {}/{}", i, self.tx_ins().len());
-                 return false;
-             }
-        }
-        true
-    }
+    // pub async fn verify_async(&mut self) -> bool {
+    //     if self.fee().await.to_i64().unwrap() < 0i64 {
+    //         println!("----------> fee is negative");
+    //         return false;
+    //     }
+    //
+    //     log::info!("verify_async");
+    //
+    //     for i in 0..self.tx_ins().len() {
+    //          if !self.verify_input(i).await {
+    //              println!("----------> input is invalid {}/{}", i, self.tx_ins().len());
+    //              return false;
+    //          }
+    //     }
+    //     true
+    // }
     pub fn sign_input(&mut self, input_index: usize, private_key: &PrivateKey) -> bool {
         /*
         let z = self.sig_hash(input_index, None);

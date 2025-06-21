@@ -38,6 +38,8 @@ function App() {
             input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
         } else if (n === 6) {
             input = "8670ed595dfee2c2fd10419f00711eed7ee7c3ea7c3a3a6ed3bccc3b835a2795"
+        } else if (n ===7) {
+            input = "b24d0b39bb06e8405d3658e9b74a6efb2c7e8898fa2205a30a19a390f12d816b"
         }
         handleFetch(input)
         setInputValue(input)
@@ -57,6 +59,7 @@ function App() {
             <button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button>
             <button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button>
             <button className="Button" onClick={() => handleSample(6)}>sample 6 (P2SH multisig)</button>
+            <button className="Button" onClick={() => handleSample(7)}>sample 7 (p2pk)</button>
         </p>)
     }
     function ScriptItems({items}) {
@@ -93,6 +96,10 @@ function App() {
                         <tr key="4">
                             <td className="Col1">sequence</td>
                             <td>{item["sequence_hex"]} (RBF: {item["is_rbf"] === true ? "enabled" : "not enabled"})</td>
+                        </tr>
+                        <tr key="5">
+                            <td className="Col1">Prev Output script_pubkey</td>
+                            <td>{item["script_pubkey"]}</td>
                         </tr>
                         </tbody>
                     </table>
