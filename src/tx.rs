@@ -62,12 +62,15 @@ impl Tx {
         for i in 0..tx.tx_ins().len() {
             let res = tx.verify_input(i).await;
             if res.is_valid == false {
-                println!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
+                log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
             }
             match res.script_pubkey {
-                Some(result) => {}
+                Some(result) => {
+
+                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, result.script_json);
+                }
                 None => {
-                    println!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
+                    log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
                 }
             }
         }
@@ -490,9 +493,9 @@ impl Tx {
         // println!("pp: {}", pp.clone());
         log::info!("prev output scriptPubKey: {}", pp.clone());
         log::info!("out_type: {}", out_type);
-        let combined_script = ss + pp;
+        let combined_script = ss + pp.clone();
         let is_valid = combined_script.evaluate(&z.clone(), &witness.clone());
-        VerifyInputRes::new(is_valid, None)
+        VerifyInputRes::new(is_valid, Some(pp))
     }
 
     // pub async fn verify_async(&mut self) -> bool {
