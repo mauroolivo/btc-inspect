@@ -78,11 +78,11 @@ function App() {
                     <table>
                         <tbody>
                         <tr key="0">
-                            <td className="Col1">prev tx ID</td>
+                            <td className="Col1">Prev tx ID</td>
                             <td>{item["prev_tx"]} <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}><PiLinkBold /></button></td>
                         </tr>
                         <tr key="1">
-                            <td className="Col1">prev index</td>
+                            <td className="Col1">Prev index</td>
                             <td>{item["prev_index"]}</td>
                         </tr>
                         <tr key="2">
@@ -90,16 +90,16 @@ function App() {
                             <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
                         </tr>
                         <tr key="3">
-                            <td className="Col1">witness</td>
+                            <td className="Col1">Witness</td>
                             <td><ScriptItems items={item["witness"]}/></td>
                         </tr>
                         <tr key="4">
-                            <td className="Col1">sequence</td>
+                            <td className="Col1">Sequence</td>
                             <td>{item["sequence_hex"]} (RBF: {item["is_rbf"] === true ? "enabled" : "not enabled"})</td>
                         </tr>
                         <tr key="5">
-                            <td className="Col1">Prev Output script_pubkey</td>
-                            <td>{item["script_pubkey"]}</td>
+                            <td className="Col1">Prev Output ScriptPubKey</td>
+                            <td><ScriptItems items={item["prev_output_script_pubkey"]["cmd_list_json"]}/></td>
                         </tr>
                         </tbody>
                     </table>
@@ -193,27 +193,27 @@ function App() {
                             <td>{txJson.hash}</td>
                         </tr>
                         <tr>
-                            <td className="Col1">version</td>
+                            <td className="Col1">Version</td>
                             <td className="Col2"></td>
                             <td>{txJson.version_hex} ({txJson.version})</td>
                         </tr>
                         <tr>
-                            <td className="Col1">marker</td>
+                            <td className="Col1">Marker</td>
                             <td className="Col2"></td>
                             <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
                         </tr>
                         <tr>
-                            <td className="Col1">inputs: {txJson.num_inputs}</td>
+                            <td className="Col1">Inputs: {txJson.num_inputs}</td>
                             <td className="Col2"></td>
                             <td><Inputs/></td>
                         </tr>
                         <tr>
-                            <td className="Col1">outputs: {txJson.num_outputs}</td>
+                            <td className="Col1">Outputs: {txJson.num_outputs}</td>
                             <td className="Col2"></td>
                             <td><Outputs/></td>
                         </tr>
                         <tr>
-                            <td className="Col1">locktime</td>
+                            <td className="Col1">Locktime</td>
                             <td className="Col2"></td>
                             <td>{txJson.locktime_hex} ({txJson.locktime})</td>
                         </tr>

@@ -49,31 +49,57 @@ impl Tx {
         let tf = TxFetcher::new(false);
         let mut tx = tf.fetch_async(tx_id).await.unwrap();
 
+        let mut tx_json = json!({});
+        tx_json = tx.tx_json();
+
         if let fee = tx.fee().await {
             log::info!("fee is available");
-            let mut tx_json = json!({});
-            tx_json = tx.tx_json();
             tx_json["fee"] = json!(fee);
-            tx.tx_json = tx_json;
         } else {
             log::info!("fee is not available");
         }
 
         for i in 0..tx.tx_ins().len() {
+
+        }
+        log::info!("{:?}", tx.tx_json);
+
+        tx_json["hash"] = json!(hex::encode( tx.hash() ).to_string());
+        let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
+
+        for i  in 0..tx.tx_ins().len() {
+
+            let input = tx.tx_ins()[i].clone();
+            let mut tx_in_json = json!({});
+            tx_in_json = input.get_json();
+
             let res = tx.verify_input(i).await;
             if res.is_valid == false {
                 log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
             }
             match res.script_pubkey {
                 Some(result) => {
-
                     log::info!("Prev Output ScriptPubKey: {} {:?}", i, result.script_json);
+                    tx_in_json["prev_output_script_pubkey"] = json!(result.script_json);
+
+                    log::info!("input json: {:?}", tx_in_json);
                 }
                 None => {
                     log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
                 }
             }
+
+            inputs_json_list.push(tx_in_json);
         }
+        tx_json["inputs"] = json!(inputs_json_list);
+        let mut outputs_json_list: Vec<serde_json::value::Value> = vec![];
+        for output in tx.tx_outs() {
+            let mut tx_out_json = json!({});
+            tx_out_json = output.get_json();
+            outputs_json_list.push(tx_out_json);
+        }
+        tx_json["outputs"] = json!(outputs_json_list);
+        tx.tx_json = tx_json.clone();
         tx
     }
     pub fn version(&self) -> u32 {
