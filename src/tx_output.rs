@@ -4,6 +4,7 @@ use std::{fmt, io::{Cursor, Read}};
 use num::{BigUint, ToPrimitive};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use serde_json::json;
+use crate::helpers::out_type::OutputType;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct TxOutput {
@@ -37,6 +38,7 @@ impl TxOutput {
         let mut tx_out_json = json!({
             "amount": little_endian_to_int(buffer.as_slice()).to_u64().unwrap(),
             "script_json": script_pubkey.get_json(),
+            "script_type": (OutputType::undef).to_string(),
             "length": length,
         });
         Ok(TxOutput {

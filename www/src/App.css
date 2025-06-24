@@ -81,7 +81,7 @@ p {
 }
 
 .Col1 {
-    min-width: 100px;
+    width: 120px;
     background-color: darkslategray;
     vertical-align: top;
 }

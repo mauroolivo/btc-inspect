@@ -7,6 +7,8 @@ use sha2::{Digest, Sha256};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::helpers::op_codes::*;
 use serde_json::json;
+use crate::helpers::out_type::OutputType;
+
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Script {
     pub cmds: Vec<Vec<u8>>,
@@ -312,6 +314,15 @@ impl Script {
     }
     pub fn is_p2wsh_script_pubkey(&self) -> bool {
         self.cmds.len() == 2 && self.cmds[0] == [0x00] && self.cmds[1].len() == 32
+    }
+    fn is_p2pk(&self) -> bool {
+        self.cmds.len() == 2 && self.cmds[1] == [0xac]
+    }
+    pub fn get_output_type(&self) -> OutputType {
+        if self.is_p2pk() == true {
+            return OutputType::p2pk
+        }
+        OutputType::undef
     }
 }
 impl Add for Script {

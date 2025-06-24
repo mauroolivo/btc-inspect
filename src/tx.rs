@@ -1,5 +1,6 @@
 use std::{fmt, io::{Cursor, Read}, vec};
 use std::io::{Seek, SeekFrom};
+use std::ptr::write;
 use num::{BigUint, ToPrimitive, Zero};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::tx_input::TxInput;
@@ -59,9 +60,6 @@ impl Tx {
             log::info!("fee is not available");
         }
 
-        for i in 0..tx.tx_ins().len() {
-
-        }
         log::info!("{:?}", tx.tx_json);
 
         tx_json["hash"] = json!(hex::encode( tx.hash() ).to_string());
@@ -78,10 +76,11 @@ impl Tx {
                 log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
             }
             match res.script_pubkey {
-                Some(result) => {
-                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, result.script_json);
-                    tx_in_json["prev_output_script_pubkey"] = json!(result.script_json);
-
+                Some(prevOutScriptPubKey) => {
+                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, prevOutScriptPubKey.script_json);
+                    tx_in_json["prev_output_script_pubkey"] = json!(prevOutScriptPubKey.script_json);
+                    let out_type = prevOutScriptPubKey.get_output_type();
+                    tx_in_json["prev_output_type"] = json!(out_type.to_string());
                     log::info!("input json: {:?}", tx_in_json);
                 }
                 None => {

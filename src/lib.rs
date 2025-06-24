@@ -37,7 +37,5 @@ pub fn init_app() {
 pub async fn r_tx_json_from_id(tx_id: String) -> String {
 
     let mut tx = Tx::new_from_id(tx_id.clone()).await;
-
-
     tx.tx_json.to_string()
 }

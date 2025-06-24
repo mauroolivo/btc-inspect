@@ -101,6 +101,10 @@ function App() {
                             <td className="Col1">Prev Output ScriptPubKey</td>
                             <td><ScriptItems items={item["prev_output_script_pubkey"]["cmd_list_json"]}/></td>
                         </tr>
+                        <tr key="6">
+                            <td className="Col1">Type</td>
+                            <td>{item["prev_output_type"]}</td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -119,6 +123,10 @@ function App() {
                         <tr key="1">
                             <td className="Col1">ScriptPubKey</td>
                             <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
+                        </tr>
+                        <tr key="2">
+                            <td className="Col1">Type</td>
+                            <td>{item["script_type"]}</td>
                         </tr>
                         </tbody>
                     </table>
