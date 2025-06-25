@@ -38,7 +38,7 @@ impl TxOutput {
         let mut tx_out_json = json!({
             "amount": little_endian_to_int(buffer.as_slice()).to_u64().unwrap(),
             "script_json": script_pubkey.get_json(),
-            "script_type": (OutputType::undef).to_string(),
+            "script_type": script_pubkey.get_output_type().to_string(),
             "length": length,
         });
         Ok(TxOutput {

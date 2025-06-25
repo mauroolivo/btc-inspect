@@ -321,6 +321,8 @@ impl Script {
     pub fn get_output_type(&self) -> OutputType {
         if self.is_p2pk() == true {
             return OutputType::p2pk
+        } else if self.is_p2pkh_script_pubkey() {
+            return OutputType::p2pkh
         }
         OutputType::undef
     }
