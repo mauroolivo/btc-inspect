@@ -16,6 +16,9 @@ impl TxFetcher {
     }
     pub async fn fetch_async(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
 
+        if self.testnet {
+            panic!("Not implemented");
+        }
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);
 
         let mut hashmap = HASHMAP.lock().unwrap();
@@ -23,7 +26,7 @@ impl TxFetcher {
         let data = hashmap.get(&tx_id.to_string());
         match data {
             Some(data) => {
-                log::info!("RETURNING FROM CACHE: {:?}", tx_id.clone());
+                log::info!("RETURNING FROM CACHE: {:?}", tx_id);
                 let raw_tx = hex::decode(data.clone()).unwrap();
                 let mut stream = Cursor::new(raw_tx.clone());
                 let mut tx = Tx::parse(&mut stream, false).unwrap();
@@ -37,7 +40,7 @@ impl TxFetcher {
                 // log::info!("{:#?}", hashmap);
 
                 println!("{}", url);
-                log::info!("FETCH: {:?}", tx_id.clone());
+                log::info!("FETCH: {:?}", tx_id);
 
                 let client = reqwest::Client::new();
                 let response = client
@@ -53,7 +56,7 @@ impl TxFetcher {
                         let raw_tx = hex::decode(result.clone()).unwrap();
 
                         log::info!("ADDING: {:#?}", tx_id);
-                        let tid = tx_id.clone();
+                        let tid = tx_id;
                         let k = format!("{}", tid);
                         hashmap.insert(k.clone(), result.clone());
 

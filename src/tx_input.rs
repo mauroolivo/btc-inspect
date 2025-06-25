@@ -53,7 +53,7 @@ impl TxInput {
         let sequence = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
 
         buffer.reverse();
-        let mut tx_in_json = json!({
+        let tx_in_json = json!({
             "prev_tx": hex::encode(&prev_tx),
             "prev_index": prev_index,
             "script_json": script_sig.get_json(),
@@ -103,11 +103,11 @@ impl TxInput {
         }
     }
     pub async fn value(&self, testnet: bool) -> u64 {
-        let mut tx = self.fetch_tx_async(testnet).await.unwrap();
+        let tx = self.fetch_tx_async(testnet).await.unwrap();
         tx.tx_outs()[self.prev_index as usize].amount()
     }
     pub async fn script_pubkey(&self, testnet: bool) -> Script {
-        let mut tx = self.fetch_tx_async(testnet).await.unwrap();
+        let tx = self.fetch_tx_async(testnet).await.unwrap();
         tx.tx_outs()[self.prev_index as usize].script_pubkey()
     }
 }

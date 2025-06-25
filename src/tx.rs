@@ -76,10 +76,10 @@ impl Tx {
                 log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
             }
             match res.script_pubkey {
-                Some(prevOutScriptPubKey) => {
-                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, prevOutScriptPubKey.script_json);
-                    tx_in_json["prev_output_script_pubkey"] = json!(prevOutScriptPubKey.script_json);
-                    let out_type = prevOutScriptPubKey.get_output_type();
+                Some(prev_out_script_pub_key) => {
+                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, prev_out_script_pub_key.script_json);
+                    tx_in_json["prev_output_script_pubkey"] = json!(prev_out_script_pub_key.script_json);
+                    let out_type = prev_out_script_pub_key.get_output_type();
                     tx_in_json["prev_output_type"] = json!(out_type.to_string());
                     log::info!("input json: {:?}", tx_in_json);
                 }
@@ -211,7 +211,7 @@ impl Tx {
         let locktime = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
         let locktime_hex = hex::encode(buffer.as_slice());
 
-        let mut tx_json = json!({
+        let tx_json = json!({
             "version": version,
             "version_hex": version_hex,
             "marker_hex": marker_hex,

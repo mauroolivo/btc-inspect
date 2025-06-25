@@ -1,10 +1,8 @@
 extern crate core;
-use serde_json::json;
 
 use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
-use std::{io::{Cursor, Read}};
-use tx_fetcher::TxFetcher;
+use std::{io::{Read}};
 use crate::utils::set_panic_hook;
 
 mod utils;

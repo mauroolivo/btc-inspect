@@ -35,7 +35,7 @@ impl TxOutput {
         let val = json.get("script_length").unwrap().as_u64().unwrap();
         length += val as u32; // script_pubkey length
 
-        let mut tx_out_json = json!({
+        let tx_out_json = json!({
             "amount": little_endian_to_int(buffer.as_slice()).to_u64().unwrap(),
             "script_json": script_pubkey.get_json(),
             "script_type": script_pubkey.get_output_type().to_string(),
