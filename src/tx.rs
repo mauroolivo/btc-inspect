@@ -12,8 +12,6 @@ use crate::private_key::PrivateKey;
 use crate::script::Script;
 use serde_json::json;
 use crate::tx_fetcher::TxFetcher;
-use crate::helpers::out_type::OutputType;
-use crate::helpers::out_type::OutputType::{p2pkh, p2wpkh, undef};
 use crate::helpers::verify_input_res::VerifyInputRes;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -441,7 +439,6 @@ impl Tx {
         let mut witness: Option<Vec<Vec<u8>>> = None;
         let mut redeem_script: Option<Script> = None;
 
-        let mut out_type: OutputType = undef;
         if prev_script_pubkey.is_p2sh_script_pubkey() {
             // the last cmd in a p2sh is the RedeemScript
             let mut script_sig = tx_in.script_sig.clone();
@@ -456,8 +453,6 @@ impl Tx {
                     redeem_script = Some(script.clone());
 
                     if script.is_p2wpkh_script_pubkey() {
-
-                        out_type = p2wpkh;
                         z = self.sig_hash_bip143(input_index, redeem_script.clone(), None).await;
                         witness = tx_in.witness.clone();
                     } else if redeem_script.clone().unwrap().is_p2wsh_script_pubkey() {
@@ -485,7 +480,6 @@ impl Tx {
 
             if prev_script_pubkey.is_p2wpkh_script_pubkey() {
 
-                out_type = p2wpkh;
                 z = self.sig_hash_bip143(input_index, None, None).await;
                 witness = tx_in.clone().witness;
 
@@ -501,7 +495,7 @@ impl Tx {
                 z = self.sig_hash_bip143(input_index, None, Some(witness_script)).await;
                 witness = tx_in.clone().witness;
             } else {
-                out_type = p2pkh;
+
                 z = self.sig_hash(input_index, None).await;
                 witness = None;
             }
@@ -516,10 +510,10 @@ impl Tx {
         // println!("witness 1 : {:?}", hex::encode(w2));
         // println!("ss: {}", ss.clone());
         // println!("pp: {}", pp.clone());
-        log::info!("prev output scriptPubKey: {}", pp.clone());
-        log::info!("out_type: {}", out_type);
+        //log::info!("prev output scriptPubKey: {}", pp.clone());
         let combined_script = ss + pp.clone();
         let is_valid = combined_script.evaluate(&z.clone(), &witness.clone());
+        log::info!("is_valid: {:?}", is_valid);
         VerifyInputRes::new(is_valid, Some(pp))
     }
 

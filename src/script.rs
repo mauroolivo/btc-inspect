@@ -323,8 +323,10 @@ impl Script {
             return OutputType::p2pk
         } else if self.is_p2pkh_script_pubkey() {
             return OutputType::p2pkh
+        } else if self.is_p2sh_script_pubkey() {
+            return OutputType::p2sh
         }
-        OutputType::undef
+        OutputType::unknown
     }
 }
 impl Add for Script {

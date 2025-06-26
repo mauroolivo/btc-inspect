@@ -29,7 +29,7 @@ function App() {
         if (n === 1) {
             input = "64ff0b827f7899674fc26b693c557852540b9260c5c29cf18f536b56f01b17ba"
         } else if (n === 2) {
-            input = "ae8032eb2f698ff3e7a06deea33bcbf463466e84515c688940fe4a4e7dc4d966"
+            input = "581d30e2a73a2db683ac2f15d53590bd0cd72de52555c2722d9d6a78e9fea510"
         } else if (n === 3) {
             input = "0b6461de422c46a221db99608fcbe0326e4f2325ebf2a47c9faf660ed61ee6a4"
         } else if (n === 4) {
@@ -54,7 +54,7 @@ function App() {
     }
     function Samples() {
         return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
-            {/* <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2SH-P2WPKH and P2WPKH)</button> */}
+            <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2MS)</button>
             <button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button>
             <button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button>
             <button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button>
