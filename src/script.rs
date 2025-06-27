@@ -325,6 +325,8 @@ impl Script {
             return OutputType::p2pkh
         } else if self.is_p2sh_script_pubkey() {
             return OutputType::p2sh
+        } else if self.is_p2wpkh_script_pubkey() {
+            return OutputType::p2wpkh
         }
         OutputType::unknown
     }

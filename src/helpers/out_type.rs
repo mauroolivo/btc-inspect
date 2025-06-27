@@ -14,7 +14,7 @@ impl fmt::Display for OutputType {
             OutputType::p2pk => write!(f, "{}", "p2pk"),
             OutputType::p2pkh => write!(f, "{}", "p2pkh"),
             OutputType::p2sh => write!(f, "{}", "p2sh"),
-            OutputType::p2wpkh => write!(f, "{}", "p2wpkh"),
+            OutputType::p2wpkh => write!(f, "{}", "v0_p2wpkh"),
         }
     }
 }
