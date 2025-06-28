@@ -13,7 +13,13 @@ function App() {
         };
         runWasm();
     }, []);
-
+    function hex2a(hexx) {
+        var hex = hexx.toString();//force conversion
+        var str = '';
+        for (var i = 0; i < hex.length; i += 2)
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        return str;
+    }
     function handleFetch(input) {
         setTxJson(null)
 
@@ -46,6 +52,8 @@ function App() {
             input = "46ebe264b0115a439732554b2b390b11b332b5b5692958b1754aa0ee57b64265"
         } else if (n === 10) {
             input = "55c7c71c63b87478cd30d401e7ca5344a2e159dc8d6990df695c7e0cb2f82783"
+        } else  if (n === 11) {
+            input = "6dfb16dd580698242bcfd8e433d557ed8c642272a368894de27292a8844a4e75"
         }
         handleFetch(input)
         setInputValue(input)
@@ -69,6 +77,7 @@ function App() {
             <button className="Button" onClick={() => handleSample(8)}>sample 8 (p2sh-p2wpkh)</button>
             <button className="Button" onClick={() => handleSample(9)}>sample 9 (p2wsh)</button>
             <button className="Button" onClick={() => handleSample(10)}>sample 10 (p2sh-pswsh)</button>
+            <button className="Button" onClick={() => handleSample(11)}>sample 11 (op_return)</button>
         </p>)
     }
     function ScriptItems({items}) {
@@ -128,6 +137,7 @@ function App() {
                         <tr key="0">
                             <td className="Col1">Amount</td>
                             <td>{item["amount"]} sats</td>
+                            <td></td>
                         </tr>
                         <tr key="1">
                             <td className="Col1">ScriptPubKey</td>
@@ -137,6 +147,13 @@ function App() {
                             <td className="Col1">Type</td>
                             <td>{item["script_type"]}</td>
                         </tr>
+                        { item["script_type"] === "op_return" &&
+                             <tr key="3">
+                                <td className="Col1">op_return data</td>
+                                <td>{item["script_type"] === "op_return" ? hex2a(item["script_json"]["cmd_list_json"][2]) : ""}</td>
+                            </tr>
+
+                        }
                         </tbody>
                     </table>
                 </div>

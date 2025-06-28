@@ -318,6 +318,9 @@ impl Script {
     fn is_p2pk(&self) -> bool {
         self.cmds.len() == 2 && self.cmds[1] == [0xac]
     }
+    fn is_op_return(&self) -> bool {
+        self.cmds[0] == [0x6a]
+    }
     fn is_p2tr(&self) -> bool {
         log::info!("{:?}", self.cmds.len());
         log::info!("{:?}", self.cmds[0]);
@@ -337,6 +340,8 @@ impl Script {
             return OutputType::p2wsh
         } else if self.is_p2tr() {
             return OutputType::p2tr
+        } else if self.is_op_return() {
+            return OutputType::op_return
         }
         OutputType::unknown
     }

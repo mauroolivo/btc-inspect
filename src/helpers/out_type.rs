@@ -9,7 +9,8 @@ pub enum OutputType {
     p2sh_p2wpkh,
     p2wsh,
     p2sh_p2wsh,
-    p2tr
+    p2tr,
+    op_return
 }
 impl fmt::Display for OutputType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -23,6 +24,7 @@ impl fmt::Display for OutputType {
             OutputType::p2wsh => write!(f, "{}", "p2wsh"),
             OutputType::p2sh_p2wsh => write!(f, "{}", "p2sh-p2wsh"),
             OutputType::p2tr => write!(f, "{}", "v1_p2tr"),
+            OutputType::op_return => write!(f, "{}", "op_return"),
         }
     }
 }
