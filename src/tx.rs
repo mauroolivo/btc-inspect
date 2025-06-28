@@ -11,6 +11,7 @@ use crate::helpers::sig_hash::SIGHASH_ALL;
 use crate::private_key::PrivateKey;
 use crate::script::Script;
 use serde_json::json;
+use crate::helpers::out_type::OutputType;
 use crate::tx_fetcher::TxFetcher;
 use crate::helpers::verify_input_res::VerifyInputRes;
 
@@ -77,7 +78,26 @@ impl Tx {
                 Some(prev_out_script_pub_key) => {
                     log::info!("Prev Output ScriptPubKey: {} {:?}", i, prev_out_script_pub_key.script_json);
                     tx_in_json["prev_output_script_pubkey"] = json!(prev_out_script_pub_key.script_json);
-                    let out_type = prev_out_script_pub_key.get_output_type();
+
+                    let mut out_type = prev_out_script_pub_key.get_output_type();
+                    match out_type {
+                        OutputType::p2sh => {
+                            match res.redeem_script {
+                                Some(script) => {
+                                    if script.is_p2wpkh_script_pubkey() {
+                                        out_type = OutputType::p2sh_p2wpkh;
+                                    } else if script.is_p2wsh_script_pubkey() {
+                                        out_type = OutputType::p2sh_p2wsh;
+                                    }
+                                }
+                                None => {}
+                            }
+                        }
+                        OutputType::p2tr => {
+                            out_type = OutputType::p2tr
+                        }
+                        _ => {}
+                    }
                     tx_in_json["prev_output_type"] = json!(out_type.to_string());
                     log::info!("input json: {:?}", tx_in_json);
                 }
@@ -447,12 +467,13 @@ impl Tx {
             let len_raw_redeem = encode_varint(cmd.len() as u64).unwrap();
             raw_redeem.extend(len_raw_redeem);
             raw_redeem.extend(cmd);
-            let mut stream = Cursor::new(raw_redeem);
+            let mut stream = Cursor::new(raw_redeem);  //ScriptSig
             match Script::parse(&mut stream) {
                 Ok(script) => {
                     redeem_script = Some(script.clone());
-
                     if script.is_p2wpkh_script_pubkey() {
+                        // nested p2wpkh in p2sh
+                        // p2sh-p2wpkh
                         z = self.sig_hash_bip143(input_index, redeem_script.clone(), None).await;
                         witness = tx_in.witness.clone();
                     } else if redeem_script.clone().unwrap().is_p2wsh_script_pubkey() {
@@ -514,7 +535,7 @@ impl Tx {
         let combined_script = ss + pp.clone();
         let is_valid = combined_script.evaluate(&z.clone(), &witness.clone());
         log::info!("is_valid: {:?}", is_valid);
-        VerifyInputRes::new(is_valid, Some(pp))
+        VerifyInputRes::new(is_valid, Option::from(pp), redeem_script)
     }
 
     // pub async fn verify_async(&mut self) -> bool {

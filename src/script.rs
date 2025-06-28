@@ -318,6 +318,12 @@ impl Script {
     fn is_p2pk(&self) -> bool {
         self.cmds.len() == 2 && self.cmds[1] == [0xac]
     }
+    fn is_p2tr(&self) -> bool {
+        log::info!("{:?}", self.cmds.len());
+        log::info!("{:?}", self.cmds[0]);
+        log::info!("{:?}", self.cmds[1].len());
+        self.cmds.len() == 2 && self.cmds[0] == [0x51] && self.cmds[1].len() == 32
+    }
     pub fn get_output_type(&self) -> OutputType {
         if self.is_p2pk() == true {
             return OutputType::p2pk
@@ -327,6 +333,10 @@ impl Script {
             return OutputType::p2sh
         } else if self.is_p2wpkh_script_pubkey() {
             return OutputType::p2wpkh
+        } else if self.is_p2wsh_script_pubkey() {
+            return OutputType::p2wsh
+        } else if self.is_p2tr() {
+            return OutputType::p2tr
         }
         OutputType::unknown
     }

@@ -38,8 +38,14 @@ function App() {
             input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
         } else if (n === 6) {
             input = "8670ed595dfee2c2fd10419f00711eed7ee7c3ea7c3a3a6ed3bccc3b835a2795"
-        } else if (n ===7) {
+        } else if (n === 7) {
             input = "b24d0b39bb06e8405d3658e9b74a6efb2c7e8898fa2205a30a19a390f12d816b"
+        } else if (n === 8) {
+            input = "a55bd4d4ebd319ab2990c356e16cab1eeb52a93c414b869a606dc0add61d725a"
+        } else if (n === 9) {
+            input = "46ebe264b0115a439732554b2b390b11b332b5b5692958b1754aa0ee57b64265"
+        } else if (n === 10) {
+            input = "55c7c71c63b87478cd30d401e7ca5344a2e159dc8d6990df695c7e0cb2f82783"
         }
         handleFetch(input)
         setInputValue(input)
@@ -54,12 +60,15 @@ function App() {
     }
     function Samples() {
         return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
-            <button className="Button" onClick={() => handleSample(2)}>sample 2 (P2MS)</button>
-            <button className="Button" onClick={() => handleSample(3)}>sample 3 (P2PKH)</button>
-            <button className="Button" onClick={() => handleSample(4)}>sample 4 (P2TR)</button>
-            <button className="Button" onClick={() => handleSample(5)}>sample 5 (P2WPKH)</button>
-            <button className="Button" onClick={() => handleSample(6)}>sample 6 (P2SH multisig)</button>
+            <button className="Button" onClick={() => handleSample(2)}>sample 2 (p2ms)</button>
+            <button className="Button" onClick={() => handleSample(3)}>sample 3 (p2pkh)</button>
+            <button className="Button" onClick={() => handleSample(4)}>sample 4 (p2tr)</button>
+            <button className="Button" onClick={() => handleSample(5)}>sample 5 (p2wpkh)</button>
+            <button className="Button" onClick={() => handleSample(6)}>sample 6 (p2sh multisig)</button>
             <button className="Button" onClick={() => handleSample(7)}>sample 7 (p2pk)</button>
+            <button className="Button" onClick={() => handleSample(8)}>sample 8 (p2sh-p2wpkh)</button>
+            <button className="Button" onClick={() => handleSample(9)}>sample 9 (p2wsh)</button>
+            <button className="Button" onClick={() => handleSample(10)}>sample 10 (p2sh-pswsh)</button>
         </p>)
     }
     function ScriptItems({items}) {
