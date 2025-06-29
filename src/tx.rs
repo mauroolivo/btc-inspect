@@ -44,9 +44,9 @@ impl Tx {
             tx_json: json!(null),
         }
     }
-    pub async fn new_from_id(tx_id_str: String) -> Tx  {
+    pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Tx  {
         let tx_id = tx_id_str.as_str();
-        let tf = TxFetcher::new(false);
+        let tf = TxFetcher::new(testnet);
         let mut tx = tf.fetch_async(tx_id).await.unwrap();
 
         let mut tx_json = json!({});
@@ -113,6 +113,9 @@ impl Tx {
         for output in tx.tx_outs() {
             let mut tx_out_json = json!({});
             tx_out_json = output.get_json();
+            let address = output.script_pubkey().get_address(testnet);
+            log::info!("Address: {:?}", address);
+            tx_out_json["address"] = json!(address);
             outputs_json_list.push(tx_out_json);
         }
         tx_json["outputs"] = json!(outputs_json_list);

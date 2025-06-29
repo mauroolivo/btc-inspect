@@ -32,8 +32,8 @@ pub fn init_app() {
     wasm_log::init(wasm_log::Config::default());
 }
 #[wasm_bindgen]
-pub async fn r_tx_json_from_id(tx_id: String) -> String {
+pub async fn r_tx_json_from_id(tx_id: String) -> String { // todo add testnet support
 
-    let mut tx = Tx::new_from_id(tx_id.clone()).await;
+    let mut tx = Tx::new_from_id(tx_id.clone(), false).await;
     tx.tx_json.to_string()
 }

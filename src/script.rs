@@ -8,7 +8,7 @@ use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::helpers::op_codes::*;
 use serde_json::json;
 use crate::helpers::out_type::OutputType;
-
+use crate::helpers::address::{h160_to_p2pkh_address, h160_to_p2sh_address};
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Script {
     pub cmds: Vec<Vec<u8>>,
@@ -344,6 +344,14 @@ impl Script {
             return OutputType::op_return
         }
         OutputType::unknown
+    }
+    pub fn get_address(&self, testnet: bool) -> String {
+        if self.is_p2pkh_script_pubkey() == true {
+            return String::from_utf8(h160_to_p2pkh_address(self.cmds[2].clone(), testnet)).unwrap_or(String::new());
+        } else if self.is_p2sh_script_pubkey() == true {
+            return String::from_utf8(h160_to_p2sh_address(self.cmds[1].clone(), testnet)).unwrap_or(String::new());
+        }
+        "".to_string()
     }
 }
 impl Add for Script {

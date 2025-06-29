@@ -154,6 +154,13 @@ function App() {
                             </tr>
 
                         }
+                        { item["address"].length > 0 &&
+                            <tr key="4">
+                                <td className="Col1">Address</td>
+                                <td>{item["address"]}</td>
+                            </tr>
+
+                        }
                         </tbody>
                     </table>
                 </div>
