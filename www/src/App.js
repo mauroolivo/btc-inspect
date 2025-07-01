@@ -39,7 +39,7 @@ function App() {
         } else if (n === 3) {
             input = "0b6461de422c46a221db99608fcbe0326e4f2325ebf2a47c9faf660ed61ee6a4"
         } else if (n === 4) {
-            input = "479edb958c2eb314078de498e8d70241fe58e30b71f46489c02820b21cb2d822"
+            input = "0a168cc50ef5a4603dfd3f810a9b8d8fcdd4e4d1c548ded68385e2fe215be302"
         } else if (n === 5) {
             input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
         } else if (n === 6) {
@@ -54,6 +54,8 @@ function App() {
             input = "55c7c71c63b87478cd30d401e7ca5344a2e159dc8d6990df695c7e0cb2f82783"
         } else  if (n === 11) {
             input = "6dfb16dd580698242bcfd8e433d557ed8c642272a368894de27292a8844a4e75"
+        } else if (n === 12) {
+            input = "61b43bbbf0d14580b9fdd45956b407be47499bb3712fd20f53f1b2a7029752d8"
         }
         handleFetch(input)
         setInputValue(input)
@@ -78,6 +80,7 @@ function App() {
             <button className="Button" onClick={() => handleSample(9)}>sample 9 (p2wsh)</button>
             <button className="Button" onClick={() => handleSample(10)}>sample 10 (p2sh-pswsh)</button>
             <button className="Button" onClick={() => handleSample(11)}>sample 11 (op_return)</button>
+            <button className="Button" onClick={() => handleSample(12)}>sample 12 (coinbase)</button>
         </p>)
     }
     function ScriptItems({items}) {
@@ -117,7 +120,12 @@ function App() {
                         </tr>
                         <tr key="5">
                             <td className="Col1">Prev Output ScriptPubKey</td>
-                            <td><ScriptItems items={item["prev_output_script_pubkey"]["cmd_list_json"]}/></td>
+                            <td>
+                                {
+                                    item["prev_output_script_pubkey"] &&
+                                    <ScriptItems items={item["prev_output_script_pubkey"]["cmd_list_json"]}/>
+                                }
+                            </td>
                         </tr>
                         <tr key="6">
                             <td className="Col1">Type</td>

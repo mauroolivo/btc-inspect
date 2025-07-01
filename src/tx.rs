@@ -52,11 +52,15 @@ impl Tx {
         let mut tx_json = json!({});
         tx_json = tx.tx_json();
 
-        if let fee = tx.fee().await {
-            log::info!("fee is available");
-            tx_json["fee"] = json!(fee);
+        if tx.is_coinbase() == false {
+            if let fee = tx.fee().await {
+                log::info!("fee is available");
+                tx_json["fee"] = json!(fee);
+            } else {
+                log::info!("fee is not available");
+            }
         } else {
-            log::info!("fee is not available");
+            tx_json["fee"] = json!(0);
         }
 
         log::info!("{:?}", tx.tx_json);
@@ -70,42 +74,45 @@ impl Tx {
             let mut tx_in_json = json!({});
             tx_in_json = input.get_json();
 
-            let res = tx.verify_input(i).await;
-            if res.is_valid == false {
-                log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
-            }
-            match res.script_pubkey {
-                Some(prev_out_script_pub_key) => {
-                    log::info!("Prev Output ScriptPubKey: {} {:?}", i, prev_out_script_pub_key.script_json);
-                    tx_in_json["prev_output_script_pubkey"] = json!(prev_out_script_pub_key.script_json);
-
-                    let mut out_type = prev_out_script_pub_key.get_output_type();
-                    match out_type {
-                        OutputType::p2sh => {
-                            match res.redeem_script {
-                                Some(script) => {
-                                    if script.is_p2wpkh_script_pubkey() {
-                                        out_type = OutputType::p2sh_p2wpkh;
-                                    } else if script.is_p2wsh_script_pubkey() {
-                                        out_type = OutputType::p2sh_p2wsh;
-                                    }
-                                }
-                                None => {}
-                            }
-                        }
-                        OutputType::p2tr => {
-                            out_type = OutputType::p2tr
-                        }
-                        _ => {}
-                    }
-                    tx_in_json["prev_output_type"] = json!(out_type.to_string());
-                    log::info!("input json: {:?}", tx_in_json);
-                }
-                None => {
+            if tx.is_coinbase() == false {
+                let res = tx.verify_input(i).await;
+                if res.is_valid == false {
                     log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
                 }
+                match res.script_pubkey {
+                    Some(prev_out_script_pub_key) => {
+                        log::info!("Prev Output ScriptPubKey: {} {:?}", i, prev_out_script_pub_key.script_json);
+                        tx_in_json["prev_output_script_pubkey"] = json!(prev_out_script_pub_key.script_json);
+
+                        let mut out_type = prev_out_script_pub_key.get_output_type();
+                        match out_type {
+                            OutputType::p2sh => {
+                                match res.redeem_script {
+                                    Some(script) => {
+                                        if script.is_p2wpkh_script_pubkey() {
+                                            out_type = OutputType::p2sh_p2wpkh;
+                                        } else if script.is_p2wsh_script_pubkey() {
+                                            out_type = OutputType::p2sh_p2wsh;
+                                        }
+                                    }
+                                    None => {}
+                                }
+                            }
+                            OutputType::p2tr => {
+                                out_type = OutputType::p2tr
+                            }
+                            _ => {}
+                        }
+                        tx_in_json["prev_output_type"] = json!(out_type.to_string());
+                        log::info!("input json: {:?}", tx_in_json);
+                    }
+                    None => {
+                        log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
+                    }
+                }
             }
 
+            log::info!("{:?}", tx_in_json);
             inputs_json_list.push(tx_in_json);
         }
         tx_json["inputs"] = json!(inputs_json_list);

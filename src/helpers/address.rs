@@ -1,5 +1,5 @@
 use crate::helpers::base58::base58_encode_checksum;
-
+use crate::helpers::bech32::{bech32_segwit_encode, SegwitVersion};
 pub fn h160_to_p2pkh_address(h160: Vec<u8>, testnet: bool ) -> Vec<u8> {
 
     if h160.len() != 20 { panic!("h160 has no length 20"); }
@@ -23,6 +23,9 @@ pub fn h160_to_p2sh_address(h160: Vec<u8>, testnet: bool ) -> Vec<u8> {
     }
     result.extend_from_slice(&h160);
     base58_encode_checksum(result)
+}
+pub fn hash_to_segwit_address(hash: Vec<u8>, segwit_version: SegwitVersion) -> String {
+    bech32_segwit_encode(hash, segwit_version)
 }
 #[cfg(test)]
 mod tests {

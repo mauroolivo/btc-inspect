@@ -2,6 +2,7 @@ use std::ops::{Add};
 use std::{io::{Cursor, Read, Error}};
 use crate::helpers::varint::{encode_varint, read_varint};
 use core::fmt;
+use log::log;
 use num::{BigUint, ToPrimitive};
 use sha2::{Digest, Sha256};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
@@ -9,6 +10,8 @@ use crate::helpers::op_codes::*;
 use serde_json::json;
 use crate::helpers::out_type::OutputType;
 use crate::helpers::address::{h160_to_p2pkh_address, h160_to_p2sh_address};
+use crate::helpers::bech32::{bech32_segwit_encode, SegwitVersion};
+
 #[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Script {
     pub cmds: Vec<Vec<u8>>,
@@ -322,9 +325,6 @@ impl Script {
         self.cmds[0] == [0x6a]
     }
     fn is_p2tr(&self) -> bool {
-        log::info!("{:?}", self.cmds.len());
-        log::info!("{:?}", self.cmds[0]);
-        log::info!("{:?}", self.cmds[1].len());
         self.cmds.len() == 2 && self.cmds[0] == [0x51] && self.cmds[1].len() == 32
     }
     pub fn get_output_type(&self) -> OutputType {
@@ -350,6 +350,10 @@ impl Script {
             return String::from_utf8(h160_to_p2pkh_address(self.cmds[2].clone(), testnet)).unwrap_or(String::new());
         } else if self.is_p2sh_script_pubkey() == true {
             return String::from_utf8(h160_to_p2sh_address(self.cmds[1].clone(), testnet)).unwrap_or(String::new());
+        } else if self.is_p2wpkh_script_pubkey() == true || self.is_p2wsh_script_pubkey() == true {
+            return bech32_segwit_encode(self.cmds[1].clone(), SegwitVersion::version_0)
+        } else if self.is_p2tr() {
+            return bech32_segwit_encode(self.cmds[1].clone(), SegwitVersion::version_1)
         }
         "".to_string()
     }

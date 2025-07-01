@@ -10,4 +10,5 @@ pub mod block_bits;
 pub mod merkle_hash;
 pub mod out_type;
 pub mod verify_input_res;
+pub mod bech32;
 
