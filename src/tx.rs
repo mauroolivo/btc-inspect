@@ -62,8 +62,7 @@ impl Tx {
         } else {
             tx_json["fee"] = json!(0);
         }
-
-        log::info!("{:?}", tx.tx_json);
+        tx_json["is_coinbase"] = json!(tx.is_coinbase());
 
         tx_json["hash"] = json!(hex::encode( tx.hash() ).to_string());
         let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
@@ -104,15 +103,12 @@ impl Tx {
                             _ => {}
                         }
                         tx_in_json["prev_output_type"] = json!(out_type.to_string());
-                        log::info!("input json: {:?}", tx_in_json);
                     }
                     None => {
                         log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
                     }
                 }
             }
-
-            log::info!("{:?}", tx_in_json);
             inputs_json_list.push(tx_in_json);
         }
         tx_json["inputs"] = json!(inputs_json_list);
@@ -121,12 +117,13 @@ impl Tx {
             let mut tx_out_json = json!({});
             tx_out_json = output.get_json();
             let address = output.script_pubkey().get_address(testnet);
-            log::info!("Address: {:?}", address);
             tx_out_json["address"] = json!(address);
             outputs_json_list.push(tx_out_json);
         }
         tx_json["outputs"] = json!(outputs_json_list);
         tx.tx_json = tx_json.clone();
+
+        log::info!("-------> {:?}", tx.tx_json);
         tx
     }
     pub fn version(&self) -> u32 {

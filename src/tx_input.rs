@@ -40,8 +40,9 @@ impl TxInput {
         length += 4;
         let mut buffer = vec![0; 4];
         stream.read(&mut buffer)?;
-        let prev_index = little_endian_to_int(buffer.as_slice()).to_u32().unwrap();
-
+        let prev_index_bytes = buffer.as_slice();
+        let prev_index = little_endian_to_int(prev_index_bytes).to_u32().unwrap();
+        let prev_index_hex = hex::encode(prev_index_bytes);
         let script_sig = Script::parse(stream)?;
         let json = script_sig.script_json.clone();
         let val = json.get("script_length").unwrap().as_u64().unwrap();
@@ -56,6 +57,7 @@ impl TxInput {
         let tx_in_json = json!({
             "prev_tx": hex::encode(&prev_tx),
             "prev_index": prev_index,
+            "prev_index_hex": prev_index_hex,
             "script_json": script_sig.get_json(),
             "sequence_hex": hex::encode(buffer),
             "is_rbf": (sequence < ( 0xffffffff - 1)),

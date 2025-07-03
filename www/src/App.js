@@ -104,7 +104,7 @@ function App() {
                         </tr>
                         <tr key="1">
                             <td className="Col1">Prev index</td>
-                            <td>{item["prev_index"]}</td>
+                            <td>{txJson["is_coinbase"] === true ? item["prev_index_hex"] : item["prev_index"] }</td>
                         </tr>
                         <tr key="2">
                             <td className="Col1">ScriptSig</td>
@@ -212,6 +212,11 @@ function App() {
                 <tr key="6">
                     <td className="Col1">RBF</td>
                     <td>{txJson.is_rbf ? "YES" : "NO"}</td>
+                    <td></td>
+                </tr>
+                <tr key="7">
+                    <td className="Col1">Coinbase</td>
+                    <td>{txJson.is_coinbase ? "YES" : "NO"}</td>
                     <td></td>
                 </tr>
                 </tbody>
