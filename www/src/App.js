@@ -244,7 +244,7 @@ function App() {
                         <tr>
                             <td className="Col1">Tx ID</td>
                             <td className="Col2"></td>
-                            <td>{txJson.hash}</td>
+                            <td>{txJson.tx_id}</td>
                         </tr>
                         <tr>
                             <td className="Col1">Version</td>
