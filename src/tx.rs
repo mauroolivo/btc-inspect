@@ -65,6 +65,7 @@ impl Tx {
         tx_json["is_coinbase"] = json!(tx.is_coinbase());
 
         tx_json["tx_id"] = json!(tx.tx_id());
+        tx_json["w_tx_id"] = json!(tx.w_tx_id());
         let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
 
         for i  in 0..tx.tx_ins().len() {
