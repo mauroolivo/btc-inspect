@@ -108,3 +108,11 @@ ul {
 .IsByte:hover {
     color: coral;
 }
+.Cols2 {
+    display: flex;
+    width:100%;
+}
+.Cols2 div {
+    flex-basis: 100%;
+    padding: 20px;
+}

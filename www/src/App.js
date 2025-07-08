@@ -257,19 +257,14 @@ function App() {
                             <td>{txJson.version_hex} ({txJson.version})</td>
                         </tr>
                         <tr>
-                            <td className="Col1">Marker</td>
+                            <td className="Col1">Segwit marker</td>
                             <td className="Col2"></td>
-                            <td>{txJson.marker_hex} {txJson.is_segwit ? "segwit" : ""}</td>
+                            <td>{txJson.marker_hex}</td>
                         </tr>
                         <tr>
-                            <td className="Col1">Inputs: {txJson.num_inputs}</td>
+                            <td className="Col1">Segwit flag</td>
                             <td className="Col2"></td>
-                            <td><Inputs/></td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Outputs: {txJson.num_outputs}</td>
-                            <td className="Col2"></td>
-                            <td><Outputs/></td>
+                            <td>{txJson.marker_flag}</td>
                         </tr>
                         <tr>
                             <td className="Col1">Locktime</td>
@@ -278,6 +273,10 @@ function App() {
                         </tr>
                         </tbody>
                     </table>
+                    <div className="Cols2">
+                        <div><Inputs/></div>
+                        <div><Outputs/></div>
+                    </div>
                 </>
             )
         }
