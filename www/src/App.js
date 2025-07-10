@@ -6,6 +6,13 @@ import { PiLinkBold } from "react-icons/pi";
 function App() {
     const [inputValue, setInputValue] = useState('');
     const [txJson, setTxJson] = useState(null)
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const handleMouseEnter = () => {
+        setDropdownVisible(true);
+    };
+    const handleMouseLeave = () => {
+        setDropdownVisible(false);
+    };
     useEffect(() => {
         const runWasm = async () => {
             await init();
@@ -31,6 +38,7 @@ function App() {
         )
     }
     function handleSample(n) {
+        setDropdownVisible(false);
         let input = ""
         if (n === 1) {
             input = "64ff0b827f7899674fc26b693c557852540b9260c5c29cf18f536b56f01b17ba"
@@ -67,21 +75,6 @@ function App() {
     function handleClear() {
         setTxJson(null)
         setInputValue("")
-    }
-    function Samples() {
-        return (<p><button className="Button" onClick={() => handleSample(1)}>sample 1 (P2WPKH)</button>
-            <button className="Button" onClick={() => handleSample(2)}>sample 2 (p2ms)</button>
-            <button className="Button" onClick={() => handleSample(3)}>sample 3 (p2pkh)</button>
-            <button className="Button" onClick={() => handleSample(4)}>sample 4 (p2tr)</button>
-            <button className="Button" onClick={() => handleSample(5)}>sample 5 (p2wpkh)</button>
-            <button className="Button" onClick={() => handleSample(6)}>sample 6 (p2sh multisig)</button>
-            <button className="Button" onClick={() => handleSample(7)}>sample 7 (p2pk)</button>
-            <button className="Button" onClick={() => handleSample(8)}>sample 8 (p2sh-p2wpkh)</button>
-            <button className="Button" onClick={() => handleSample(9)}>sample 9 (p2wsh)</button>
-            <button className="Button" onClick={() => handleSample(10)}>sample 10 (p2sh-pswsh)</button>
-            <button className="Button" onClick={() => handleSample(11)}>sample 11 (op_return)</button>
-            <button className="Button" onClick={() => handleSample(12)}>sample 12 (coinbase)</button>
-        </p>)
     }
     function ScriptItems({items}) {
         if (items === undefined) {
@@ -281,7 +274,26 @@ function App() {
             )
         }
     }
-
+    function DropdownMenu() {
+        return (
+            <div className="dropdown-menu">
+                <ul>
+                    <li onClick={() => handleSample(1)}>P2WPKH</li>
+                    <li onClick={() => handleSample(2)}>p2ms</li>
+                    <li onClick={() => handleSample(3)}>p2pkh</li>
+                    <li onClick={() => handleSample(4)}>p2tr</li>
+                    <li onClick={() => handleSample(5)}>p2wpkh</li>
+                    <li onClick={() => handleSample(6)}>p2sh multisig</li>
+                    <li onClick={() => handleSample(7)}>p2pk</li>
+                    <li onClick={() => handleSample(8)}>p2sh-p2wpkh</li>
+                    <li onClick={() => handleSample(9)}>p2wsh</li>
+                    <li onClick={() => handleSample(10)}>p2sh-pswsh</li>
+                    <li onClick={() => handleSample(11)}>op_return</li>
+                    <li onClick={() => handleSample(12)}>coinbase</li>
+                </ul>
+            </div>
+        )
+    }
     return (
         <div className="App">
             <div className="Header">
@@ -292,15 +304,23 @@ function App() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                 />
+                <header className="App-header">
+                    <div
+                        className="menu"
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                    >
+                        <button className="Button">Transaction samples</button>
+                        {isDropdownVisible && <DropdownMenu />}
+                    </div>
+                    <button className="Button" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
+                        Fetch Transaction
+                    </button>
+                    <button className="Button" onClick={() => handleClear()}>
+                        Clear
+                    </button>
+                </header>
             </div>
-
-            <button className="Button" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
-                Fetch Transaction
-            </button>
-            <button className="Button" onClick={() => handleClear()}>
-                Clear
-            </button>
-            <Samples/>
             <Table/>
         </div>
     );

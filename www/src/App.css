@@ -116,3 +116,43 @@ ul {
     flex-basis: 100%;
     padding: 20px;
 }
+header {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+button {
+    background: #000;
+    box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    cursor: pointer;
+}
+ul {
+    list-style: none;
+    padding: unset;
+    margin: unset;
+}
+
+li {
+    background: gray;
+    padding: 4px;
+    transition: all linear 0.3s;
+}
+
+li:hover {
+    background: darkgray;
+    cursor: pointer;
+    color: #fff;
+}
+
+.dropdown-menu {
+    background: #fff;
+    box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
+    transition: all linear 0.3s;
+}
