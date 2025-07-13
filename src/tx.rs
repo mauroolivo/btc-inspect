@@ -47,7 +47,7 @@ impl Tx {
     pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Tx  {
         let tx_id = tx_id_str.as_str();
         let tf = TxFetcher::new(testnet);
-        let mut tx = tf.fetch_async(tx_id).await.unwrap();
+        let mut tx = tf.fetch_async_node(tx_id).await.unwrap();
 
         let mut tx_json = json!({});
         tx_json = tx.tx_json();
@@ -65,7 +65,7 @@ impl Tx {
         tx_json["is_coinbase"] = json!(tx.is_coinbase());
 
         tx_json["tx_id"] = json!(tx.tx_id());
-        tx_json["w_tx_id"] = json!(tx.w_tx_id());
+        tx_json["hash"] = json!(hex::encode(tx.hash(false)));
         let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
 
         for i  in 0..tx.tx_ins().len() {
@@ -324,14 +324,7 @@ impl Tx {
         result
     }
     pub fn tx_id(&self) -> String {
-        if self.segwit {
-            hex::encode(self.hash(true))
-        } else {
-            hex::encode(self.hash(false))
-        }
-    }
-    pub fn w_tx_id(&self) -> String {
-        hex::encode(self.hash(false))
+        hex::encode(self.hash(true))
     }
     pub fn hash_prevouts(&mut self) -> Option<Vec<u8>> {
         let mut all_prevouts: Vec<u8> = vec![];
@@ -370,11 +363,7 @@ impl Tx {
     }
     fn hash(&self, skip_witness: bool) -> Vec<u8> {
         let mut bytes: Vec<u8> = vec![];
-        if skip_witness {
-            bytes = self.serialize(skip_witness);
-        } else {
-            bytes = self.serialize(false);
-        }
+        bytes = self.serialize(skip_witness);
         let mut hash = hash256(&bytes);
         hash.reverse();
         hash.to_vec()

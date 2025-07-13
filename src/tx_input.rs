@@ -98,7 +98,7 @@ impl TxInput {
     pub async fn fetch_tx_async(&self, testnet: bool) -> Result<Tx, reqwest::Error> {
         let tx_id = hex::encode(self.prev_tx().to_vec());
         let tf = TxFetcher::new(testnet);
-        let result = tf.fetch_async(tx_id.as_str()).await;
+        let result = tf.fetch_async_node(tx_id.as_str()).await;
         match result {
             Ok(tx) => Ok(tx),
             Err(e) => Err(e)

@@ -101,6 +101,7 @@ dependencies = [
  "reqwest",
  "rfc6979",
  "ripemd",
+ "serde",
  "serde_json",
  "sha1",
  "sha2",

@@ -1,9 +1,14 @@
+use std::collections::HashMap;
 use std::f32::consts::E;
 use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
+use reqwest::Method;
 use crate::tx::Tx;
 use serde_json::json;
+use serde::{Deserialize, Serialize};
 use crate::cache::HASHMAP;
+use crate::env::{API_PASS, API_URL, API_USER};
+use crate::rpc::RpcTxResponse;
 
 pub struct TxFetcher {
     api_url: String,
@@ -12,7 +17,7 @@ pub struct TxFetcher {
 
 impl TxFetcher {
     pub fn new(testnet: bool) -> Self {
-        TxFetcher{api_url: "https://blockstream.info/api".to_string(), testnet }
+        TxFetcher{api_url: API_URL.lock().unwrap().to_string(), testnet }
     }
     pub async fn fetch_async(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
 
@@ -21,6 +26,7 @@ impl TxFetcher {
         }
         let url = format!("{}/tx/{}/hex", self.api_url, tx_id);
 
+        // check if we have it in cache
         let mut hashmap = HASHMAP.lock().unwrap();
 
         let data = hashmap.get(&tx_id.to_string());
@@ -64,6 +70,84 @@ impl TxFetcher {
                         let mut tx = Tx::parse(&mut stream, false).unwrap();
                         let mut tx_json = tx.tx_json();
                         tx_json["hex"] = json!(result);
+                        tx.tx_json = tx_json;
+                        Ok(tx)
+                    }
+                    Err(e) => {
+                        println!("Error: {}", e);
+                        Err(reqwest::Error::from(e))
+                    }
+                }
+
+
+            }
+        }
+
+
+    }
+
+    pub async fn fetch_async_node(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
+
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        // check if we have it in cache
+        let mut hashmap = HASHMAP.lock().unwrap();
+
+        let data = hashmap.get(&tx_id.to_string());
+        match data {
+            Some(data) => {
+                log::info!("RETURNING FROM CACHE: {:?}", tx_id);
+                let raw_tx = hex::decode(data.clone()).unwrap();
+                let mut stream = Cursor::new(raw_tx.clone());
+                let mut tx = Tx::parse(&mut stream, false).unwrap();
+                let mut tx_json = tx.tx_json();
+                tx_json["hex"] = json!(data.clone());
+                tx.tx_json = tx_json;
+                let res = Ok::<Tx, reqwest::Error>(tx);
+                res
+            }
+            _ => {
+                // log::info!("{:#?}", hashmap);
+
+                println!("{}", url);
+                log::info!("FETCH: {:?}", tx_id);
+
+                let json_string = json!({
+                    "jsonrpc": "2.0",
+                    "id": "curl",
+                    "method": "getrawtransaction",
+                    "params": [tx_id, true]
+                }).to_string();
+
+                let client = reqwest::Client::new();
+                let response = client
+                    .post(url)
+                    .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+                    .body(json_string)
+                    .send()
+                    .await
+                    .unwrap()
+                    .json::<RpcTxResponse>()
+                    //.text()
+                    .await;
+                match response {
+                    Ok(result) => {
+                        log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
+
+                        let raw_tx = hex::decode(result.result.hex.clone()).unwrap();
+
+                        log::info!("ADDING TO CACHE: {:#?}", tx_id);
+                        let tid = tx_id;
+                        let k = format!("{}", tid);
+                        hashmap.insert(k.clone(), result.result.hex.clone());
+
+                        let mut stream = Cursor::new(raw_tx.clone());
+                        let mut tx = Tx::parse(&mut stream, false).unwrap();
+                        let mut tx_json = tx.tx_json();
+                        tx_json["hex"] = json!(result.result.hex.clone());
                         tx.tx_json = tx_json;
                         Ok(tx)
                     }

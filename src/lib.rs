@@ -22,6 +22,8 @@ pub mod block;
 pub mod merkle_tree;
 pub mod merkle_block;
 pub mod cache;
+pub mod env;
+pub mod rpc;
 
 extern crate console_error_panic_hook;
 extern crate wasm_log;

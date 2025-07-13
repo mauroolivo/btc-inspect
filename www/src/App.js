@@ -240,9 +240,9 @@ function App() {
                             <td>{txJson.tx_id}</td>
                         </tr>
                         <tr>
-                            <td className="Col1">W Tx ID</td>
+                            <td className="Col1">Hash (wTxId)</td>
                             <td className="Col2"></td>
-                            <td>{txJson.w_tx_id}</td>
+                            <td>{txJson.hash}</td>
                         </tr>
                         <tr>
                             <td className="Col1">Version</td>
