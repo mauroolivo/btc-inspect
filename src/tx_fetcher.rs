@@ -148,7 +148,12 @@ impl TxFetcher {
                         let mut tx = Tx::parse(&mut stream, false).unwrap();
                         let mut tx_json = tx.tx_json();
                         tx_json["hex"] = json!(result.result.hex.clone());
+                        tx_json["blockhash"] = json!(result.result.blockhash.clone());
+                        tx_json["blocktime"] = json!(result.result.blocktime.clone());
+                        tx_json["confirmations"] = json!(result.result.confirmations.clone());
+                        log::info!("----------->{:?}", tx_json.clone());
                         tx.tx_json = tx_json;
+
                         Ok(tx)
                     }
                     Err(e) => {

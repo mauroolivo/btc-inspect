@@ -7,4 +7,7 @@ pub struct RpcTxResponse {
 #[derive(Deserialize)]
 pub struct RpcTxResult {
     pub(crate) hex: String,
+    pub(crate) blockhash: String,
+    pub(crate) blocktime: u64,
+    pub(crate) confirmations: u64,
 }

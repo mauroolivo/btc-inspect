@@ -212,6 +212,21 @@ function App() {
                     <td>{txJson.is_coinbase ? "YES" : "NO"}</td>
                     <td></td>
                 </tr>
+                <tr key="8">
+                    <td className="Col1">Blockhash</td>
+                    <td>{txJson.blockhash}</td>
+                    <td></td>
+                </tr>
+                <tr key="9">
+                    <td className="Col1">Blocktime</td>
+                    <td>{toDateString(txJson.blocktime)}</td>
+                    <td></td>
+                </tr>
+                <tr key="10">
+                    <td className="Col1">Confirmations</td>
+                    <td>{txJson.confirmations}</td>
+                    <td></td>
+                </tr>
                 </tbody>
             </table>
         )
@@ -324,6 +339,17 @@ function App() {
             <Table/>
         </div>
     );
+}
+function toDateString(ts) {
+    var ts_ms = ts * 1000;
+    var date_ob = new Date(ts_ms);
+    var year = date_ob.getFullYear();
+    var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+    var date = ("0" + date_ob.getDate()).slice(-2);
+    var hours = ("0" + date_ob.getHours()).slice(-2);
+    var minutes = ("0" + date_ob.getMinutes()).slice(-2);
+    var seconds = ("0" + date_ob.getSeconds()).slice(-2);
+    return year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
 }
 
 export default App;
