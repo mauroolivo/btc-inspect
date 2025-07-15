@@ -12,7 +12,7 @@ use crate::private_key::PrivateKey;
 use crate::script::Script;
 use serde_json::json;
 use crate::helpers::out_type::OutputType;
-use crate::tx_fetcher::TxFetcher;
+use crate::rpc_api::RpcApi;
 use crate::helpers::verify_input_res::VerifyInputRes;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
@@ -46,8 +46,8 @@ impl Tx {
     }
     pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Tx  {
         let tx_id = tx_id_str.as_str();
-        let tf = TxFetcher::new(testnet);
-        let mut tx = tf.fetch_async_node(tx_id).await.unwrap();
+        let tf = RpcApi::new(testnet);
+        let mut tx = tf.get_tx(tx_id).await.unwrap();
 
         let mut tx_json = json!({});
         tx_json = tx.tx_json();

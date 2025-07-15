@@ -17,13 +17,13 @@ pub mod tx;
 pub mod tx_input;
 pub mod tx_output;
 pub mod script;
-pub mod tx_fetcher;
+pub mod rpc_api;
 pub mod block;
 pub mod merkle_tree;
 pub mod merkle_block;
 pub mod cache;
 pub mod env;
-pub mod rpc;
+pub mod rpc_models;
 
 extern crate console_error_panic_hook;
 extern crate wasm_log;

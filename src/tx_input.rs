@@ -2,7 +2,7 @@ use crate::script::Script;
 use std::{fmt, io::{Cursor, Read, Error}};
 use num::{BigUint, ToPrimitive};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
-use crate::tx_fetcher::TxFetcher;
+use crate::rpc_api::RpcApi;
 use crate::tx::Tx;
 use serde_json::json;
 
@@ -97,8 +97,8 @@ impl TxInput {
     }
     pub async fn fetch_tx_async(&self, testnet: bool) -> Result<Tx, reqwest::Error> {
         let tx_id = hex::encode(self.prev_tx().to_vec());
-        let tf = TxFetcher::new(testnet);
-        let result = tf.fetch_async_node(tx_id.as_str()).await;
+        let tf = RpcApi::new(testnet);
+        let result = tf.get_tx(tx_id.as_str()).await;
         match result {
             Ok(tx) => Ok(tx),
             Err(e) => Err(e)
