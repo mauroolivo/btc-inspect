@@ -3,6 +3,7 @@ extern crate core;
 use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
 use std::{io::{Read}};
+use crate::block::Block;
 use crate::utils::set_panic_hook;
 
 mod utils;
@@ -38,4 +39,11 @@ pub async fn get_tx_json(tx_id: String) -> String { // todo add testnet support
 
     let mut tx = Tx::new_from_id(tx_id.clone(), false).await;
     tx.tx_json.to_string()
+}
+#[wasm_bindgen]
+pub async fn get_block_json(block_id: String) -> String { // todo add testnet support
+
+    let mut block = Block::new_from_id(block_id.clone(), false).await;
+    //tx.tx_json.to_string()
+    block
 }

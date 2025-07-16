@@ -8,7 +8,7 @@ use serde_json::json;
 use serde::{Deserialize, Serialize};
 use crate::cache::HASHMAP;
 use crate::env::{API_PASS, API_URL, API_USER};
-use crate::rpc_models::{RpcBlockResponse, RpcTxResponse};
+use crate::rpc_models::{RpcTxResponse, RpcBlockResponse0};
 
 pub struct RpcApi {
     api_url: String,
@@ -103,7 +103,7 @@ impl RpcApi {
     }
     pub async fn get_block(&self, block_id: &str) -> Result<String, reqwest::Error> {
 
-        let verbosity = 1;
+        let verbosity = 0;
         if self.testnet {
             panic!("Not implemented");
         }
@@ -146,14 +146,14 @@ impl RpcApi {
                     .send()
                     .await
                     .unwrap()
-                    .json::<RpcBlockResponse>()
+                    .json::<RpcBlockResponse0>()
                     //.text()
                     .await;
                 match response {
                     Ok(result) => {
-                        log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
+                        //log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
 
-                        let raw_block = hex::decode(result.result.hex.clone()).unwrap();
+                        //let raw_block = hex::decode(result.result.hex.clone()).unwrap();
 
                         // log::info!("ADDING TO CACHE: {:#?}", tx_id);
                         // let tid = tx_id;
@@ -170,7 +170,7 @@ impl RpcApi {
                         // log::info!("----------->{:?}", tx_json.clone());
                         // tx.tx_json = tx_json;
 
-                        Ok("todo".to_string())
+                        Ok(result.result)
                     }
                     Err(e) => {
                         println!("Error: {}", e);

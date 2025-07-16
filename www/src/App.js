@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, get_tx_json} from "btc-inspect";
+import init, {init_app, get_tx_json, get_block_json} from "btc-inspect";
 import { PiLinkBold } from "react-icons/pi";
 
 function App() {
@@ -35,6 +35,16 @@ function App() {
             console.log(tx_json)
             setTxJson(tx_json)
         }
+        )
+    }
+    function getBlock(input) {
+        //setTxJson(null)
+
+        get_block_json(input).then(block_json_str => {
+                //let tx_json = JSON.parse(tx_json_str);
+                console.log(block_json_str)
+                //setTxJson(tx_json)
+            }
         )
     }
     function handleSample(n) {
@@ -333,6 +343,9 @@ function App() {
                     </button>
                     <button className="Button" onClick={() => handleClear()}>
                         Clear
+                    </button>
+                    <button className="Button" onClick={() => getBlock("000000000a1fc54e5d950ae316a668bd65ce302f0ca8267a1c1ec925bc260cf2")}>
+                        Fetch Block test
                     </button>
                 </header>
             </div>

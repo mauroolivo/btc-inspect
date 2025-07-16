@@ -12,10 +12,12 @@ pub struct RpcTxResult {
     pub(crate) confirmations: u64,
 }
 #[derive(Deserialize)]
-pub struct RpcBlockResponse {
-    pub(crate) result: RpcTxResult,
+pub struct RpcBlockResponse0 {
+    pub(crate) result: String,
 }
+/*
 #[derive(Deserialize)]
 pub struct RpcBlockResult {
     pub(crate) hex: String,
 }
+ */
