@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, r_tx_json_from_id} from "btc-inspect";
+import init, {init_app, get_tx_json} from "btc-inspect";
 import { PiLinkBold } from "react-icons/pi";
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
     function handleFetch(input) {
         setTxJson(null)
 
-        r_tx_json_from_id(input).then(tx_json_str => {
+        get_tx_json(input).then(tx_json_str => {
             let tx_json = JSON.parse(tx_json_str);
             console.log(tx_json)
             setTxJson(tx_json)
