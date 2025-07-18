@@ -14,8 +14,8 @@ use crate::tx::Tx;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Block {
-    version: u32,
-    prev_block: Vec<u8>,
+    pub version: u32,
+    pub prev_block: Vec<u8>,
     merkle_root: Vec<u8>,
     timestamp: u32,
     pub bits: Vec<u8>,

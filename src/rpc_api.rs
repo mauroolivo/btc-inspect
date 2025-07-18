@@ -3,7 +3,9 @@ use std::f32::consts::E;
 use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
 use reqwest::Method;
+//use ripemd::digest::core_api::Block;
 use crate::tx::Tx;
+use crate::block::Block;
 use serde_json::json;
 use serde::{Deserialize, Serialize};
 use crate::cache::HASHMAP;
@@ -94,12 +96,8 @@ impl RpcApi {
                         Err(reqwest::Error::from(e))
                     }
                 }
-
-
             }
         }
-
-
     }
     pub async fn get_block(&self, block_id: &str) -> Result<String, reqwest::Error> {
 
@@ -128,7 +126,6 @@ impl RpcApi {
             _ => {
                 // log::info!("{:#?}", hashmap);
 
-                println!("{}", url);
                 log::info!("FETCH: {:?}", block_id);
 
                 let json_string = json!({
@@ -153,15 +150,17 @@ impl RpcApi {
                     Ok(result) => {
                         //log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
 
-                        //let raw_block = hex::decode(result.result.hex.clone()).unwrap();
+                        let raw_block = hex::decode(result.result.clone()).unwrap();
 
                         // log::info!("ADDING TO CACHE: {:#?}", tx_id);
                         // let tid = tx_id;
                         // let k = format!("{}", tid);
                         // hashmap.insert(k.clone(), result.result.hex.clone());
                         //
-                        // let mut stream = Cursor::new(raw_tx.clone());
-                        // let mut tx = Tx::parse(&mut stream, false).unwrap();
+                        let mut stream = Cursor::new(raw_block.clone());
+                        let mut block = Block::parse(&mut stream).unwrap();
+
+                        log::info!("----------->{:?}", block.version);
                         // let mut tx_json = tx.tx_json();
                         // tx_json["hex"] = json!(result.result.hex.clone());
                         // tx_json["blockhash"] = json!(result.result.blockhash.clone());
