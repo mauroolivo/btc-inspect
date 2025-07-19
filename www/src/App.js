@@ -74,6 +74,8 @@ function App() {
             input = "6dfb16dd580698242bcfd8e433d557ed8c642272a368894de27292a8844a4e75"
         } else if (n === 12) {
             input = "61b43bbbf0d14580b9fdd45956b407be47499bb3712fd20f53f1b2a7029752d8"
+        } else if (n === 13) {
+            input = "1d8149eb8d8475b98113b5011cf70e0b7a4dccff71286d28b8b4b641f94f1e46"
         }
         handleFetch(input)
         setInputValue(input)
@@ -134,6 +136,12 @@ function App() {
                             <td className="Col1">Type</td>
                             <td>{item["prev_output_type"]}</td>
                         </tr>
+                        { txJson["is_coinbase"] === true &&
+                        <tr key="7">
+                            <td className="Col1">Coinbase height</td>
+                            <td>{txJson["coinbase_height"]}</td>
+                        </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -314,7 +322,8 @@ function App() {
                     <li onClick={() => handleSample(9)}>p2wsh</li>
                     <li onClick={() => handleSample(10)}>p2sh-pswsh</li>
                     <li onClick={() => handleSample(11)}>op_return</li>
-                    <li onClick={() => handleSample(12)}>coinbase</li>
+                    <li onClick={() => handleSample(12)}>coinbase (903171)</li>
+                    <li onClick={() => handleSample(13)}>coinbase (700000)</li>
                 </ul>
             </div>
         )

@@ -61,6 +61,7 @@ impl Tx {
             }
         } else {
             tx_json["fee"] = json!(0);
+            tx_json["coinbase_height"] = json!(tx.coinbase_height().unwrap().to_string());
         }
         tx_json["is_coinbase"] = json!(tx.is_coinbase());
 
