@@ -353,7 +353,7 @@ function App() {
                     <button className="Button" onClick={() => handleClear()}>
                         Clear
                     </button>
-                    <button className="Button" onClick={() => getBlock("000000000000000000030025f933632a88bc05258a834d4b97b909706cafd1f9")}>
+                    <button className="Button" onClick={() => getBlock("0000000000000000000590fc0f3eba193a278534220b2b37e9849e1a770ca959")}>
                         Fetch Block test
                     </button>
                 </header>

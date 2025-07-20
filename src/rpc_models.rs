@@ -13,11 +13,9 @@ pub struct RpcTxResult {
 }
 #[derive(Deserialize)]
 pub struct RpcBlockResponse0 {
-    pub(crate) result: String,
+    pub(crate) result: RpcBlockResult,
 }
-/*
 #[derive(Deserialize)]
 pub struct RpcBlockResult {
-    pub(crate) hex: String,
+    pub(crate) hash: String,
 }
- */

@@ -8,9 +8,7 @@ use num::Num;
 use std::net::TcpStream;
 use serde_json::json;
 use crate::helpers::merkle_hash::merkle_root;
-use crate::helpers::out_type::OutputType;
 use crate::rpc_api::RpcApi;
-use crate::tx::Tx;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub struct Block {
