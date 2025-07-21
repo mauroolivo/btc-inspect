@@ -68,7 +68,7 @@ impl RpcApi {
             }
         }
     }
-    pub async fn get_block(&self, block_id: &str) -> Result<String, reqwest::Error> {
+    pub async fn get_block(&self, block_id: &str) -> Result<Block, reqwest::Error> {
 
         if self.testnet {
             panic!("Not implemented");
@@ -76,7 +76,7 @@ impl RpcApi {
         let url = format!("{}", self.api_url);
         log::info!("FETCH: {:?}", url);
 
-        let verbosity = 1;
+        let verbosity = 0;
         let json_string = json!({
             "jsonrpc": "2.0",
             "id": "curl",
@@ -97,26 +97,26 @@ impl RpcApi {
             .await;
         match response {
             Ok(result) => {
-                //log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
-
-                let raw_block = hex::decode(result.result.hash.clone()).unwrap();
-
-                // log::info!("ADDING TO CACHE: {:#?}", tx_id);
-                // let tid = tx_id;
-                // let k = format!("{}", tid);
-                // hashmap.insert(k.clone(), result.result.hex.clone());
-                //
+                let block_api_data = result.result.clone();
+                let block_api_raw = &block_api_data[..160];
+                let raw_block = hex::decode(block_api_raw).unwrap();
                 let mut stream = Cursor::new(raw_block.clone());
                 let mut block = Block::parse(&mut stream).unwrap();
 
-                // let mut tx_json = tx.tx_json();
-                // tx_json["hex"] = json!(result.result.hex.clone());
+                let mut block_json = block.block_json();
+                let serialized = hex::encode(block.serialize()).to_string();
+
+                block_json["raw"] = json!(block_api_raw);
+                log::info!("block api raw: {:?}", block_api_raw);
+
+                assert_eq!(block_api_raw, serialized);
+
+
                 // tx_json["blockhash"] = json!(result.result.blockhash.clone());
                 // tx_json["blocktime"] = json!(result.result.blocktime.clone());
                 // tx_json["confirmations"] = json!(result.result.confirmations.clone());
-                // tx.tx_json = tx_json;
-
-                Ok(result.result.hash)
+                block.block_json = block_json;
+                Ok(block)
             }
             Err(e) => {
                 println!("Error: {}", e);

@@ -44,5 +44,5 @@ pub async fn get_block_json(block_id: String) -> String { // todo add testnet su
 
     let mut block = Block::new_from_id(block_id.clone(), false).await;
     //tx.tx_json.to_string()
-    block
+    block.block_json.to_string()
 }

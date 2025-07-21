@@ -27,90 +27,11 @@ impl Block {
             version, prev_block, merkle_root, timestamp, bits, nonce, tx_hashes: Vec::new(), block_json: json!({}),
         }
     }
-    pub async fn new_from_id(block_id_str: String, testnet: bool) -> String  {
+    pub async fn new_from_id(block_id_str: String, testnet: bool) -> Block  {
         let block_id = block_id_str.as_str();
         let api = RpcApi::new(testnet);
-        let mut block = api.get_block(block_id).await.unwrap();
+        let block = api.get_block(block_id).await.unwrap();
         block
-        /*
-        let mut block_json = json!({});
-        block_json = block.block_json();
-
-        if tx.is_coinbase() == false {
-            if let fee = tx.fee().await {
-                log::info!("fee is available");
-                tx_json["fee"] = json!(fee);
-            } else {
-                log::info!("fee is not available");
-            }
-        } else {
-            tx_json["fee"] = json!(0);
-        }
-        tx_json["is_coinbase"] = json!(tx.is_coinbase());
-
-        tx_json["tx_id"] = json!(tx.tx_id());
-        tx_json["hash"] = json!(hex::encode(tx.hash(false)));
-        let mut inputs_json_list: Vec<serde_json::value::Value> = vec![];
-
-        for i  in 0..tx.tx_ins().len() {
-
-            let input = tx.tx_ins()[i].clone();
-            let mut tx_in_json = json!({});
-            tx_in_json = input.get_json();
-
-            if tx.is_coinbase() == false {
-                let res = tx.verify_input(i).await;
-                if res.is_valid == false {
-                    log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
-                }
-                match res.script_pubkey {
-                    Some(prev_out_script_pub_key) => {
-                        log::info!("Prev Output ScriptPubKey: {} {:?}", i, prev_out_script_pub_key.script_json);
-                        tx_in_json["prev_output_script_pubkey"] = json!(prev_out_script_pub_key.script_json);
-
-                        let mut out_type = prev_out_script_pub_key.get_output_type();
-                        match out_type {
-                            OutputType::p2sh => {
-                                match res.redeem_script {
-                                    Some(script) => {
-                                        if script.is_p2wpkh_script_pubkey() {
-                                            out_type = OutputType::p2sh_p2wpkh;
-                                        } else if script.is_p2wsh_script_pubkey() {
-                                            out_type = OutputType::p2sh_p2wsh;
-                                        }
-                                    }
-                                    None => {}
-                                }
-                            }
-                            OutputType::p2tr => {
-                                out_type = OutputType::p2tr
-                            }
-                            _ => {}
-                        }
-                        tx_in_json["prev_output_type"] = json!(out_type.to_string());
-                    }
-                    None => {
-                        log::info!("----------> input is invalid {}/{}", i, tx.tx_ins().len());
-                    }
-                }
-            }
-            inputs_json_list.push(tx_in_json);
-        }
-        tx_json["inputs"] = json!(inputs_json_list);
-        let mut outputs_json_list: Vec<serde_json::value::Value> = vec![];
-        for output in tx.tx_outs() {
-            let mut tx_out_json = json!({});
-            tx_out_json = output.get_json();
-            let address = output.script_pubkey().get_address(testnet);
-            tx_out_json["address"] = json!(address);
-            outputs_json_list.push(tx_out_json);
-        }
-        tx_json["outputs"] = json!(outputs_json_list);
-        tx.tx_json = tx_json.clone();
-
-        log::info!("-------> {:?}", tx.tx_json);
-        tx
-         */
     }
     pub fn block_json(&self) -> serde_json::Value {
         self.block_json.clone()
