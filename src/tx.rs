@@ -44,11 +44,23 @@ impl Tx {
             tx_json: json!(null),
         }
     }
-    pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Tx  {
+    pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Option<Tx>  {
         let tx_id = tx_id_str.as_str();
         let tf = RpcApi::new(testnet);
-        let mut tx = tf.get_tx(tx_id).await.unwrap();
+        let mut tx_wrap = tf.get_tx(tx_id).await;
 
+        let mut tx: Option<Tx> = None;
+
+        match tx_wrap {
+            Ok(mut tx_unwrapped) => {
+                tx = Some(tx_unwrapped);
+            },
+            Err(e) => {
+                return None
+            }
+        }
+
+        let mut tx = tx.unwrap();
         let mut tx_json = json!({});
         tx_json = tx.tx_json();
 
@@ -126,7 +138,7 @@ impl Tx {
         tx.tx_json = tx_json.clone();
 
         log::info!("-------> {:?}", tx.tx_json);
-        tx
+        Some(tx)
     }
     pub fn version(&self) -> u32 {
         self.version

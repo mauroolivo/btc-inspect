@@ -25,7 +25,7 @@ impl RpcApi {
             panic!("Not implemented");
         }
         let url = format!("{}", self.api_url);
-        log::info!("FETCH: {:?}", url);
+
         let json_string = json!({
             "jsonrpc": "2.0",
             "id": "curl",
@@ -46,7 +46,7 @@ impl RpcApi {
             .await;
         match response {
             Ok(result) => {
-                log::info!("CALL RESPONSE{:#?}", result.result.hex.clone());
+                log::info!("hex: {:#?}", result.result.hex.clone());
 
                 let raw_tx = hex::decode(result.result.hex.clone()).unwrap();
                 let tid = tx_id;
@@ -74,7 +74,6 @@ impl RpcApi {
             panic!("Not implemented");
         }
         let url = format!("{}", self.api_url);
-        log::info!("FETCH: {:?}", url);
 
         let verbosity = 0;
         let json_string = json!({
@@ -107,10 +106,9 @@ impl RpcApi {
                 let serialized = hex::encode(block.serialize()).to_string();
 
                 block_json["raw"] = json!(block_api_raw);
-                log::info!("block api raw: {:?}", block_api_raw);
+                log::info!("raw: {:?}", block_api_raw);
 
                 assert_eq!(block_api_raw, serialized);
-
 
                 // tx_json["blockhash"] = json!(result.result.blockhash.clone());
                 // tx_json["blocktime"] = json!(result.result.blocktime.clone());

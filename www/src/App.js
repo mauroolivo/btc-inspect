@@ -6,6 +6,8 @@ import { PiLinkBold } from "react-icons/pi";
 function App() {
     const [inputValue, setInputValue] = useState('');
     const [txJson, setTxJson] = useState(null)
+    const [blockJson, setBlockJson] = useState(null)
+    const [errLbl, setErrLbl] = useState(null)
     const [isDropdownVisible, setDropdownVisible] = useState(false);
     const handleMouseEnter = () => {
         setDropdownVisible(true);
@@ -29,22 +31,29 @@ function App() {
     }
     function handleFetch(input) {
         setTxJson(null)
-
+        setBlockJson(null)
+        setErrLbl(null)
+        // wasm: can't aquire multiple mutex
         get_tx_json(input).then(tx_json_str => {
-            let tx_json = JSON.parse(tx_json_str);
-            console.log(tx_json)
-            setTxJson(tx_json)
-        }
-        )
-    }
-    function getBlock(input) {
-        //setTxJson(null)
-
-        get_block_json(input).then(block_json_str => {
-                //let tx_json = JSON.parse(tx_json_str);
-                console.log(block_json_str)
-                //setTxJson(tx_json)
+            if (tx_json_str === "") {
+                get_block_json(input).then(block_json_str => {
+                    if(block_json_str === "") {
+                        setErrLbl("Invalid hash")
+                    }
+                    else {
+                        let block_json = JSON.parse(block_json_str);
+                        console.log(block_json_str)
+                        setBlockJson(block_json)
+                    }
+                }
+                )
             }
+            else {
+                let tx_json = JSON.parse(tx_json_str);
+                console.log(tx_json)
+                setTxJson(tx_json)
+            }
+        }
         )
     }
     function handleSample(n) {
@@ -76,6 +85,10 @@ function App() {
             input = "61b43bbbf0d14580b9fdd45956b407be47499bb3712fd20f53f1b2a7029752d8"
         } else if (n === 13) {
             input = "1d8149eb8d8475b98113b5011cf70e0b7a4dccff71286d28b8b4b641f94f1e46"
+        }
+        // blocks
+        if (n === 50) {
+            input = "0000000000000000000590fc0f3eba193a278534220b2b37e9849e1a770ca959"
         }
         handleFetch(input)
         setInputValue(input)
@@ -249,64 +262,77 @@ function App() {
             </table>
         )
     }
-    function Table() {
-        if (txJson == null) {
-            return <p></p>;
+    function TableBlock() {
+        return (
+            <p>here the block data</p>
+        )
+    }
+    function TableTx() {
+        return (
+            <>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td className="Col1">Summary</td>
+                        <td className="Col2"></td>
+                        <td><Summary/></td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Tx Hex</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.hex}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Tx ID</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.tx_id}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Hash (wTxId)</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.hash}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Version</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.version_hex} ({txJson.version})</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Segwit marker</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.marker_hex}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Segwit flag</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.marker_flag}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Locktime</td>
+                        <td className="Col2"></td>
+                        <td>{txJson.locktime_hex} ({txJson.locktime})</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div className="Cols2">
+                    <div><Inputs/></div>
+                    <div><Outputs/></div>
+                </div>
+            </>
+        )
+    }
+    function Content() {
+        if (txJson !== null) {
+            return (<TableTx/>);
+        } else if (blockJson !== null) {
+            return (<TableBlock/>)
+        } else if (errLbl !== null) {
+            return <p>{errLbl}</p>
         } else {
-            return (
-                <>
-                    <table>
-                        <tbody>
-                        <tr>
-                            <td className="Col1">Summary</td>
-                            <td className="Col2"></td>
-                            <td><Summary/></td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Tx Hex</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.hex}</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Tx ID</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.tx_id}</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Hash (wTxId)</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.hash}</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Version</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.version_hex} ({txJson.version})</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Segwit marker</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.marker_hex}</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Segwit flag</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.marker_flag}</td>
-                        </tr>
-                        <tr>
-                            <td className="Col1">Locktime</td>
-                            <td className="Col2"></td>
-                            <td>{txJson.locktime_hex} ({txJson.locktime})</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div className="Cols2">
-                        <div><Inputs/></div>
-                        <div><Outputs/></div>
-                    </div>
-                </>
-            )
+            return (<p></p>)
         }
     }
+
     function DropdownMenu() {
         return (
             <div className="dropdown-menu">
@@ -325,6 +351,9 @@ function App() {
                     <li onClick={() => handleSample(12)}>coinbase (903171)</li>
                     <li onClick={() => handleSample(13)}>coinbase (700000)</li>
                 </ul>
+                <ul>
+                    <li onClick={() => handleSample(50)}>Block 700000</li>
+                </ul>
             </div>
         )
     }
@@ -338,27 +367,24 @@ function App() {
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                 />
+                <button className="Button" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
+                    Fetch
+                </button>
+                <button className="Button" onClick={() => handleClear()}>
+                    Clear
+                </button>
                 <header className="App-header">
                     <div
                         className="menu"
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                     >
-                        <button className="Button">Transaction samples</button>
+                        <button className="Button">Samples</button>
                         {isDropdownVisible && <DropdownMenu />}
                     </div>
-                    <button className="Button" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
-                        Fetch Transaction
-                    </button>
-                    <button className="Button" onClick={() => handleClear()}>
-                        Clear
-                    </button>
-                    <button className="Button" onClick={() => getBlock("0000000000000000000590fc0f3eba193a278534220b2b37e9849e1a770ca959")}>
-                        Fetch Block test
-                    </button>
                 </header>
             </div>
-            <Table/>
+            <Content/>
         </div>
     );
 }

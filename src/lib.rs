@@ -37,12 +37,17 @@ pub fn init_app() {
 pub async fn get_tx_json(tx_id: String) -> String { // todo add testnet support
 
     let mut tx = Tx::new_from_id(tx_id.clone(), false).await;
-    tx.tx_json.to_string()
+    match tx {
+        Some(tx) => tx.tx_json.to_string(),
+        None => "".to_string()
+    }
 }
 #[wasm_bindgen]
 pub async fn get_block_json(block_id: String) -> String { // todo add testnet support
 
     let mut block = Block::new_from_id(block_id.clone(), false).await;
-    //tx.tx_json.to_string()
-    block.block_json.to_string()
+    match block {
+        Some(block) => block.block_json.to_string(),
+        None => "".to_string()
+    }
 }

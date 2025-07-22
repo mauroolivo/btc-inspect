@@ -27,11 +27,15 @@ impl Block {
             version, prev_block, merkle_root, timestamp, bits, nonce, tx_hashes: Vec::new(), block_json: json!({}),
         }
     }
-    pub async fn new_from_id(block_id_str: String, testnet: bool) -> Block  {
+    pub async fn new_from_id(block_id_str: String, testnet: bool) -> Option<Self>  {
         let block_id = block_id_str.as_str();
         let api = RpcApi::new(testnet);
-        let block = api.get_block(block_id).await.unwrap();
-        block
+        let block_unwrapped = api.get_block(block_id).await;
+
+        match block_unwrapped {
+            Ok(block) => Some(block),
+            Err(_) => None
+        }
     }
     pub fn block_json(&self) -> serde_json::Value {
         self.block_json.clone()
