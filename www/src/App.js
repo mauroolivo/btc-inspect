@@ -264,7 +264,27 @@ function App() {
     }
     function TableBlock() {
         return (
-            <p>here the block data</p>
+            <>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td className="Col1">Raw</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.raw}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Version</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.version}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Previous Block</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.prev_block}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </>
         )
     }
     function TableTx() {

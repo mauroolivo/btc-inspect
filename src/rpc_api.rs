@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::f32::consts::E;
 use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
+use num::BigUint;
 use reqwest::Method;
 //use ripemd::digest::core_api::Block;
 use crate::tx::Tx;
@@ -9,6 +10,7 @@ use crate::block::Block;
 use serde_json::json;
 use serde::{Deserialize, Serialize};
 use crate::env::{API_PASS, API_URL, API_USER};
+use crate::helpers::endianness::int_to_little_endian;
 use crate::rpc_models::{RpcTxResponse, RpcBlockResponse0};
 
 pub struct RpcApi {
@@ -106,10 +108,12 @@ impl RpcApi {
                 let serialized = hex::encode(block.serialize()).to_string();
 
                 block_json["raw"] = json!(block_api_raw);
-                log::info!("raw: {:?}", block_api_raw);
 
                 assert_eq!(block_api_raw, serialized);
 
+                //version, prev_block, merkle_root, timestamp, bits, nonce
+                block_json["version"] = json!(hex::encode(int_to_little_endian(BigUint::from(block.clone().version), 4)));
+                block_json["prev_block"] = json!(hex::encode(block.clone().prev_block));
                 // tx_json["blockhash"] = json!(result.result.blockhash.clone());
                 // tx_json["blocktime"] = json!(result.result.blocktime.clone());
                 // tx_json["confirmations"] = json!(result.result.confirmations.clone());
