@@ -103,20 +103,18 @@ impl RpcApi {
                 let raw_block = hex::decode(block_api_raw).unwrap();
                 let mut stream = Cursor::new(raw_block.clone());
                 let mut block = Block::parse(&mut stream).unwrap();
-
                 let mut block_json = block.block_json();
                 let serialized = hex::encode(block.serialize()).to_string();
-
-                block_json["raw"] = json!(block_api_raw);
-
                 assert_eq!(block_api_raw, serialized);
 
-                //version, prev_block, merkle_root, timestamp, bits, nonce
+                block_json["raw"] = json!(block_api_raw);
                 block_json["version"] = json!(hex::encode(int_to_little_endian(BigUint::from(block.clone().version), 4)));
                 block_json["prev_block"] = json!(hex::encode(block.clone().prev_block));
-                // tx_json["blockhash"] = json!(result.result.blockhash.clone());
-                // tx_json["blocktime"] = json!(result.result.blocktime.clone());
-                // tx_json["confirmations"] = json!(result.result.confirmations.clone());
+                block_json["merkle_root"] = json!(hex::encode(block.clone().merkle_root));
+                block_json["timestamp"] = json!(block.clone().timestamp);
+                block_json["bits"] = json!(hex::encode(block.clone().bits));
+                block_json["nonce"] = json!(hex::encode(block.clone().nonce));
+
                 block.block_json = block_json;
                 Ok(block)
             }

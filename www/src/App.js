@@ -245,7 +245,7 @@ function App() {
                 </tr>
                 <tr key="8">
                     <td className="Col1">Blockhash</td>
-                    <td>{txJson.blockhash}</td>
+                    <td>{txJson.blockhash} <button className="ButtonImg" onClick={() => handleNewInput(txJson.blockhash)}><PiLinkBold /></button></td>
                     <td></td>
                 </tr>
                 <tr key="9">
@@ -280,7 +280,27 @@ function App() {
                     <tr>
                         <td className="Col1">Previous Block</td>
                         <td className="Col2"></td>
-                        <td>{blockJson.prev_block}</td>
+                        <td>{blockJson.prev_block} <button className="ButtonImg" onClick={() => handleNewInput(blockJson.prev_block)}><PiLinkBold /></button></td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">merkle root</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.merkle_root}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Timestamp</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.timestamp} {toDateString(blockJson.timestamp)}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Bits</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.bits}</td>
+                    </tr>
+                    <tr>
+                        <td className="Col1">Nonce</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.nonce}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -409,7 +429,9 @@ function App() {
     );
 }
 function toDateString(ts) {
+
     var ts_ms = ts * 1000;
+    return new Date(ts_ms).toUTCString();
     var date_ob = new Date(ts_ms);
     var year = date_ob.getFullYear();
     var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);

@@ -14,10 +14,10 @@ use crate::rpc_api::RpcApi;
 pub struct Block {
     pub version: u32,
     pub prev_block: Vec<u8>,
-    merkle_root: Vec<u8>,
-    timestamp: u32,
+    pub merkle_root: Vec<u8>,
+    pub timestamp: u32,
     pub bits: Vec<u8>,
-    nonce: Vec<u8>,
+    pub nonce: Vec<u8>,
     pub tx_hashes: Vec<Vec<u8>>,
     pub(crate) block_json: serde_json::Value,
 }
