@@ -278,6 +278,11 @@ function App() {
                         <td>{blockJson.version}</td>
                     </tr>
                     <tr>
+                        <td className="Col1">Version bits</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.version_bits}</td>
+                    </tr>
+                    <tr>
                         <td className="Col1">Previous Block</td>
                         <td className="Col2"></td>
                         <td>{blockJson.prev_block} <button className="ButtonImg" onClick={() => handleNewInput(blockJson.prev_block)}><PiLinkBold /></button></td>

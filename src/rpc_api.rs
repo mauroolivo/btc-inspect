@@ -9,6 +9,7 @@ use crate::tx::Tx;
 use crate::block::Block;
 use serde_json::json;
 use serde::{Deserialize, Serialize};
+use to_binary::BinaryString;
 use crate::env::{API_PASS, API_URL, API_USER};
 use crate::helpers::endianness::int_to_little_endian;
 use crate::rpc_models::{RpcTxResponse, RpcBlockResponse0};
@@ -108,7 +109,14 @@ impl RpcApi {
                 assert_eq!(block_api_raw, serialized);
 
                 block_json["raw"] = json!(block_api_raw);
-                block_json["version"] = json!(hex::encode(int_to_little_endian(BigUint::from(block.clone().version), 4)));
+                let mut bytes: Vec<u8> = int_to_little_endian(BigUint::from(block.clone().version), 4);
+                bytes.reverse();
+                block_json["version"] = json!(hex::encode(bytes.clone()));
+                let version_bits = BinaryString::from_hex(hex::encode(bytes));
+                block_json["version_bits"] = json!(version_bits.unwrap().to_string());
+
+
+                //let x: BinaryString = BinaryString::from_hex("FF8628AA").unwrap();
                 block_json["prev_block"] = json!(hex::encode(block.clone().prev_block));
                 block_json["merkle_root"] = json!(hex::encode(block.clone().merkle_root));
                 block_json["timestamp"] = json!(block.clone().timestamp);
