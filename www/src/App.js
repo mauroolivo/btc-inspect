@@ -2,6 +2,7 @@ import './App.css';
 import React, {useEffect, useState} from 'react';
 import init, {init_app, get_tx_json, get_block_json} from "btc-inspect";
 import { PiLinkBold } from "react-icons/pi";
+import { toDateString, hex2a } from "./Utility/utility";
 
 function App() {
     const [inputValue, setInputValue] = useState('');
@@ -22,13 +23,6 @@ function App() {
         };
         runWasm();
     }, []);
-    function hex2a(hexx) {
-        var hex = hexx.toString();//force conversion
-        var str = '';
-        for (var i = 0; i < hex.length; i += 2)
-            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-        return str;
-    }
     function handleFetch(input) {
         setTxJson(null)
         setBlockJson(null)
@@ -110,7 +104,6 @@ function App() {
         );
         return (<>{list}</>)
     }
-
     function Inputs() {
         const listItems = txJson.inputs.map((item, idx) =>
             (<div key={idx}><p>Input {idx}</p>
@@ -263,6 +256,7 @@ function App() {
         )
     }
     function TableBlock() {
+        const transactions = blockJson.txs.map(tx => <li>{tx}</li>);
         return (
             <>
                 <table>
@@ -307,6 +301,18 @@ function App() {
                         <td className="Col2"></td>
                         <td>{blockJson.nonce}</td>
                     </tr>
+                    <tr>
+                        <td className="Col1">Transactions</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.n_tx}</td>
+                    </tr>
+                    { /*
+                    <tr>
+                        <td className="Col1">Transactions</td>
+                        <td className="Col2"></td>
+                        <td><ul>{transactions}</ul></td>
+                    </tr>
+                    */ }
                     </tbody>
                 </table>
             </>
@@ -377,7 +383,6 @@ function App() {
             return (<p></p>)
         }
     }
-
     function DropdownMenu() {
         return (
             <div className="dropdown-menu">
@@ -402,6 +407,7 @@ function App() {
             </div>
         )
     }
+
     return (
         <div className="App">
             <div className="Header">
@@ -432,19 +438,6 @@ function App() {
             <Content/>
         </div>
     );
-}
-function toDateString(ts) {
-
-    var ts_ms = ts * 1000;
-    return new Date(ts_ms).toUTCString();
-    var date_ob = new Date(ts_ms);
-    var year = date_ob.getFullYear();
-    var month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
-    var date = ("0" + date_ob.getDate()).slice(-2);
-    var hours = ("0" + date_ob.getHours()).slice(-2);
-    var minutes = ("0" + date_ob.getMinutes()).slice(-2);
-    var seconds = ("0" + date_ob.getSeconds()).slice(-2);
-    return year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
 }
 
 export default App;

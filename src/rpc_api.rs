@@ -89,18 +89,6 @@ impl RpcApi {
         let response0 = self.get_block_0(block_id).await;
         let response1 = self.get_block_1(block_id).await;
 
-
-        match response1 {
-            Ok(result) => {
-
-                log::info!("RES 1: {:?}", result.result.nTx);
-            }
-            Err(e) => {
-                println!("Error: {}", e);
-                log::error!("Error: {}", e);
-            }
-        }
-
         match response0 {
             Ok(result) => {
                 let block_api_data = result.result.clone();
@@ -118,15 +106,23 @@ impl RpcApi {
                 block_json["version"] = json!(hex::encode(bytes.clone()));
                 let version_bits = BinaryString::from_hex(hex::encode(bytes));
                 block_json["version_bits"] = json!(version_bits.unwrap().to_string());
-
-
-                //let x: BinaryString = BinaryString::from_hex("FF8628AA").unwrap();
                 block_json["prev_block"] = json!(hex::encode(block.clone().prev_block));
                 block_json["merkle_root"] = json!(hex::encode(block.clone().merkle_root));
                 block_json["timestamp"] = json!(block.clone().timestamp);
                 block_json["bits"] = json!(hex::encode(block.clone().bits));
                 block_json["nonce"] = json!(hex::encode(block.clone().nonce));
 
+                match response1 {
+                    Ok(result) => {
+
+                        block_json["n_tx"] = json!(result.result.nTx);
+                        block_json["txs"] = json!(result.result.tx);
+                    }
+                    Err(e) => {
+                        println!("Error: {}", e);
+                        log::error!("Error: {}", e);
+                    }
+                }
                 block.block_json = block_json;
                 Ok(block)
             }
