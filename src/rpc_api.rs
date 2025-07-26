@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use to_binary::BinaryString;
 use crate::env::{API_PASS, API_URL, API_USER};
 use crate::helpers::endianness::int_to_little_endian;
-use crate::rpc_models::{RpcTxResponse, RpcBlockResponse0};
+use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response};
 
 pub struct RpcApi {
     api_url: String,
@@ -86,18 +86,22 @@ impl RpcApi {
             "params": [block_id, verbosity]
         }).to_string();
 
-        let client = reqwest::Client::new();
-        let response = client
-            .post(url)
-            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
-            .body(json_string)
-            .send()
-            .await
-            .unwrap()
-            .json::<RpcBlockResponse0>()
-            //.text()
-            .await;
-        match response {
+        let response0 = self.get_block_0(block_id).await;
+        let response1 = self.get_block_1(block_id).await;
+
+
+        match response1 {
+            Ok(result) => {
+
+                log::info!("RES 1: {:?}", result.result.nTx);
+            }
+            Err(e) => {
+                println!("Error: {}", e);
+                log::error!("Error: {}", e);
+            }
+        }
+
+        match response0 {
             Ok(result) => {
                 let block_api_data = result.result.clone();
                 let block_api_raw = &block_api_data[..160];
@@ -128,6 +132,77 @@ impl RpcApi {
             }
             Err(e) => {
                 println!("Error: {}", e);
+                Err(reqwest::Error::from(e))
+            }
+        }
+    }
+    async fn get_block_0(&self, block_id: &str) -> Result<RpcBlock0Response, reqwest::Error> {
+
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        let verbosity = 0;
+        let json_string = json!({
+            "jsonrpc": "2.0",
+            "id": "curl",
+            "method": "getblock",
+            "params": [block_id, verbosity]
+        }).to_string();
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(url)
+            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+            .body(json_string)
+            .send()
+            .await
+            .unwrap()
+            .json::<RpcBlock0Response>()
+            //.text()
+            .await;
+        match response {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(e) => {
+                println!("Error: {}", e);
+                Err(reqwest::Error::from(e))
+            }
+        }
+    }
+    async fn get_block_1(&self, block_id: &str) -> Result<RpcBlock1Response, reqwest::Error> {
+
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        let verbosity = 1;
+        let json_string = json!({
+            "jsonrpc": "2.0",
+            "id": "curl",
+            "method": "getblock",
+            "params": [block_id, verbosity]
+        }).to_string();
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(url)
+            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+            .body(json_string)
+            .send()
+            .await
+            .unwrap()
+            .json::<RpcBlock1Response>()
+            //.text()
+            .await;
+        match response {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(e) => {
                 Err(reqwest::Error::from(e))
             }
         }
