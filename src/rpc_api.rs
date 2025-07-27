@@ -117,6 +117,7 @@ impl RpcApi {
 
                         block_json["n_tx"] = json!(result.result.nTx);
                         block_json["txs"] = json!(result.result.tx);
+                        block_json["height"] = json!(result.result.height);
                     }
                     Err(e) => {
                         println!("Error: {}", e);

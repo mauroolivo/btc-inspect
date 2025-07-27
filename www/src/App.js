@@ -292,6 +292,11 @@ function App() {
                         <td>{blockJson.timestamp} {toDateString(blockJson.timestamp)}</td>
                     </tr>
                     <tr>
+                        <td className="Col1">Height</td>
+                        <td className="Col2"></td>
+                        <td>{blockJson.height}</td>
+                    </tr>
+                    <tr>
                         <td className="Col1">Bits</td>
                         <td className="Col2"></td>
                         <td>{blockJson.bits}</td>
