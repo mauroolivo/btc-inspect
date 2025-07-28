@@ -29,25 +29,25 @@ function App() {
         setErrLbl(null)
         // wasm: can't aquire multiple mutex
         get_tx_json(input).then(tx_json_str => {
-            if (tx_json_str === "") {
-                get_block_json(input).then(block_json_str => {
-                    if(block_json_str === "") {
-                        setErrLbl("Invalid hash")
-                    }
-                    else {
-                        let block_json = JSON.parse(block_json_str);
-                        console.log(block_json_str)
-                        setBlockJson(block_json)
-                    }
+                if (tx_json_str === "") {
+                    get_block_json(input).then(block_json_str => {
+                            if(block_json_str === "") {
+                                setErrLbl("Invalid hash")
+                            }
+                            else {
+                                let block_json = JSON.parse(block_json_str);
+                                console.log(block_json_str)
+                                setBlockJson(block_json)
+                            }
+                        }
+                    )
                 }
-                )
+                else {
+                    let tx_json = JSON.parse(tx_json_str);
+                    console.log(tx_json)
+                    setTxJson(tx_json)
+                }
             }
-            else {
-                let tx_json = JSON.parse(tx_json_str);
-                console.log(tx_json)
-                setTxJson(tx_json)
-            }
-        }
         )
     }
     function handleSample(n) {
@@ -143,10 +143,10 @@ function App() {
                             <td>{item["prev_output_type"]}</td>
                         </tr>
                         { txJson["is_coinbase"] === true &&
-                        <tr key="7">
-                            <td className="Col1">Coinbase height</td>
-                            <td>{txJson["coinbase_height"]}</td>
-                        </tr>
+                            <tr key="7">
+                                <td className="Col1">Coinbase height</td>
+                                <td>{txJson["coinbase_height"]}</td>
+                            </tr>
                         }
                         </tbody>
                     </table>
@@ -173,7 +173,7 @@ function App() {
                             <td>{item["script_type"]}</td>
                         </tr>
                         { item["script_type"] === "op_return" &&
-                             <tr key="3">
+                            <tr key="3">
                                 <td className="Col1">op_return data</td>
                                 <td>{item["script_type"] === "op_return" ? hex2a(item["script_json"]["cmd_list_json"][2]) : ""}</td>
                             </tr>

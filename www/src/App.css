@@ -17,143 +17,143 @@ body {
 }
 .Header {
 
-    /* width: 100vw; */
-    position: relative;
+  /* width: 100vw; */
+  position: relative;
 
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-    padding-bottom: 20px;
+  display: flex;
+  flex-flow: column wrap;
+  align-items: center;
+  padding-bottom: 20px;
 }
 
 .Button {
-    background-color: unset;
-    border-radius: 8px;
-    border-width: 0;
-    color: dodgerblue;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-    list-style: none;
-    margin: 0;
-    padding: 10px 12px;
-    text-align: center;
-    transition: all 200ms;
-    vertical-align: baseline;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    text-decoration:underline;
+  background-color: unset;
+  border-radius: 8px;
+  border-width: 0;
+  color: dodgerblue;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 10px 12px;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  text-decoration:underline;
 }
 .Button:hover {
-    text-decoration: none;
+  text-decoration: none;
 }
 .Button:disabled {
-    text-decoration: none;
-    color: darkgray;
+  text-decoration: none;
+  color: darkgray;
 }
 .ButtonImg {
-    background-color: unset;
-    color: dodgerblue;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 20px;
-    font-weight: 500;
-    padding: 0;
-    list-style: none;
-    border: 0;
-    margin: 0;
-    text-align: center;
-    transition: all 200ms;
-    vertical-align: baseline;
-    white-space: nowrap;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
+  background-color: unset;
+  color: dodgerblue;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 0;
+  list-style: none;
+  border: 0;
+  margin: 0;
+  text-align: center;
+  transition: all 200ms;
+  vertical-align: baseline;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 p {
-    overflow-wrap: break-word;
-    padding: 0;
-    margin: 0;
+  overflow-wrap: break-word;
+  padding: 0;
+  margin: 0;
 }
 
 .Col1 {
-    width: 120px;
-    background-color: darkslategray;
-    vertical-align: top;
+  width: 120px;
+  background-color: darkslategray;
+  vertical-align: top;
 }
 .Col2 {
-    min-width: 5px;
-    vertical-align: top;
+  min-width: 5px;
+  vertical-align: top;
 }
 td {
-    word-break: break-word;
-    padding: 5px;
+  word-break: break-word;
+  padding: 5px;
 }
 td table {
-    border: 1px solid darkslateblue;
+  border: 1px solid darkslateblue;
 
 }
 td span.Supplement {
-    color: green;
+  color: green;
 }
 ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 .IsByte:hover {
-    color: coral;
+  color: coral;
 }
 .Cols2 {
-    display: flex;
-    width:100%;
+  display: flex;
+  width:100%;
 }
 .Cols2 div {
-    flex-basis: 100%;
-    padding: 20px;
+  flex-basis: 100%;
+  padding: 20px;
 }
 header {
-    width: 100%;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 
 button {
-    background: #000;
-    box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
-    color: #fff;
-    padding: 12px 25px;
-    border: none;
-    cursor: pointer;
+  background: #000;
+  box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
+  color: #fff;
+  padding: 12px 25px;
+  border: none;
+  cursor: pointer;
 }
 ul {
-    list-style: none;
-    padding: unset;
-    margin: unset;
+  list-style: none;
+  padding: unset;
+  margin: unset;
 }
 
 li {
-    background: gray;
-    padding: 4px;
-    transition: all linear 0.3s;
+  background: gray;
+  padding: 4px;
+  transition: all linear 0.3s;
 }
 
 li:hover {
-    background: darkgray;
-    cursor: pointer;
-    color: #fff;
+  background: darkgray;
+  cursor: pointer;
+  color: #fff;
 }
 
 .dropdown-menu {
-    background: #fff;
-    box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
-    transition: all linear 0.3s;
-    position: absolute;
+  background: #fff;
+  box-shadow: 0px 10px 30px 0px rgba(82, 63, 105, 0.05);
+  transition: all linear 0.3s;
+  position: absolute;
 }
