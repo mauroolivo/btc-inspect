@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import React, {useEffect, useState} from 'react';
 import init, {init_app, get_tx_json, get_block_json} from "btc-inspect";
@@ -388,31 +390,6 @@ function App() {
             return (<p></p>)
         }
     }
-    function DropdownMenu() {
-        return (
-            <div className="dropdown-menu">
-                <ul>
-                    <li onClick={() => handleSample(1)}>P2WPKH</li>
-                    <li onClick={() => handleSample(2)}>p2ms</li>
-                    <li onClick={() => handleSample(3)}>p2pkh</li>
-                    <li onClick={() => handleSample(4)}>p2tr</li>
-                    <li onClick={() => handleSample(5)}>p2wpkh</li>
-                    <li onClick={() => handleSample(6)}>p2sh multisig</li>
-                    <li onClick={() => handleSample(7)}>p2pk</li>
-                    <li onClick={() => handleSample(8)}>p2sh-p2wpkh</li>
-                    <li onClick={() => handleSample(9)}>p2wsh</li>
-                    <li onClick={() => handleSample(10)}>p2sh-pswsh</li>
-                    <li onClick={() => handleSample(11)}>op_return</li>
-                    <li onClick={() => handleSample(12)}>coinbase (903171)</li>
-                    <li onClick={() => handleSample(13)}>coinbase (700000)</li>
-                </ul>
-                <ul>
-                    <li onClick={() => handleSample(50)}>Block 700000</li>
-                </ul>
-            </div>
-        )
-    }
-
     return (
         <div className="App">
             <div className="Header">
@@ -429,16 +406,32 @@ function App() {
                 <button className="Button" onClick={() => handleClear()}>
                     Clear
                 </button>
-                <header className="App-header">
-                    <div
-                        className="menu"
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                    >
-                        <button className="Button">Samples</button>
-                        {isDropdownVisible && <DropdownMenu />}
-                    </div>
-                </header>
+
+                <div className="dropdown">
+                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonLight"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Samples
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonLight">
+                        <li onClick={() => handleSample(1)}>P2WPKH</li>
+                        <li onClick={() => handleSample(2)}>p2ms</li>
+                        <li onClick={() => handleSample(3)}>p2pkh</li>
+                        <li onClick={() => handleSample(4)}>p2tr</li>
+                        <li onClick={() => handleSample(5)}>p2wpkh</li>
+                        <li onClick={() => handleSample(6)}>p2sh multisig</li>
+                        <li onClick={() => handleSample(7)}>p2pk</li>
+                        <li onClick={() => handleSample(8)}>p2sh-p2wpkh</li>
+                        <li onClick={() => handleSample(9)}>p2wsh</li>
+                        <li onClick={() => handleSample(10)}>p2sh-pswsh</li>
+                        <li onClick={() => handleSample(11)}>op_return</li>
+                        <li onClick={() => handleSample(12)}>coinbase (903171)</li>
+                        <li onClick={() => handleSample(13)}>coinbase (700000)</li>
+                        <li>
+                            <hr className="dropdown-divider"/>
+                        </li>
+                        <li onClick={() => handleSample(50)}>Block 700000</li>
+                    </ul>
+                </div>
             </div>
             <Content/>
         </div>

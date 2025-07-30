@@ -1,3 +1,4 @@
+
 body {
   background-color: #282c34;
   padding: 20px;
@@ -17,7 +18,7 @@ body {
 }
 .Header {
 
-  /* width: 100vw; */
+
   position: relative;
 
   display: flex;
