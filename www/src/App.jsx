@@ -5,6 +5,8 @@ import React, {useEffect, useState} from 'react';
 import init, {init_app, get_tx_json, get_block_json} from "btc-inspect";
 import { PiLinkBold } from "react-icons/pi";
 import { toDateString, hex2a } from "./Utility/utility";
+import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown} from "react-bootstrap";
+
 
 function App() {
     const [inputValue, setInputValue] = useState('');
@@ -12,6 +14,7 @@ function App() {
     const [blockJson, setBlockJson] = useState(null)
     const [errLbl, setErrLbl] = useState(null)
     const [isDropdownVisible, setDropdownVisible] = useState(false);
+    const [open, setOpen] = useState(false);
     const handleMouseEnter = () => {
         setDropdownVisible(true);
     };
@@ -387,54 +390,87 @@ function App() {
         } else if (errLbl !== null) {
             return <p>{errLbl}</p>
         } else {
-            return (<p></p>)
+            return (
+                <p></p>
+            )
         }
     }
     return (
-        <div className="App">
-            <div className="Header">
-                <input
-                    className="Input"
-                    type="text"
-                    placeholder={"Transaction ID"}
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                />
-                <button className="Button" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
-                    Fetch
-                </button>
-                <button className="Button" onClick={() => handleClear()}>
-                    Clear
-                </button>
+<>
+        <Container>
+            <Row>
+                <Navbar expand="lg" className="bg-body-tertiary">
+                    <Container>
+                        <Navbar.Brand href="#home">BTC</Navbar.Brand>
+                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                        <Navbar.Collapse id="basic-navbar-nav">
+                            <Nav className="me-auto">
+                                <Nav.Link href="#home" >Home</Nav.Link>
+                                <Nav.Link href="#link">Link</Nav.Link>
+                                <NavDropdown title="Samples" id="basic-nav-dropdown">
+                                    <NavDropdown.Item href="" onClick={() => handleSample(1)}>P2WPKH</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(2)}>p2ms</NavDropdown.Item>
 
-                <div className="dropdown">
-                    <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonLight"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        Samples
-                    </button>
-                    <ul className="dropdown-menu" aria-labelledby="dropdownMenuButtonLight">
-                        <li onClick={() => handleSample(1)}>P2WPKH</li>
-                        <li onClick={() => handleSample(2)}>p2ms</li>
-                        <li onClick={() => handleSample(3)}>p2pkh</li>
-                        <li onClick={() => handleSample(4)}>p2tr</li>
-                        <li onClick={() => handleSample(5)}>p2wpkh</li>
-                        <li onClick={() => handleSample(6)}>p2sh multisig</li>
-                        <li onClick={() => handleSample(7)}>p2pk</li>
-                        <li onClick={() => handleSample(8)}>p2sh-p2wpkh</li>
-                        <li onClick={() => handleSample(9)}>p2wsh</li>
-                        <li onClick={() => handleSample(10)}>p2sh-pswsh</li>
-                        <li onClick={() => handleSample(11)}>op_return</li>
-                        <li onClick={() => handleSample(12)}>coinbase (903171)</li>
-                        <li onClick={() => handleSample(13)}>coinbase (700000)</li>
-                        <li>
-                            <hr className="dropdown-divider"/>
-                        </li>
-                        <li onClick={() => handleSample(50)}>Block 700000</li>
-                    </ul>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(3)}>p2pkh</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(4)}>p2tr</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(5)}>p2wpkh</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(6)}>p2sh multisig</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(7)}>p2pk</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(8)}>p2sh-p2wpkh</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(9)}>p2wsh</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(10)}>p2sh-pswsh</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(11)}>op_return</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(12)}>coinbase (903171)</NavDropdown.Item>
+                                    <NavDropdown.Item href="" onClick={() => handleSample(13)}>coinbase (700000)</NavDropdown.Item>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block 700000</NavDropdown.Item>
+                                </NavDropdown>
+                            </Nav>
+                        </Navbar.Collapse>
+                    </Container>
+                </Navbar>
+            </Row>
+            <Row>
+                <Col>
+                    <input
+                        className="Input"
+                        type="text"
+                        placeholder={"Transaction ID"}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                    />
+                <Button variant="primary" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
+                    Fetch
+                </Button>
+                    <Button variant="primary" onClick={() => handleClear()}>
+                        Clear
+                    </Button>
+                </Col>
+            </Row>
+        </Container>
+
+
+
+
+            <Button
+                onClick={() => setOpen(!open)}
+                aria-controls="example-fade-text"
+                aria-expanded={open}
+            >
+                Toggle text
+            </Button>
+            <Fade in={open}>
+                <div id="example-fade-text">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
+                    terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
+                    labore wes anderson cred nesciunt sapiente ea proident.
                 </div>
-            </div>
+            </Fade>
+
+
             <Content/>
-        </div>
+
+</>
     );
 }
 
