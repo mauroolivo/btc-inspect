@@ -1,12 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300&display=swap');
 
 .Input {
-  font-family: monospace;
-  color: white;
-  background: black;
+
+  /* color: white;
+  background: black; */
   border: 0;
   padding: 10px;
   width: 80%;
   font-size: larger;
+}
+
+.robotomono {
+  font-family: "Roboto Mono", monospace;
+}
+td {
+  white-space: normal !important;
+  word-wrap: break-word;
+}
+table {
+  /* table-layout: fixed; */
 }
 
 .ButtonImg {

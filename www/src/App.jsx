@@ -3,9 +3,10 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import React, {useEffect, useState} from 'react';
 import init, {init_app, get_tx_json, get_block_json} from "btc-inspect";
-import { PiLinkBold } from "react-icons/pi";
-import { toDateString, hex2a } from "./Utility/utility";
-import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {PiLinkBold} from "react-icons/pi";
+import {toDateString, hex2a} from "./utility/utility";
+import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
+import Block from "./components/Block.jsx";
 
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
         };
         runWasm();
     }, []);
+
+    function handlePrevBlock(block) {
+        handleNewInput(block)
+    }
     function handleFetch(input) {
         setTxJson(null)
         setBlockJson(null)
@@ -36,18 +41,16 @@ function App() {
         get_tx_json(input).then(tx_json_str => {
                 if (tx_json_str === "") {
                     get_block_json(input).then(block_json_str => {
-                            if(block_json_str === "") {
+                            if (block_json_str === "") {
                                 setErrLbl("Invalid hash")
-                            }
-                            else {
+                            } else {
                                 let block_json = JSON.parse(block_json_str);
                                 console.log(block_json_str)
                                 setBlockJson(block_json)
                             }
                         }
                     )
-                }
-                else {
+                } else {
                     let tx_json = JSON.parse(tx_json_str);
                     console.log(tx_json)
                     setTxJson(tx_json)
@@ -78,7 +81,7 @@ function App() {
             input = "46ebe264b0115a439732554b2b390b11b332b5b5692958b1754aa0ee57b64265"
         } else if (n === 10) {
             input = "55c7c71c63b87478cd30d401e7ca5344a2e159dc8d6990df695c7e0cb2f82783"
-        } else  if (n === 11) {
+        } else if (n === 11) {
             input = "6dfb16dd580698242bcfd8e433d557ed8c642272a368894de27292a8844a4e75"
         } else if (n === 12) {
             input = "61b43bbbf0d14580b9fdd45956b407be47499bb3712fd20f53f1b2a7029752d8"
@@ -116,11 +119,14 @@ function App() {
                         <tbody>
                         <tr key="0">
                             <td className="Col1">Prev tx ID</td>
-                            <td>{item["prev_tx"]} <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}><PiLinkBold /></button></td>
+                            <td>{item["prev_tx"]}
+                                <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}>
+                                    <PiLinkBold/></button>
+                            </td>
                         </tr>
                         <tr key="1">
                             <td className="Col1">Prev index</td>
-                            <td>{txJson["is_coinbase"] === true ? item["prev_index_hex"] : item["prev_index"] }</td>
+                            <td>{txJson["is_coinbase"] === true ? item["prev_index_hex"] : item["prev_index"]}</td>
                         </tr>
                         <tr key="2">
                             <td className="Col1">ScriptSig</td>
@@ -147,7 +153,7 @@ function App() {
                             <td className="Col1">Type</td>
                             <td>{item["prev_output_type"]}</td>
                         </tr>
-                        { txJson["is_coinbase"] === true &&
+                        {txJson["is_coinbase"] === true &&
                             <tr key="7">
                                 <td className="Col1">Coinbase height</td>
                                 <td>{txJson["coinbase_height"]}</td>
@@ -177,14 +183,14 @@ function App() {
                             <td className="Col1">Type</td>
                             <td>{item["script_type"]}</td>
                         </tr>
-                        { item["script_type"] === "op_return" &&
+                        {item["script_type"] === "op_return" &&
                             <tr key="3">
                                 <td className="Col1">op_return data</td>
                                 <td>{item["script_type"] === "op_return" ? hex2a(item["script_json"]["cmd_list_json"][2]) : ""}</td>
                             </tr>
 
                         }
-                        { item["address"].length > 0 &&
+                        {item["address"].length > 0 &&
                             <tr key="4">
                                 <td className="Col1">Address</td>
                                 <td>{item["address"]}</td>
@@ -214,12 +220,15 @@ function App() {
                 <tr key="2">
                     <td className="Col1">Weight Units</td>
                     <td>{txJson.non_witness_bytes * 4 + txJson.witness_bytes}</td>
-                    <td><span className="Supplement">{txJson.non_witness_bytes} x 4 + {txJson.witness_bytes} x 1</span></td>
+                    <td><span className="Supplement">{txJson.non_witness_bytes} x 4 + {txJson.witness_bytes} x 1</span>
+                    </td>
                 </tr>
                 <tr key="3">
                     <td className="Col1">Virtual Bytes</td>
                     <td>{txJson.non_witness_bytes + txJson.witness_bytes * 0.25}</td>
-                    <td><span className="Supplement">{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</span></td>
+                    <td><span
+                        className="Supplement">{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</span>
+                    </td>
                 </tr>
                 <tr key="4">
                     <td className="Col1">Fee rate</td>
@@ -243,7 +252,10 @@ function App() {
                 </tr>
                 <tr key="8">
                     <td className="Col1">Blockhash</td>
-                    <td>{txJson.blockhash} <button className="ButtonImg" onClick={() => handleNewInput(txJson.blockhash)}><PiLinkBold /></button></td>
+                    <td>{txJson.blockhash}
+                        <button className="ButtonImg" onClick={() => handleNewInput(txJson.blockhash)}><PiLinkBold/>
+                        </button>
+                    </td>
                     <td></td>
                 </tr>
                 <tr key="9">
@@ -260,76 +272,9 @@ function App() {
             </table>
         )
     }
-    function TableBlock() {
-        const transactions = blockJson.txs.map(tx => <li>{tx}</li>);
+    function ContentTx() {
         return (
-            <>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td className="Col1">Raw</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.raw}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Version</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.version}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Version bits</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.version_bits}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Previous Block</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.prev_block} <button className="ButtonImg" onClick={() => handleNewInput(blockJson.prev_block)}><PiLinkBold /></button></td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">merkle root</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.merkle_root}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Timestamp</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.timestamp} {toDateString(blockJson.timestamp)}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Height</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.height}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Bits</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.bits}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Nonce</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.nonce}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Transactions</td>
-                        <td className="Col2"></td>
-                        <td>{blockJson.n_tx}</td>
-                    </tr>
-                    { /*
-                    <tr>
-                        <td className="Col1">Transactions</td>
-                        <td className="Col2"></td>
-                        <td><ul>{transactions}</ul></td>
-                    </tr>
-                    */ }
-                    </tbody>
-                </table>
-            </>
-        )
-    }
-    function TableTx() {
-        return (
+
             <>
                 <table>
                     <tbody>
@@ -384,9 +329,11 @@ function App() {
     }
     function Content() {
         if (txJson !== null) {
-            return (<TableTx/>);
+            return (<ContentTx/>);
         } else if (blockJson !== null) {
-            return (<TableBlock/>)
+            return (
+                <Block blockJson={blockJson} onPrevBlock={handlePrevBlock}/>
+            )
         } else if (errLbl !== null) {
             return <p>{errLbl}</p>
         } else {
@@ -395,82 +342,81 @@ function App() {
             )
         }
     }
+
     return (
-<>
-        <Container>
-            <Row>
-                <Navbar expand="lg" className="bg-body-tertiary">
-                    <Container>
-                        <Navbar.Brand href="#home">BTC</Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                        <Navbar.Collapse id="basic-navbar-nav">
-                            <Nav className="me-auto">
-                                <Nav.Link href="#home" >Home</Nav.Link>
-                                <Nav.Link href="#link">Link</Nav.Link>
-                                <NavDropdown title="Samples" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="" onClick={() => handleSample(1)}>P2WPKH</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(2)}>p2ms</NavDropdown.Item>
+        <>
+            <Container className=" fw-lighter">
+                <Row>
+                    <Navbar expand="lg" className="bg-body-tertiary">
+                        <Container>
+                            <Navbar.Brand href="#home">BTC</Navbar.Brand>
+                            <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                            <Navbar.Collapse id="basic-navbar-nav">
+                                <Nav className="me-auto">
+                                    <Nav.Link href="#home">Home</Nav.Link>
+                                    <Nav.Link href="#link">Link</Nav.Link>
+                                    <NavDropdown title="Samples" id="basic-nav-dropdown">
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(1)}>P2WPKH</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(2)}>p2ms</NavDropdown.Item>
 
-                                    <NavDropdown.Item href="" onClick={() => handleSample(3)}>p2pkh</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(4)}>p2tr</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(5)}>p2wpkh</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(6)}>p2sh multisig</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(7)}>p2pk</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(8)}>p2sh-p2wpkh</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(9)}>p2wsh</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(10)}>p2sh-pswsh</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(11)}>op_return</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(12)}>coinbase (903171)</NavDropdown.Item>
-                                    <NavDropdown.Item href="" onClick={() => handleSample(13)}>coinbase (700000)</NavDropdown.Item>
-                                    <NavDropdown.Divider />
-                                    <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block 700000</NavDropdown.Item>
-                                </NavDropdown>
-                            </Nav>
-                        </Navbar.Collapse>
-                    </Container>
-                </Navbar>
-            </Row>
-            <Row>
-                <Col>
-                    <input
-                        className="Input"
-                        type="text"
-                        placeholder={"Transaction ID"}
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                    />
-                <Button variant="primary" disabled={inputValue.length !== 64} onClick={() => handleFetch(inputValue)}>
-                    Fetch
-                </Button>
-                    <Button variant="primary" onClick={() => handleClear()}>
-                        Clear
-                    </Button>
-                </Col>
-            </Row>
-        </Container>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(3)}>p2pkh</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(4)}>p2tr</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(5)}>p2wpkh</NavDropdown.Item>
+                                        <NavDropdown.Item href="" onClick={() => handleSample(6)}>p2sh
+                                            multisig</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(7)}>p2pk</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(8)}>p2sh-p2wpkh</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(9)}>p2wsh</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(10)}>p2sh-pswsh</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => handleSample(11)}>op_return</NavDropdown.Item>
+                                        <NavDropdown.Item href="" onClick={() => handleSample(12)}>coinbase
+                                            (903171)</NavDropdown.Item>
+                                        <NavDropdown.Item href="" onClick={() => handleSample(13)}>coinbase
+                                            (700000)</NavDropdown.Item>
+                                        <NavDropdown.Divider/>
+                                        <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block
+                                            700000</NavDropdown.Item>
+                                    </NavDropdown>
+                                </Nav>
+                            </Navbar.Collapse>
+                        </Container>
+                    </Navbar>
+                </Row>
+                <Row>
+                    <Col>
+                        <input
+                            className="Input robotomono"
+                            type="text"
+                            placeholder={"Transaction ID"}
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
+                        />
+                        <Button variant="primary" disabled={inputValue.length !== 64}
+                                onClick={() => handleFetch(inputValue)}>
+                            Fetch
+                        </Button>
+                        <Button variant="primary" onClick={() => handleClear()}>
+                            Clear
+                        </Button>
+                    </Col>
+                </Row>
 
-
-
-
-            <Button
-                onClick={() => setOpen(!open)}
-                aria-controls="example-fade-text"
-                aria-expanded={open}
-            >
-                Toggle text
-            </Button>
-            <Fade in={open}>
-                <div id="example-fade-text">
-                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus
-                    terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer
-                    labore wes anderson cred nesciunt sapiente ea proident.
-                </div>
-            </Fade>
+            </Container>
 
 
             <Content/>
 
-</>
+        </>
     );
 }
 
