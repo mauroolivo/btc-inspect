@@ -1,5 +1,4 @@
 use bech32::{hrp, segwit, Hrp, Bech32m};
-use num::BigUint;
 
 pub enum SegwitVersion {
     version_0,

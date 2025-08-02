@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {PiLinkBold} from "react-icons/pi";
 import {toDateString} from "../utility/utility.js";
-import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
+import {Container, Row, Table} from "react-bootstrap";
 
 
-function Block({blockJson, onPrevBlock}) {
+function Block({blockJson, onBlock}) {
 
         const transactions = blockJson.txs.map(tx => <li>{tx}</li>);
         return (
@@ -15,52 +15,52 @@ function Block({blockJson, onPrevBlock}) {
                         <Table striped hover>
                             <tbody>
                             <tr>
-                                <td nowrap><p>RAW</p></td>
+                                <td ><p>RAW</p></td>
                                 <td><p className="robotomono">{blockJson.raw}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Version</td>
+                                <td >Version</td>
                                 <td><p className="robotomono">{blockJson.version}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Version bits</td>
+                                <td >Version bits</td>
                                 <td><p className="robotomono">{blockJson.version_bits}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Previous Block</td>
+                                <td >Previous Block</td>
                                 <td>
                                     <p className="robotomono">{blockJson.prev_block}
                                         <button className="ButtonImg"
-                                                onClick={() => onPrevBlock(blockJson.prev_block)} >
+                                                onClick={() => onBlock(blockJson.prev_block)} >
                                             <PiLinkBold/></button>
                                     </p>
                                 </td>
                             </tr>
                             <tr>
-                                <td nowrap="true">Merkle root</td>
+                                <td>Merkle root</td>
                                 <td><p className="robotomono">{blockJson.merkle_root}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap="true">Timestamp</td>
+                                <td>Timestamp</td>
                                 <td><p
                                     className="robotomono">{blockJson.timestamp}</p> {toDateString(blockJson.timestamp)}
                                 </td>
                             </tr>
 
                             <tr>
-                                <td nowrap="true">Height</td>
+                                <td>Height</td>
                                 <td><p>{blockJson.height}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Bits</td>
+                                <td >Bits</td>
                                 <td><p className="robotomono">{blockJson.bits}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Nonce</td>
+                                <td >Nonce</td>
                                 <td><p className="robotomono">{blockJson.nonce}</p></td>
                             </tr>
                             <tr>
-                                <td nowrap>Transactions</td>
+                                <td >Transactions</td>
                                 <td><p>{blockJson.n_tx}</p></td>
                             </tr>
                             </tbody>

@@ -2,7 +2,7 @@ extern crate core;
 
 use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
-use std::{io::{Read}};
+
 use crate::block::Block;
 use crate::utils::set_panic_hook;
 

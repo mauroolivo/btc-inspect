@@ -329,21 +329,21 @@ impl Script {
     }
     pub fn get_output_type(&self) -> OutputType {
         if self.is_p2pk() == true {
-            return OutputType::p2pk
+            return OutputType::P2pk
         } else if self.is_p2pkh_script_pubkey() {
-            return OutputType::p2pkh
+            return OutputType::P2pkh
         } else if self.is_p2sh_script_pubkey() {
-            return OutputType::p2sh
+            return OutputType::P2sh
         } else if self.is_p2wpkh_script_pubkey() {
-            return OutputType::p2wpkh
+            return OutputType::P2wpkh
         } else if self.is_p2wsh_script_pubkey() {
-            return OutputType::p2wsh
+            return OutputType::P2wsh
         } else if self.is_p2tr() {
-            return OutputType::p2tr
+            return OutputType::P2tr
         } else if self.is_op_return() {
-            return OutputType::op_return
+            return OutputType::OpReturn
         }
-        OutputType::unknown
+        OutputType::Unknown
     }
     pub fn get_address(&self, testnet: bool) -> String {
         if self.is_p2pkh_script_pubkey() == true {

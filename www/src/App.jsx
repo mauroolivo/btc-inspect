@@ -7,6 +7,7 @@ import {PiLinkBold} from "react-icons/pi";
 import {toDateString, hex2a} from "./utility/utility";
 import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
 import Block from "./components/Block.jsx";
+import Tx from "./components/Tx.jsx";
 
 
 function App() {
@@ -14,14 +15,7 @@ function App() {
     const [txJson, setTxJson] = useState(null)
     const [blockJson, setBlockJson] = useState(null)
     const [errLbl, setErrLbl] = useState(null)
-    const [isDropdownVisible, setDropdownVisible] = useState(false);
-    const [open, setOpen] = useState(false);
-    const handleMouseEnter = () => {
-        setDropdownVisible(true);
-    };
-    const handleMouseLeave = () => {
-        setDropdownVisible(false);
-    };
+
     useEffect(() => {
         const runWasm = async () => {
             await init();
@@ -30,8 +24,11 @@ function App() {
         runWasm();
     }, []);
 
-    function handlePrevBlock(block) {
-        handleNewInput(block)
+    function handleBlock(blockId) {
+        handleNewInput(blockId)
+    }
+    function handleTx(txId) {
+        handleNewInput(txId)
     }
     function handleFetch(input) {
         setTxJson(null)
@@ -59,7 +56,6 @@ function App() {
         )
     }
     function handleSample(n) {
-        setDropdownVisible(false);
         let input = ""
         if (n === 1) {
             input = "64ff0b827f7899674fc26b693c557852540b9260c5c29cf18f536b56f01b17ba"
@@ -103,236 +99,13 @@ function App() {
         setTxJson(null)
         setInputValue("")
     }
-    function ScriptItems({items}) {
-        if (items === undefined) {
-            return <p></p>
-        }
-        const list = items.map((item, idx) =>
-            (<p key={idx}><span className="IsByte">{item}</span></p>)
-        );
-        return (<>{list}</>)
-    }
-    function Inputs() {
-        const listItems = txJson.inputs.map((item, idx) =>
-            (<div key={idx}><p>Input {idx}</p>
-                    <table>
-                        <tbody>
-                        <tr key="0">
-                            <td className="Col1">Prev tx ID</td>
-                            <td>{item["prev_tx"]}
-                                <button className="ButtonImg" onClick={() => handleNewInput(item["prev_tx"])}>
-                                    <PiLinkBold/></button>
-                            </td>
-                        </tr>
-                        <tr key="1">
-                            <td className="Col1">Prev index</td>
-                            <td>{txJson["is_coinbase"] === true ? item["prev_index_hex"] : item["prev_index"]}</td>
-                        </tr>
-                        <tr key="2">
-                            <td className="Col1">ScriptSig</td>
-                            <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
-                        </tr>
-                        <tr key="3">
-                            <td className="Col1">Witness</td>
-                            <td><ScriptItems items={item["witness"]}/></td>
-                        </tr>
-                        <tr key="4">
-                            <td className="Col1">Sequence</td>
-                            <td>{item["sequence_hex"]} (RBF: {item["is_rbf"] === true ? "enabled" : "not enabled"})</td>
-                        </tr>
-                        <tr key="5">
-                            <td className="Col1">Prev Output ScriptPubKey</td>
-                            <td>
-                                {
-                                    item["prev_output_script_pubkey"] &&
-                                    <ScriptItems items={item["prev_output_script_pubkey"]["cmd_list_json"]}/>
-                                }
-                            </td>
-                        </tr>
-                        <tr key="6">
-                            <td className="Col1">Type</td>
-                            <td>{item["prev_output_type"]}</td>
-                        </tr>
-                        {txJson["is_coinbase"] === true &&
-                            <tr key="7">
-                                <td className="Col1">Coinbase height</td>
-                                <td>{txJson["coinbase_height"]}</td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
-                </div>
-            ));
-        return (<>{listItems}</>)
-    }
-    function Outputs() {
-        const listItems = txJson.outputs.map((item, idx) =>
-            (<div key={idx}><p>Output {idx}</p>
-                    <table>
-                        <tbody>
-                        <tr key="0">
-                            <td className="Col1">Amount</td>
-                            <td>{item["amount"]} sats</td>
-                            <td></td>
-                        </tr>
-                        <tr key="1">
-                            <td className="Col1">ScriptPubKey</td>
-                            <td><ScriptItems items={item["script_json"]["cmd_list_json"]}/></td>
-                        </tr>
-                        <tr key="2">
-                            <td className="Col1">Type</td>
-                            <td>{item["script_type"]}</td>
-                        </tr>
-                        {item["script_type"] === "op_return" &&
-                            <tr key="3">
-                                <td className="Col1">op_return data</td>
-                                <td>{item["script_type"] === "op_return" ? hex2a(item["script_json"]["cmd_list_json"][2]) : ""}</td>
-                            </tr>
 
-                        }
-                        {item["address"].length > 0 &&
-                            <tr key="4">
-                                <td className="Col1">Address</td>
-                                <td>{item["address"]}</td>
-                            </tr>
-
-                        }
-                        </tbody>
-                    </table>
-                </div>
-            ));
-        return (<>{listItems}</>)
-    }
-    function Summary() {
-        return (
-            <table>
-                <tbody>
-                <tr key="0">
-                    <td className="Col1">Fee</td>
-                    <td>{txJson.fee} sats</td>
-                    <td></td>
-                </tr>
-                <tr key="1">
-                    <td className="Col1">Bytes</td>
-                    <td>{txJson.non_witness_bytes + txJson.witness_bytes}</td>
-                    <td><span className="Supplement">{txJson.non_witness_bytes} + {txJson.witness_bytes}</span></td>
-                </tr>
-                <tr key="2">
-                    <td className="Col1">Weight Units</td>
-                    <td>{txJson.non_witness_bytes * 4 + txJson.witness_bytes}</td>
-                    <td><span className="Supplement">{txJson.non_witness_bytes} x 4 + {txJson.witness_bytes} x 1</span>
-                    </td>
-                </tr>
-                <tr key="3">
-                    <td className="Col1">Virtual Bytes</td>
-                    <td>{txJson.non_witness_bytes + txJson.witness_bytes * 0.25}</td>
-                    <td><span
-                        className="Supplement">{txJson.non_witness_bytes} x 1 + {txJson.witness_bytes} x 0.25</span>
-                    </td>
-                </tr>
-                <tr key="4">
-                    <td className="Col1">Fee rate</td>
-                    <td>{Number(txJson.fee / (txJson.non_witness_bytes + txJson.witness_bytes * 0.25)).toFixed(2)} sats/vBytes</td>
-                    <td></td>
-                </tr>
-                <tr key="5">
-                    <td className="Col1">SegWit</td>
-                    <td>{txJson.is_segwit ? "YES" : "NO"}</td>
-                    <td></td>
-                </tr>
-                <tr key="6">
-                    <td className="Col1">RBF</td>
-                    <td>{txJson.is_rbf ? "YES" : "NO"}</td>
-                    <td></td>
-                </tr>
-                <tr key="7">
-                    <td className="Col1">Coinbase</td>
-                    <td>{txJson.is_coinbase ? "YES" : "NO"}</td>
-                    <td></td>
-                </tr>
-                <tr key="8">
-                    <td className="Col1">Blockhash</td>
-                    <td>{txJson.blockhash}
-                        <button className="ButtonImg" onClick={() => handleNewInput(txJson.blockhash)}><PiLinkBold/>
-                        </button>
-                    </td>
-                    <td></td>
-                </tr>
-                <tr key="9">
-                    <td className="Col1">Blocktime</td>
-                    <td>{toDateString(txJson.blocktime)}</td>
-                    <td></td>
-                </tr>
-                <tr key="10">
-                    <td className="Col1">Confirmations</td>
-                    <td>{txJson.confirmations}</td>
-                    <td></td>
-                </tr>
-                </tbody>
-            </table>
-        )
-    }
-    function ContentTx() {
-        return (
-
-            <>
-                <table>
-                    <tbody>
-                    <tr>
-                        <td className="Col1">Summary</td>
-                        <td className="Col2"></td>
-                        <td><Summary/></td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Tx Hex</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.hex}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Tx ID</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.tx_id}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Hash (wTxId)</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.hash}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Version</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.version_hex} ({txJson.version})</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Segwit marker</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.marker_hex}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Segwit flag</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.marker_flag}</td>
-                    </tr>
-                    <tr>
-                        <td className="Col1">Locktime</td>
-                        <td className="Col2"></td>
-                        <td>{txJson.locktime_hex} ({txJson.locktime})</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div className="Cols2">
-                    <div><Inputs/></div>
-                    <div><Outputs/></div>
-                </div>
-            </>
-        )
-    }
     function Content() {
         if (txJson !== null) {
-            return (<ContentTx/>);
+            return (<Tx txJson={txJson} onBlock={handleBlock} onTx={handleTx}/>)
         } else if (blockJson !== null) {
             return (
-                <Block blockJson={blockJson} onPrevBlock={handlePrevBlock}/>
+                <Block blockJson={blockJson} onBlock={handleBlock}/>
             )
         } else if (errLbl !== null) {
             return <p>{errLbl}</p>
@@ -410,12 +183,9 @@ function App() {
                         </Button>
                     </Col>
                 </Row>
-
             </Container>
 
-
             <Content/>
-
         </>
     );
 }

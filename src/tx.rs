@@ -99,20 +99,20 @@ impl Tx {
 
                         let mut out_type = prev_out_script_pub_key.get_output_type();
                         match out_type {
-                            OutputType::p2sh => {
+                            OutputType::P2sh => {
                                 match res.redeem_script {
                                     Some(script) => {
                                         if script.is_p2wpkh_script_pubkey() {
-                                            out_type = OutputType::p2sh_p2wpkh;
+                                            out_type = OutputType::P2shP2wpkh;
                                         } else if script.is_p2wsh_script_pubkey() {
-                                            out_type = OutputType::p2sh_p2wsh;
+                                            out_type = OutputType::P2shP2wsh;
                                         }
                                     }
                                     None => {}
                                 }
                             }
-                            OutputType::p2tr => {
-                                out_type = OutputType::p2tr
+                            OutputType::P2tr => {
+                                out_type = OutputType::P2tr
                             }
                             _ => {}
                         }
@@ -137,7 +137,6 @@ impl Tx {
         tx_json["outputs"] = json!(outputs_json_list);
         tx.tx_json = tx_json.clone();
 
-        log::info!("-------> {:?}", tx.tx_json);
         Some(tx)
     }
     pub fn version(&self) -> u32 {
