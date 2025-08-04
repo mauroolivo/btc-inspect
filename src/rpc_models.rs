@@ -20,7 +20,6 @@ pub struct RpcBlock1Response {
     jsonrpc: String,
     pub result: RpcBlock1Result,
 }
-
 #[derive(Deserialize)]
 pub struct RpcBlock1Result {
     pub hash: String,
@@ -42,4 +41,8 @@ pub struct RpcBlock1Result {
     pub size: u64,
     pub weight: u64,
     pub tx: Vec<String>,
+}
+#[derive(Deserialize)]
+pub struct RpcBlockCountResponse {
+    pub(crate) result: u32
 }

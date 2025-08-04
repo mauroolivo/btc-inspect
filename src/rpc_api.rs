@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use to_binary::BinaryString;
 use crate::env::{API_PASS, API_URL, API_USER};
 use crate::helpers::endianness::int_to_little_endian;
-use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response};
+use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response, RpcBlockCountResponse};
 
 pub struct RpcApi {
     api_url: String,
@@ -21,7 +21,7 @@ pub struct RpcApi {
 
 impl RpcApi {
     pub fn new(testnet: bool) -> Self {
-        RpcApi {api_url: API_URL.lock().unwrap().to_string(), testnet }
+        RpcApi { api_url: API_URL.lock().unwrap().to_string(), testnet }
     }
     pub async fn get_tx(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
         if self.testnet {
@@ -72,7 +72,6 @@ impl RpcApi {
         }
     }
     pub async fn get_block(&self, block_id: &str) -> Result<Block, reqwest::Error> {
-
         if self.testnet {
             panic!("Not implemented");
         }
@@ -114,7 +113,6 @@ impl RpcApi {
 
                 match response1 {
                     Ok(result) => {
-
                         block_json["n_tx"] = json!(result.result.nTx);
                         block_json["txs"] = json!(result.result.tx);
                         block_json["height"] = json!(result.result.height);
@@ -134,7 +132,6 @@ impl RpcApi {
         }
     }
     async fn get_block_0(&self, block_id: &str) -> Result<RpcBlock0Response, reqwest::Error> {
-
         if self.testnet {
             panic!("Not implemented");
         }
@@ -170,7 +167,6 @@ impl RpcApi {
         }
     }
     async fn get_block_1(&self, block_id: &str) -> Result<RpcBlock1Response, reqwest::Error> {
-
         if self.testnet {
             panic!("Not implemented");
         }
@@ -193,6 +189,40 @@ impl RpcApi {
             .await
             .unwrap()
             .json::<RpcBlock1Response>()
+            //.text()
+            .await;
+        match response {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(e) => {
+                Err(reqwest::Error::from(e))
+            }
+        }
+    }
+    pub async fn get_block_count(&self) -> Result<RpcBlockCountResponse, reqwest::Error> {
+
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        let json_string = json!({
+            "jsonrpc": "2.0",
+            "id": "curl",
+            "method": "getblockcount",
+            "params": []
+        }).to_string();
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(url)
+            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+            .body(json_string)
+            .send()
+            .await
+            .unwrap()
+            .json::<RpcBlockCountResponse>()
             //.text()
             .await;
         match response {

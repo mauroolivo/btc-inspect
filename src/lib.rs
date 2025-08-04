@@ -4,6 +4,7 @@ use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
 
 use crate::block::Block;
+use crate::rpc_api::RpcApi;
 use crate::utils::set_panic_hook;
 
 mod utils;
@@ -49,5 +50,14 @@ pub async fn get_block_json(block_id: String) -> String { // todo add testnet su
     match block {
         Some(block) => block.block_json.to_string(),
         None => "".to_string()
+    }
+}
+#[wasm_bindgen]
+pub async fn get_block_count() -> u32 {
+    let api = RpcApi::new(false);
+    let res_wrapped = api.get_block_count().await;
+    match res_wrapped {
+        Ok(res) => {res.result},
+        Err(_) => {0}
     }
 }
