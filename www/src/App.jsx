@@ -15,6 +15,7 @@ function App() {
     const [txJson, setTxJson] = useState(null)
     const [blockJson, setBlockJson] = useState(null)
     const [errLbl, setErrLbl] = useState(null)
+    const [blockTxs, setBlockTxs] = useState([])
 
     useEffect(() => {
         const runWasm = async () => {
@@ -24,6 +25,9 @@ function App() {
         runWasm();
     }, []);
 
+    function handleBlockTxs(blockId) {
+        console.log(blockId)
+    }
     function handleBlock(blockId) {
         handleNewInput(blockId)
     }
@@ -110,7 +114,10 @@ function App() {
             return (<Tx txJson={txJson} onBlock={handleBlock} onTx={handleTx}/>)
         } else if (blockJson !== null) {
             return (
-                <Block blockJson={blockJson} onBlock={handleBlock}/>
+                <Block blockJson={blockJson}
+                       blockTxs={blockTxs}
+                       onBlock={handleBlock}
+                       onBlockTxs={handleBlockTxs}/>
             )
         } else if (errLbl !== null) {
             return <p>{errLbl}</p>

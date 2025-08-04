@@ -110,6 +110,7 @@ impl RpcApi {
                 block_json["timestamp"] = json!(block.clone().timestamp);
                 block_json["bits"] = json!(hex::encode(block.clone().bits));
                 block_json["nonce"] = json!(hex::encode(block.clone().nonce));
+                block_json["block_id"] = json!(block_id);
 
                 match response1 {
                     Ok(result) => {
