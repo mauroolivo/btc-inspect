@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, get_tx_json, get_block_json, get_block_count} from "btc-inspect";
+import init, {init_app, get_tx_json, get_block_json, get_block_count, get_blockchain_info} from "btc-inspect";
 import {PiLinkBold} from "react-icons/pi";
 import {toDateString, hex2a} from "./utility/utility";
 import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
@@ -36,6 +36,11 @@ function App() {
     }
     function getBlockCount() {
         get_block_count().then(res => {
+            console.log(res)
+        })
+    }
+    function getBlockchainInfo() {
+        get_blockchain_info().then(res => {
             console.log(res)
         })
     }
@@ -171,6 +176,12 @@ function App() {
                                         <NavDropdown.Divider/>
                                         <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block
                                             700000</NavDropdown.Item>
+                                    </NavDropdown>
+                                    <NavDropdown title="Blockchain" id="basic-nav-dropdown">
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => getBlockCount()}>get_block_count</NavDropdown.Item>
+                                        <NavDropdown.Item href=""
+                                                          onClick={() => getBlockchainInfo()}>get_blockchain_info</NavDropdown.Item>
                                     </NavDropdown>
                                 </Nav>
                             </Navbar.Collapse>

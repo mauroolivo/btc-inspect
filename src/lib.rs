@@ -1,10 +1,13 @@
 extern crate core;
 
+use serde::Serialize;
+use serde_json::json;
 use wasm_bindgen::prelude::*;
 use crate::tx::Tx;
 
 use crate::block::Block;
 use crate::rpc_api::RpcApi;
+use crate::rpc_models::RpcBlockchaininfoResult;
 use crate::utils::set_panic_hook;
 
 mod utils;
@@ -59,5 +62,16 @@ pub async fn get_block_count() -> u32 {
     match res_wrapped {
         Ok(res) => {res.result},
         Err(_) => {0}
+    }
+}
+#[wasm_bindgen]
+pub async fn get_blockchain_info() -> String {
+    let api = RpcApi::new(false);
+    let res_wrapped = api.get_blockchain_info().await;
+    match res_wrapped {
+        Ok(res) => {
+            serde_json::to_string(&res.result).unwrap()
+        },
+        Err(_) => {"".to_string()}
     }
 }

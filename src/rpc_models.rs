@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
 pub struct RpcTxResponse {
@@ -45,4 +45,24 @@ pub struct RpcBlock1Result {
 #[derive(Deserialize)]
 pub struct RpcBlockCountResponse {
     pub(crate) result: u32
+}
+#[derive(Deserialize)]
+pub struct RpcBlockchaininfoResponse {
+    pub(crate) result: RpcBlockchaininfoResult
+}
+#[derive(Deserialize, Serialize)]
+pub struct RpcBlockchaininfoResult {
+    pub chain: String,
+    pub blocks: u32,
+    pub headers: u32,
+    pub bestblockhash: String,
+    pub difficulty: f32,
+    pub time: u32,
+    pub mediantime: u32,
+    pub verificationprogress: f32,
+    pub initialblockdownload: bool,
+    pub chainwork: String,
+    pub size_on_disk: f32,
+    pub pruned: bool,
+    pub warnings: Vec<String>,
 }
