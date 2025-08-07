@@ -43,6 +43,29 @@ pub struct RpcBlock1Result {
     pub tx: Vec<String>,
 }
 #[derive(Deserialize)]
+pub struct RpcBlock2Response {
+    pub result: RpcBlock2Result,
+}
+#[derive(Deserialize)]
+pub struct RpcBlock2Result {
+    pub tx: Vec<RpcBlock2Tx>,
+}
+#[derive(Deserialize)]
+pub struct RpcBlock2Tx {
+    pub(crate) txid: String,
+    pub(crate) fee: Option<f32>,
+    pub(crate) vin: Option<Vec<Vin>>,
+    pub(crate) vout: Option<Vec<Vout>>
+}
+#[derive(Deserialize)]
+pub struct Vin {
+    pub(crate) txid: Option<String>,
+}
+#[derive(Deserialize)]
+pub struct Vout {
+    pub(crate) value: Option<f32>
+}
+#[derive(Deserialize)]
 pub struct RpcBlockCountResponse {
     pub(crate) result: u32
 }

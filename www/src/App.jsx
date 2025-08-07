@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, get_tx_json, get_block_json, get_block_count, get_blockchain_info} from "btc-inspect";
+import init, {init_app, get_tx_json, get_block_json, get_block_count, get_blockchain_info, get_block_txs_json} from "btc-inspect";
 import {PiLinkBold} from "react-icons/pi";
 import {toDateString, hex2a} from "./utility/utility";
 import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
@@ -26,7 +26,11 @@ function App() {
     }, []);
 
     function handleBlockTxs(blockId) {
-        console.log(blockId)
+        get_block_txs_json(blockId).then(res => {
+            let block_txs_json = JSON.parse(res);
+            console.log(block_txs_json)
+            setBlockTxs(block_txs_json)
+        })
     }
     function handleBlock(blockId) {
         handleNewInput(blockId)

@@ -75,3 +75,37 @@ pub async fn get_blockchain_info() -> String {
         Err(_) => {"".to_string()}
     }
 }
+#[wasm_bindgen]
+pub async fn get_block_txs_json(block_id: String) -> String {
+    let api = RpcApi::new(false);
+    let res_wrapped = api.get_block_2(&block_id).await;
+
+    match res_wrapped {
+        Ok(block_res) => {
+            let txs = block_res.result.tx;
+            let mut txs_json = Vec::new();
+            for tx in txs {
+                let mut tx_json = json!({});
+                tx_json["txid"] = json!(tx.txid);
+                tx_json["fee"] = json!(tx.fee);
+                let mut vin_count = 0;
+                if let Some(vin) = tx.vin {
+                    vin_count = vin.len()
+                }
+                let mut vout_count = 0;
+                if let Some(vout) = tx.vout {
+                    vout_count = vout.len()
+                }
+                tx_json["inputs"] = json!(vin_count);
+                tx_json["outputs"] = json!(vout_count);
+
+                txs_json.push(tx_json);
+            }
+            serde_json::to_string(&txs_json).unwrap()
+        }
+        Err(_) => {
+
+            "".to_string()
+        }
+    }
+}

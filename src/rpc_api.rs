@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::f32::consts::E;
 use std::io::{Cursor, Error, ErrorKind};
 use std::num::IntErrorKind;
+use log::info;
 use num::BigUint;
 use reqwest::Method;
 //use ripemd::digest::core_api::Block;
@@ -12,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use to_binary::BinaryString;
 use crate::env::{API_PASS, API_URL, API_USER};
 use crate::helpers::endianness::int_to_little_endian;
-use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response, RpcBlockCountResponse, RpcBlockchaininfoResponse};
+use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response, RpcBlockCountResponse, RpcBlockchaininfoResponse, RpcBlock2Response};
 
 pub struct RpcApi {
     api_url: String,
@@ -197,6 +198,41 @@ impl RpcApi {
                 Ok(result)
             }
             Err(e) => {
+                Err(reqwest::Error::from(e))
+            }
+        }
+    }
+    pub async fn get_block_2(&self, block_id: &str) -> Result<RpcBlock2Response, reqwest::Error> {
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        let verbosity = 2;
+        let json_string = json!({
+            "jsonrpc": "2.0",
+            "id": "curl",
+            "method": "getblock",
+            "params": [block_id, verbosity]
+        }).to_string();
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(url)
+            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+            .body(json_string)
+            .send()
+            .await
+            .unwrap()
+            .json::<RpcBlock2Response>()
+            //.text()
+            .await;
+        match response {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(e) => {
+                info!("ERR: {:?}", e);
                 Err(reqwest::Error::from(e))
             }
         }
