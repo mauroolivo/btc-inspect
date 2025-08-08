@@ -4,11 +4,26 @@ import {toDateString} from "../utility/utility.js";
 import {Button, Container, Row, Table} from "react-bootstrap";
 
 
-function Block({blockJson, blockTxs, onBlock, onBlockTxs}) {
-    const [page, setPage] = useState(0)
-    const [offset, setOffset] = useState(20)
-    const transactions = blockJson.txs.slice(page, offset);
-    const txsRows = transactions.map((tx, key) => <tr key={key}><td>{tx}</td></tr>);
+function Block({blockJson, blockTxs, onBlock, onBlockTxs, onTx}) {
+
+
+    function getTxs(block_id) {
+
+        onBlockTxs(block_id)
+
+    }
+    /*
+    const txsRows = blockTxs.map((tx, key) =>
+        <tr key={key}>
+            <td><p className="robotomono">{tx.txid}</p>
+                <button className="ButtonImg" onClick={() => onTx(tx.txid)}>
+                    <PiLinkBold/></button>
+            </td>
+            <td><p className="robotomono">{tx.fee}</p></td>
+            <td><p className="robotomono">{tx.inputs}</p></td>
+            <td><p className="robotomono">{tx.outputs}</p></td>
+        </tr>);
+*/
     return (
         <>
 
@@ -68,16 +83,39 @@ function Block({blockJson, blockTxs, onBlock, onBlockTxs}) {
                         </tbody>
                     </Table>
                 </Row>
-                <Button onClick={() => onBlockTxs(blockJson.block_id)}>load txs</Button>
-                {/*
-                <Row>
-                    <Table striped hover>
-                        <tbody>
-                        {txsRows}
-                        </tbody>
-                    </Table>
-                </Row>
-                */}
+                {
+                    blockTxs.length === 0 && <Button onClick={() => {
+                        getTxs(blockJson.block_id)
+                    }
+                    }>load txs</Button>
+                }
+                {
+                    blockTxs.length > 0 &&
+                    <Row>
+                        <Table striped hover>
+                            <thead>
+                            <tr>
+                                <th>Tx id</th>
+                                <th>Fee</th>
+                                <th>input</th>
+                                <th>outputs</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {blockTxs.map((tx, key) =>
+                                <tr key={key}>
+                                    <td><p className="robotomono">{tx.txid}</p>
+                                        <button className="ButtonImg" onClick={() => onTx(tx.txid)}>
+                                            <PiLinkBold/></button>
+                                    </td>
+                                    <td><p className="robotomono">{tx.fee}</p></td>
+                                    <td><p className="robotomono">{tx.inputs}</p></td>
+                                    <td><p className="robotomono">{tx.outputs}</p></td>
+                                </tr>)}
+                            </tbody>
+                        </Table>
+                    </Row>
+                }
             </Container>
         </>
     )

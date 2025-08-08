@@ -53,7 +53,7 @@ pub struct RpcBlock2Result {
 #[derive(Deserialize)]
 pub struct RpcBlock2Tx {
     pub(crate) txid: String,
-    pub(crate) fee: Option<f32>,
+    pub(crate) fee: Option<f64>,
     pub(crate) vin: Option<Vec<Vin>>,
     pub(crate) vout: Option<Vec<Vout>>
 }

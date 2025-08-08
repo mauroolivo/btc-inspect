@@ -28,7 +28,6 @@ function App() {
     function handleBlockTxs(blockId) {
         get_block_txs_json(blockId).then(res => {
             let block_txs_json = JSON.parse(res);
-            console.log(block_txs_json)
             setBlockTxs(block_txs_json)
         })
     }
@@ -49,6 +48,7 @@ function App() {
         })
     }
     function handleFetch(input) {
+        setBlockTxs([])
         setTxJson(null)
         setBlockJson(null)
         setErrLbl(null)
@@ -60,14 +60,12 @@ function App() {
                                 setErrLbl("Invalid hash")
                             } else {
                                 let block_json = JSON.parse(block_json_str);
-                                console.log(block_json_str)
                                 setBlockJson(block_json)
                             }
                         }
                     )
                 } else {
                     let tx_json = JSON.parse(tx_json_str);
-                    console.log(tx_json)
                     setTxJson(tx_json)
                 }
             }
@@ -126,7 +124,8 @@ function App() {
                 <Block blockJson={blockJson}
                        blockTxs={blockTxs}
                        onBlock={handleBlock}
-                       onBlockTxs={handleBlockTxs}/>
+                       onBlockTxs={handleBlockTxs}
+                       onTx={handleTx}/>
             )
         } else if (errLbl !== null) {
             return <p>{errLbl}</p>
