@@ -89,3 +89,22 @@ pub struct RpcBlockchaininfoResult {
     pub pruned: bool,
     pub warnings: Vec<String>,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct RpgGetmempoolinfoResponse {
+    pub result: RpgGetmempoolinfoResult,
+}
+#[derive(Serialize, Deserialize)]
+pub struct RpgGetmempoolinfoResult {
+    pub loaded: bool,
+    pub size: i64,
+    pub bytes: i64,
+    pub usage: i64,
+    pub total_fee: f64,
+    pub maxmempool: i64,
+    pub mempoolminfee: f64,
+    pub minrelaytxfee: f64,
+    pub incrementalrelayfee: f64,
+    pub unbroadcastcount: i64,
+    pub fullrbf: bool,
+}
