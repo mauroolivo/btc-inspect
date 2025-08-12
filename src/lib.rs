@@ -87,6 +87,17 @@ pub async fn get_mempool_info() -> String {
     }
 }
 #[wasm_bindgen]
+pub async fn get_mining_info() -> String {
+    let api = RpcApi::new(false);
+    let res_wrapped = api.get_mining_info().await;
+    match res_wrapped {
+        Ok(res) => {
+            serde_json::to_string(&res.result).unwrap()
+        },
+        Err(_) => {"".to_string()}
+    }
+}
+#[wasm_bindgen]
 pub async fn get_block_txs_json(block_id: String) -> String {
     let api = RpcApi::new(false);
     let res_wrapped = api.get_block_2(&block_id).await;

@@ -91,11 +91,11 @@ pub struct RpcBlockchaininfoResult {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct RpgGetmempoolinfoResponse {
-    pub result: RpgGetmempoolinfoResult,
+pub struct RpcGetmempoolinfoResponse {
+    pub result: RpcGetmempoolinfoResult,
 }
 #[derive(Serialize, Deserialize)]
-pub struct RpgGetmempoolinfoResult {
+pub struct RpcGetmempoolinfoResult {
     pub loaded: bool,
     pub size: i64,
     pub bytes: i64,
@@ -107,4 +107,19 @@ pub struct RpgGetmempoolinfoResult {
     pub incrementalrelayfee: f64,
     pub unbroadcastcount: i64,
     pub fullrbf: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetmininginfoResult {
+    pub blocks: i64,
+    pub difficulty: f64,
+    pub networkhashps: f64,
+    pub pooledtx: i64,
+    pub chain: String,
+    pub warnings: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetmininginfoResponse {
+    pub result: RpcGetmininginfoResult
 }

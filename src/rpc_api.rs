@@ -13,7 +13,8 @@ use serde::{Deserialize, Serialize};
 use to_binary::BinaryString;
 use crate::env::{API_PASS, API_URL, API_USER};
 use crate::helpers::endianness::int_to_little_endian;
-use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response, RpcBlockCountResponse, RpcBlockchaininfoResponse, RpcBlock2Response, RpgGetmempoolinfoResponse};
+use crate::rpc_models::{RpcTxResponse, RpcBlock0Response, RpcBlock1Response, RpcBlockCountResponse,
+                        RpcBlockchaininfoResponse, RpcBlock2Response, RpcGetmempoolinfoResponse, RpcGetmininginfoResponse};
 
 pub struct RpcApi {
     api_url: String,
@@ -305,7 +306,7 @@ impl RpcApi {
             }
         }
     }
-    pub async fn get_mempool_info(&self) -> Result<RpgGetmempoolinfoResponse, reqwest::Error> {
+    pub async fn get_mempool_info(&self) -> Result<RpcGetmempoolinfoResponse, reqwest::Error> {
 
         if self.testnet {
             panic!("Not implemented");
@@ -327,7 +328,41 @@ impl RpcApi {
             .send()
             .await
             .unwrap()
-            .json::<RpgGetmempoolinfoResponse>()
+            .json::<RpcGetmempoolinfoResponse>()
+            //.text()
+            .await;
+        match response {
+            Ok(result) => {
+                Ok(result)
+            }
+            Err(e) => {
+                Err(reqwest::Error::from(e))
+            }
+        }
+    }
+    pub async fn get_mining_info(&self) -> Result<RpcGetmininginfoResponse, reqwest::Error> {
+
+        if self.testnet {
+            panic!("Not implemented");
+        }
+        let url = format!("{}", self.api_url);
+
+        let json_string = json!({
+            "jsonrpc": "2.0",
+            "id": "curl",
+            "method": "getmininginfo",
+            "params": []
+        }).to_string();
+
+        let client = reqwest::Client::new();
+        let response = client
+            .post(url)
+            .basic_auth(API_USER.lock().unwrap().to_string(), Some(API_PASS.lock().unwrap().to_string()))
+            .body(json_string)
+            .send()
+            .await
+            .unwrap()
+            .json::<RpcGetmininginfoResponse>()
             //.text()
             .await;
         match response {
