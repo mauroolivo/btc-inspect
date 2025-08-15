@@ -108,7 +108,6 @@ pub struct RpcGetmempoolinfoResult {
     pub unbroadcastcount: i64,
     pub fullrbf: bool,
 }
-
 #[derive(Serialize, Deserialize)]
 pub struct RpcGetmininginfoResult {
     pub blocks: i64,
@@ -118,8 +117,30 @@ pub struct RpcGetmininginfoResult {
     pub chain: String,
     pub warnings: Vec<String>,
 }
-
 #[derive(Serialize, Deserialize)]
 pub struct RpcGetmininginfoResponse {
     pub result: RpcGetmininginfoResult
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcUploadtarget {
+    pub timeframe: i64,
+    pub target: i64,
+    pub target_reached: bool,
+    pub serve_historical_blocks: bool,
+    pub bytes_left_in_cycle: i64,
+    pub time_left_in_cycle: i64,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetnettotalsResult {
+    pub totalbytesrecv: i64,
+    pub totalbytessent: i64,
+    pub timemillis: i64,
+    pub uploadtarget: RpcUploadtarget,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetnettotalsRsponse {
+    pub result: RpcGetnettotalsResult
 }
