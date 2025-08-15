@@ -56,6 +56,40 @@ pub async fn get_block_json(block_id: String) -> String { // todo add testnet su
     }
 }
 #[wasm_bindgen]
+pub async fn get_block_txs_json(block_id: String) -> String {
+    let api = RpcApi::new(false);
+    let res_wrapped = api.get_block_2(&block_id).await;
+
+    match res_wrapped {
+        Ok(block_res) => {
+            let txs = block_res.result.tx;
+            let mut txs_json = Vec::new();
+            for tx in txs {
+                let mut tx_json = json!({});
+                tx_json["txid"] = json!(tx.txid);
+                tx_json["fee"] = json!(tx.fee);
+                let mut vin_count = 0;
+                if let Some(vin) = tx.vin {
+                    vin_count = vin.len()
+                }
+                let mut vout_count = 0;
+                if let Some(vout) = tx.vout {
+                    vout_count = vout.len()
+                }
+                tx_json["inputs"] = json!(vin_count);
+                tx_json["outputs"] = json!(vout_count);
+
+                txs_json.push(tx_json);
+            }
+            serde_json::to_string(&txs_json).unwrap()
+        }
+        Err(_) => {
+
+            "".to_string()
+        }
+    }
+}
+#[wasm_bindgen]
 pub async fn get_block_count() -> u32 {
     let api = RpcApi::new(false);
     let res_wrapped = api.get_block_count().await;
@@ -109,36 +143,13 @@ pub async fn get_nettotals() -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_block_txs_json(block_id: String) -> String {
+pub async fn get_network_info() -> String {
     let api = RpcApi::new(false);
-    let res_wrapped = api.get_block_2(&block_id).await;
-
+    let res_wrapped = api.get_network_info().await;
     match res_wrapped {
-        Ok(block_res) => {
-            let txs = block_res.result.tx;
-            let mut txs_json = Vec::new();
-            for tx in txs {
-                let mut tx_json = json!({});
-                tx_json["txid"] = json!(tx.txid);
-                tx_json["fee"] = json!(tx.fee);
-                let mut vin_count = 0;
-                if let Some(vin) = tx.vin {
-                    vin_count = vin.len()
-                }
-                let mut vout_count = 0;
-                if let Some(vout) = tx.vout {
-                    vout_count = vout.len()
-                }
-                tx_json["inputs"] = json!(vin_count);
-                tx_json["outputs"] = json!(vout_count);
-
-                txs_json.push(tx_json);
-            }
-            serde_json::to_string(&txs_json).unwrap()
-        }
-        Err(_) => {
-
-            "".to_string()
-        }
+        Ok(res) => {
+            serde_json::to_string(&res.result).unwrap()
+        },
+        Err(_) => {"".to_string()}
     }
 }

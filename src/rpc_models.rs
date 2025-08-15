@@ -144,3 +144,37 @@ pub struct RpcGetnettotalsResult {
 pub struct RpcGetnettotalsRsponse {
     pub result: RpcGetnettotalsResult
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct NetworkInfo {
+    pub name: String,
+    pub limited: bool,
+    pub reachable: bool,
+    pub proxy: String,
+    pub proxy_randomize_credentials: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetnetworkinfoResult {
+    pub version: i64,
+    pub subversion: String,
+    pub protocolversion: i64,
+    pub localservices: String,
+    pub localservicesnames: Vec<String>,
+    pub localrelay: bool,
+    pub timeoffset: i64,
+    pub networkactive: bool,
+    pub connections: i64,
+    pub connections_in: i64,
+    pub connections_out: i64,
+    pub networks: Vec<NetworkInfo>,
+    pub relayfee: f64,
+    pub incrementalfee: f64,
+    //pub localaddresses: Vec<_>,
+    pub warnings: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetnetworkinfoResponse {
+    pub result: RpcGetnetworkinfoResult,
+}
