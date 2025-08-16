@@ -2,8 +2,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap/dist/js/bootstrap.min.js";
 import './App.css';
 import React, {useEffect, useState} from 'react';
-import init, {init_app, get_tx_json, get_block_json, get_block_count, get_blockchain_info, get_block_txs_json,
-    get_mempool_info, get_mining_info, get_nettotals, get_network_info} from "btc-inspect";
+import init, {init_app, get_tx_json, get_block_json, get_block_txs_json,
+    get_block_count, get_blockchain_info, get_mempool_info, get_mining_info, get_nettotals, get_network_info} from "btc-inspect";
 import {PiLinkBold} from "react-icons/pi";
 import {toDateString, hex2a} from "./utility/utility";
 import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
@@ -12,6 +12,7 @@ import Tx from "./components/Tx.jsx";
 
 
 function App() {
+    const [testnetValue, setTestnetValue] = useState(true);
     const [inputValue, setInputValue] = useState('');
     const [txJson, setTxJson] = useState(null)
     const [blockJson, setBlockJson] = useState(null)
@@ -27,7 +28,7 @@ function App() {
     }, []);
 
     function handleBlockTxs(blockId) {
-        get_block_txs_json(blockId).then(res => {
+        get_block_txs_json(testnetValue, blockId).then(res => {
             let block_txs_json = JSON.parse(res);
             setBlockTxs(block_txs_json)
         })
@@ -39,32 +40,32 @@ function App() {
         handleNewInput(txId)
     }
     function getBlockCount() {
-        get_block_count().then(res => {
+        get_block_count(testnetValue).then(res => {
             console.log(res)
         })
     }
     function getBlockchainInfo() {
-        get_blockchain_info().then(res => {
+        get_blockchain_info(testnetValue).then(res => {
             console.log(res)
         })
     }
     function getMempoolInfo() {
-        get_mempool_info().then(res => {
+        get_mempool_info(testnetValue).then(res => {
             console.log(res)
         })
     }
     function getMiningInfo() {
-        get_mining_info().then(res => {
+        get_mining_info(testnetValue).then(res => {
             console.log(res)
         })
     }
     function getNetTotals() {
-        get_nettotals().then(res => {
+        get_nettotals(testnetValue).then(res => {
             console.log(res)
         })
     }
     function getNetworkInfo() {
-        get_network_info().then(res => {
+        get_network_info(testnetValue).then(res => {
             console.log(res)
         })
     }
@@ -74,9 +75,9 @@ function App() {
         setBlockJson(null)
         setErrLbl(null)
         // wasm: can't aquire multiple mutex
-        get_tx_json(input).then(tx_json_str => {
+        get_tx_json(testnetValue, input).then(tx_json_str => {
                 if (tx_json_str === "") {
-                    get_block_json(input).then(block_json_str => {
+                    get_block_json(testnetValue, input).then(block_json_str => {
                             if (block_json_str === "") {
                                 setErrLbl("Invalid hash")
                             } else {

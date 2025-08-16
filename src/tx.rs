@@ -1,6 +1,7 @@
 use std::{fmt, io::{Cursor, Read}, vec};
 use std::io::{Seek, SeekFrom};
 use std::ptr::write;
+use log::info;
 use num::{BigUint, ToPrimitive, Zero};
 use crate::helpers::endianness::{int_to_little_endian, little_endian_to_int};
 use crate::tx_input::TxInput;
@@ -44,7 +45,7 @@ impl Tx {
             tx_json: json!(null),
         }
     }
-    pub async fn new_from_id(tx_id_str: String, testnet: bool) -> Option<Tx>  {
+    pub async fn new_from_id(testnet: bool, tx_id_str: String) -> Option<Tx>  {
         let tx_id = tx_id_str.as_str();
         let tf = RpcApi::new(testnet);
         let mut tx_wrap = tf.get_tx(tx_id).await;
@@ -155,6 +156,9 @@ impl Tx {
         self.tx_json.clone()
     }
     pub fn parse(stream: &mut Cursor<Vec<u8>>, testnet: bool) -> Result<Self, std::io::Error> {
+
+        info!("parse tx");
+
         let mut length_non_w_b = 0u32;
         let mut length_w_b = 0u32;
 

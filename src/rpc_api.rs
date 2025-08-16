@@ -25,9 +25,7 @@ impl RpcApi {
         RpcApi { api_url: API_URL.lock().unwrap().to_string(), testnet }
     }
     pub async fn get_tx(&self, tx_id: &str) -> Result<Tx, reqwest::Error> {
-        if self.testnet {
-            panic!("Not implemented");
-        }
+
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -57,7 +55,7 @@ impl RpcApi {
                 let k = format!("{}", tid);
 
                 let mut stream = Cursor::new(raw_tx.clone());
-                let mut tx = Tx::parse(&mut stream, false).unwrap();
+                let mut tx = Tx::parse(&mut stream, self.testnet).unwrap();
                 let mut tx_json = tx.tx_json();
                 tx_json["hex"] = json!(result.result.hex.clone());
                 tx_json["blockhash"] = json!(result.result.blockhash.clone());
@@ -73,9 +71,7 @@ impl RpcApi {
         }
     }
     pub async fn get_block(&self, block_id: &str) -> Result<Block, reqwest::Error> {
-        if self.testnet {
-            panic!("Not implemented");
-        }
+
         let url = format!("{}", self.api_url);
 
         let verbosity = 0;
@@ -134,9 +130,7 @@ impl RpcApi {
         }
     }
     async fn get_block_0(&self, block_id: &str) -> Result<RpcBlock0Response, reqwest::Error> {
-        if self.testnet {
-            panic!("Not implemented");
-        }
+
         let url = format!("{}", self.api_url);
 
         let verbosity = 0;
@@ -169,9 +163,7 @@ impl RpcApi {
         }
     }
     async fn get_block_1(&self, block_id: &str) -> Result<RpcBlock1Response, reqwest::Error> {
-        if self.testnet {
-            panic!("Not implemented");
-        }
+
         let url = format!("{}", self.api_url);
 
         let verbosity = 1;
@@ -203,9 +195,7 @@ impl RpcApi {
         }
     }
     pub async fn get_block_2(&self, block_id: &str) -> Result<RpcBlock2Response, reqwest::Error> {
-        if self.testnet {
-            panic!("Not implemented");
-        }
+
         let url = format!("{}", self.api_url);
 
         let verbosity = 2;
@@ -239,9 +229,6 @@ impl RpcApi {
     }
     pub async fn get_block_count(&self) -> Result<RpcBlockCountResponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -273,9 +260,6 @@ impl RpcApi {
     }
     pub async fn get_blockchain_info(&self) -> Result<RpcBlockchaininfoResponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -307,9 +291,6 @@ impl RpcApi {
     }
     pub async fn get_mempool_info(&self) -> Result<RpcGetmempoolinfoResponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -341,9 +322,6 @@ impl RpcApi {
     }
     pub async fn get_mining_info(&self) -> Result<RpcGetmininginfoResponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -375,9 +353,6 @@ impl RpcApi {
     }
     pub async fn get_nettotals(&self) -> Result<RpcGetnettotalsRsponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({
@@ -409,9 +384,6 @@ impl RpcApi {
     }
     pub async fn get_network_info(&self) -> Result<RpcGetnetworkinfoResponse, reqwest::Error> {
 
-        if self.testnet {
-            panic!("Not implemented");
-        }
         let url = format!("{}", self.api_url);
 
         let json_string = json!({

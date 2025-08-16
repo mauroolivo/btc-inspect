@@ -38,26 +38,26 @@ pub fn init_app() {
     wasm_log::init(wasm_log::Config::default());
 }
 #[wasm_bindgen]
-pub async fn get_tx_json(tx_id: String) -> String { // todo add testnet support
+pub async fn get_tx_json(testnet: bool, tx_id: String) -> String {
 
-    let mut tx = Tx::new_from_id(tx_id.clone(), false).await;
+    let mut tx = Tx::new_from_id(testnet, tx_id.clone()).await;
     match tx {
         Some(tx) => tx.tx_json.to_string(),
         None => "".to_string()
     }
 }
 #[wasm_bindgen]
-pub async fn get_block_json(block_id: String) -> String { // todo add testnet support
+pub async fn get_block_json(testnet: bool, block_id: String) -> String {
 
-    let mut block = Block::new_from_id(block_id.clone(), false).await;
+    let mut block = Block::new_from_id(testnet, block_id.clone()).await;
     match block {
         Some(block) => block.block_json.to_string(),
         None => "".to_string()
     }
 }
 #[wasm_bindgen]
-pub async fn get_block_txs_json(block_id: String) -> String {
-    let api = RpcApi::new(false);
+pub async fn get_block_txs_json(testnet: bool, block_id: String) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_block_2(&block_id).await;
 
     match res_wrapped {
@@ -90,8 +90,8 @@ pub async fn get_block_txs_json(block_id: String) -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_block_count() -> u32 {
-    let api = RpcApi::new(false);
+pub async fn get_block_count(testnet: bool) -> u32 {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_block_count().await;
     match res_wrapped {
         Ok(res) => {res.result},
@@ -99,8 +99,8 @@ pub async fn get_block_count() -> u32 {
     }
 }
 #[wasm_bindgen]
-pub async fn get_blockchain_info() -> String {
-    let api = RpcApi::new(false);
+pub async fn get_blockchain_info(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_blockchain_info().await;
     match res_wrapped {
         Ok(res) => {
@@ -110,8 +110,8 @@ pub async fn get_blockchain_info() -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_mempool_info() -> String {
-    let api = RpcApi::new(false);
+pub async fn get_mempool_info(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_mempool_info().await;
     match res_wrapped {
         Ok(res) => {
@@ -121,8 +121,8 @@ pub async fn get_mempool_info() -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_mining_info() -> String {
-    let api = RpcApi::new(false);
+pub async fn get_mining_info(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_mining_info().await;
     match res_wrapped {
         Ok(res) => {
@@ -132,8 +132,8 @@ pub async fn get_mining_info() -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_nettotals() -> String {
-    let api = RpcApi::new(false);
+pub async fn get_nettotals(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_nettotals().await;
     match res_wrapped {
         Ok(res) => {
@@ -143,8 +143,8 @@ pub async fn get_nettotals() -> String {
     }
 }
 #[wasm_bindgen]
-pub async fn get_network_info() -> String {
-    let api = RpcApi::new(false);
+pub async fn get_network_info(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
     let res_wrapped = api.get_network_info().await;
     match res_wrapped {
         Ok(res) => {
