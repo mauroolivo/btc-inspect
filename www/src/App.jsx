@@ -9,7 +9,7 @@ import {toDateString, hex2a} from "./utility/utility";
 import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from "react-bootstrap";
 import Block from "./components/Block.jsx";
 import Tx from "./components/Tx.jsx";
-
+import {JSONTree} from "react-json-tree";
 
 function App() {
     const [testnetValue, setTestnetValue] = useState(true);
@@ -18,6 +18,7 @@ function App() {
     const [blockJson, setBlockJson] = useState(null)
     const [errLbl, setErrLbl] = useState(null)
     const [blockTxs, setBlockTxs] = useState([])
+    const [jsonTree, setJsonTree] = useState(null)
 
     useEffect(() => {
         const runWasm = async () => {
@@ -41,31 +42,37 @@ function App() {
     }
     function getBlockCount() {
         get_block_count(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
     function getBlockchainInfo() {
         get_blockchain_info(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
     function getMempoolInfo() {
         get_mempool_info(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
     function getMiningInfo() {
         get_mining_info(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
     function getNetTotals() {
         get_nettotals(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
     function getNetworkInfo() {
         get_network_info(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
             console.log(res)
         })
     }
@@ -223,6 +230,9 @@ function App() {
                 </Row>
                 <Row>
                     <Col>
+                        {
+                            jsonTree !== null && <JSONTree data={jsonTree} />
+                        }
                         <input
                             className="Input robotomono"
                             type="text"
