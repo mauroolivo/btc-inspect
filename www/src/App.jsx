@@ -10,6 +10,7 @@ import {Button, Col, Container, Fade, Row, Nav, Navbar, NavDropdown, Table} from
 import Block from "./components/Block.jsx";
 import Tx from "./components/Tx.jsx";
 import {JSONTree} from "react-json-tree";
+import {NavLink} from "react-router";
 
 function App() {
     const [testnetValue, setTestnetValue] = useState(true);
@@ -175,7 +176,9 @@ function App() {
                             <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                             <Navbar.Collapse id="basic-navbar-nav">
                                 <Nav className="me-auto">
-                                    <Nav.Link href="#home">Home</Nav.Link>
+                                    <NavLink className={({ isActive }) =>
+                                        isActive ? "active" : ""}
+                                             to={"/"}>Home</NavLink>
                                     <Nav.Link href="#link">Link</Nav.Link>
                                     <NavDropdown title="Samples" id="basic-nav-dropdown">
                                         <NavDropdown.Item href=""
