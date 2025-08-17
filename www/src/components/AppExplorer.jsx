@@ -1,0 +1,174 @@
+import Tx from "./Tx.jsx";
+import Block from "./Block.jsx";
+import React, {useState} from "react";
+import {Button, Col, NavDropdown, Row} from "react-bootstrap";
+import {JSONTree} from "react-json-tree";
+import {get_block_json, get_block_txs_json, get_tx_json} from "btc-inspect";
+
+function AppExplorer() {
+    const [txJson, setTxJson] = useState(null)
+    const [blockJson, setBlockJson] = useState(null)
+    const [errLbl, setErrLbl] = useState(null)
+    const [inputValue, setInputValue] = useState('');
+    // TODO move testnetValue to parent
+    const [testnetValue, setTestnetValue] = useState(true);
+    const [blockTxs, setBlockTxs] = useState([])
+    function handleFetch(input) {
+
+        setBlockTxs([])
+        setTxJson(null)
+        setBlockJson(null)
+        setErrLbl(null)
+        // wasm: can't aquire multiple mutex
+        get_tx_json(testnetValue, input).then(tx_json_str => {
+                if (tx_json_str === "") {
+                    get_block_json(testnetValue, input).then(block_json_str => {
+                            if (block_json_str === "") {
+                                setErrLbl("Invalid hash")
+                            } else {
+                                let block_json = JSON.parse(block_json_str);
+                                setBlockJson(block_json)
+                            }
+                        }
+                    )
+                } else {
+                    let tx_json = JSON.parse(tx_json_str);
+                    setTxJson(tx_json)
+                }
+            }
+        )
+    }
+    function handleBlockTxs(blockId) {
+        get_block_txs_json(testnetValue, blockId).then(res => {
+            let block_txs_json = JSON.parse(res);
+            setBlockTxs(block_txs_json)
+        })
+    }
+    function handleBlock(blockId) {
+        handleNewInput(blockId)
+    }
+    function handleTx(txId) {
+        handleNewInput(txId)
+    }
+    function handleSample(n) {
+        let input = ""
+        if (n === 1) {
+            input = "64ff0b827f7899674fc26b693c557852540b9260c5c29cf18f536b56f01b17ba"
+        } else if (n === 2) {
+            input = "581d30e2a73a2db683ac2f15d53590bd0cd72de52555c2722d9d6a78e9fea510"
+        } else if (n === 3) {
+            input = "0b6461de422c46a221db99608fcbe0326e4f2325ebf2a47c9faf660ed61ee6a4"
+        } else if (n === 4) {
+            input = "0a168cc50ef5a4603dfd3f810a9b8d8fcdd4e4d1c548ded68385e2fe215be302"
+        } else if (n === 5) {
+            input = "a894b5961f3258ac3f14a9ea3698a7db6537b393687a92bb42e54521d9d34d4e"
+        } else if (n === 6) {
+            input = "8670ed595dfee2c2fd10419f00711eed7ee7c3ea7c3a3a6ed3bccc3b835a2795"
+        } else if (n === 7) {
+            input = "b24d0b39bb06e8405d3658e9b74a6efb2c7e8898fa2205a30a19a390f12d816b"
+        } else if (n === 8) {
+            input = "a55bd4d4ebd319ab2990c356e16cab1eeb52a93c414b869a606dc0add61d725a"
+        } else if (n === 9) {
+            input = "46ebe264b0115a439732554b2b390b11b332b5b5692958b1754aa0ee57b64265"
+        } else if (n === 10) {
+            input = "55c7c71c63b87478cd30d401e7ca5344a2e159dc8d6990df695c7e0cb2f82783"
+        } else if (n === 11) {
+            input = "6dfb16dd580698242bcfd8e433d557ed8c642272a368894de27292a8844a4e75"
+        } else if (n === 12) {
+            input = "61b43bbbf0d14580b9fdd45956b407be47499bb3712fd20f53f1b2a7029752d8"
+        } else if (n === 13) {
+            input = "1d8149eb8d8475b98113b5011cf70e0b7a4dccff71286d28b8b4b641f94f1e46"
+        }
+        // blocks
+        if (n === 50) {
+            input = "0000000000000000000590fc0f3eba193a278534220b2b37e9849e1a770ca959"
+        }
+        handleFetch(input)
+        setInputValue(input)
+    }
+    function handleNewInput(input) {
+        handleFetch(input)
+        setInputValue(input)
+    }
+    function handleClear() {
+        setTxJson(null)
+        setInputValue("")
+    }
+    function Content() {
+        if (txJson !== null) {
+            return (<Tx txJson={txJson} onBlock={handleBlock} onTx={handleTx}/>)
+        } else if (blockJson !== null) {
+            return (
+                <Block blockJson={blockJson}
+                       blockTxs={blockTxs}
+                       onBlock={handleBlock}
+                       onBlockTxs={handleBlockTxs}
+                       onTx={handleTx}/>
+            )
+        } else if (errLbl !== null) {
+            return <p>{errLbl}</p>
+        } else {
+            return (
+                <p></p>
+            )
+        }
+    }
+
+    return (
+        <>
+            <Row>
+                <Col>
+                    <h3>Explorer</h3>
+                    <NavDropdown title="Samples" id="basic-nav-dropdown">
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(1)}>P2WPKH</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(2)}>p2ms</NavDropdown.Item>
+
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(3)}>p2pkh</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(4)}>p2tr</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(5)}>p2wpkh</NavDropdown.Item>
+                        <NavDropdown.Item href="" onClick={() => handleSample(6)}>p2sh
+                            multisig</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(7)}>p2pk</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(8)}>p2sh-p2wpkh</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(9)}>p2wsh</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(10)}>p2sh-pswsh</NavDropdown.Item>
+                        <NavDropdown.Item href=""
+                                          onClick={() => handleSample(11)}>op_return</NavDropdown.Item>
+                        <NavDropdown.Item href="" onClick={() => handleSample(12)}>coinbase
+                            (903171)</NavDropdown.Item>
+                        <NavDropdown.Item href="" onClick={() => handleSample(13)}>coinbase
+                            (700000)</NavDropdown.Item>
+                        <NavDropdown.Divider/>
+                        <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block
+                            700000</NavDropdown.Item>
+                    </NavDropdown>
+                    <input
+                        className="Input robotomono"
+                        type="text"
+                        placeholder={"block or tx id"}
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                    />
+                    <Button variant="primary" disabled={inputValue.length !== 64}
+                            onClick={() => handleFetch(inputValue)}>
+                        Fetch
+                    </Button>
+                    <Button variant="primary" onClick={() => handleClear()}>
+                        Clear
+                    </Button>
+                </Col>
+            </Row>
+            <Content/>
+        </>
+    )
+}
+export default AppExplorer;
