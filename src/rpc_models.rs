@@ -178,3 +178,36 @@ pub struct RpcGetnetworkinfoResult {
 pub struct RpcGetnetworkinfoResponse {
     pub result: RpcGetnetworkinfoResult,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct LastProcessedBlock {
+    pub hash: String,
+    pub height: i64,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetwalletinfoResult {
+    pub walletname: String,
+    pub walletversion: i64,
+    pub format: String,
+    pub balance: f64,
+    pub unconfirmed_balance: f64,
+    pub immature_balance: f64,
+    pub txcount: i64,
+    pub keypoolsize: i64,
+    pub keypoolsize_hd_internal: i64,
+    pub paytxfee: f64,
+    pub private_keys_enabled: bool,
+    pub avoid_reuse: bool,
+    pub scanning: bool,
+    pub descriptors: bool,
+    pub external_signer: bool,
+    pub blank: bool,
+    pub birthtime: i64,
+    pub lastprocessedblock: LastProcessedBlock,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcGetwalletinfoResponse {
+    pub result: RpcGetwalletinfoResult,
+}
