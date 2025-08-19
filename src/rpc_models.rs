@@ -211,3 +211,31 @@ pub struct RpcGetwalletinfoResult {
 pub struct RpcGetwalletinfoResponse {
     pub result: RpcGetwalletinfoResult,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct WalletTx {
+    pub address: String,
+    pub parent_descs: Vec<String>,
+    pub category: String,
+    pub amount: f64,
+    pub label: String,
+    pub vout: i64,
+    pub abandoned: bool,
+    pub confirmations: i64,
+    pub blockhash: String,
+    pub blockheight: i64,
+    pub blockindex: i64,
+    pub blocktime: i64,
+    pub txid: String,
+    pub wtxid: String,
+    pub walletconflicts: Vec<String>,
+    pub mempoolconflicts: Vec<String>,
+    pub time: i64,
+    pub timereceived: i64,
+    #[serde(rename = "bip125-replaceable")]
+    pub bip125_replaceable: String,
+}
+#[derive(Serialize, Deserialize)]
+pub struct RpcListtransactionsResponse {
+    pub result: Vec<WalletTx>,
+}

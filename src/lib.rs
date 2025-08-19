@@ -167,3 +167,16 @@ pub async fn get_wallet_info(testnet: bool) -> String {
         }
     }
 }
+#[wasm_bindgen]
+pub async fn list_transactions(testnet: bool) -> String {
+    let api = RpcApi::new(testnet);
+    let res_wrapped = api.list_transactions().await;
+    match res_wrapped {
+        Ok(res) => {
+            serde_json::to_string(&res.result).unwrap()
+        },
+        Err(_) => {
+            "".to_string()
+        }
+    }
+}
