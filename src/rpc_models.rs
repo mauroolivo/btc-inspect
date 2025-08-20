@@ -239,3 +239,25 @@ pub struct WalletTx {
 pub struct RpcListtransactionsResponse {
     pub result: Vec<WalletTx>,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct Unspent {
+    pub txid: String,
+    pub vout: i64,
+    pub address: String,
+    pub label: String,
+    #[serde(rename = "scriptPubKey")]
+    pub script_pub_key: String,
+    pub amount: f64,
+    pub confirmations: i64,
+    pub spendable: bool,
+    pub solvable: bool,
+    pub desc: String,
+    pub parent_descs: Vec<String>,
+    pub safe: bool,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct RpcListunspentResponse {
+    pub result: Vec<Unspent>,
+}

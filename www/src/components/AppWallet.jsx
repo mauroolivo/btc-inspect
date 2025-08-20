@@ -3,7 +3,8 @@ import React, {useState} from "react";
 import {JSONTree} from "react-json-tree";
 import {
     get_wallet_info,
-    list_transactions
+    list_transactions,
+    list_unspent
 } from "btc-inspect";
 
 function AppWallet() {
@@ -23,6 +24,12 @@ function AppWallet() {
             console.log(res)
         })
     }
+    function listUnspent() {
+        list_unspent(testnetValue).then(res => {
+            setJsonTree(JSON.parse(res))
+            console.log(res)
+        })
+    }
     return (
         <Row>
             <Col>
@@ -32,6 +39,8 @@ function AppWallet() {
                                       onClick={() => getWalletInfo()}>get_wallet_info</NavDropdown.Item>
                     <NavDropdown.Item href=""
                                       onClick={() => listTransactions()}>list_transactions</NavDropdown.Item>
+                    <NavDropdown.Item href=""
+                                      onClick={() => listUnspent()}>list_unspent</NavDropdown.Item>
                 </NavDropdown>
                 {
                     jsonTree !== null && <JSONTree data={jsonTree} />
