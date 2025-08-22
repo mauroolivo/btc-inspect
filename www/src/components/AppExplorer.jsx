@@ -50,6 +50,14 @@ function AppExplorer() {
     function handleTx(txId) {
         handleNewInput(txId)
     }
+    function handleTestSample(n) {
+        let input = ""
+        if (n === 1) {
+            input = "fbd1bf898013a580bd8dce18a2636da8cca460a0457f5a88ce2084e4609c5002"
+        }
+        handleFetch(input)
+        setInputValue(input)
+    }
     function handleSample(n) {
         let input = ""
         if (n === 1) {
@@ -119,6 +127,16 @@ function AppExplorer() {
             <Row>
                 <Col>
                     <h3>Explorer</h3>
+                    {
+                        testnetValue === true &&
+                        <NavDropdown title="Samples" id="basic-nav-dropdown">
+                            <NavDropdown.Item href=""
+                                              onClick={() => handleTestSample(1)}>t1</NavDropdown.Item>
+                        </NavDropdown>
+                    }
+                    {
+                        testnetValue === false &&
+
                     <NavDropdown title="Samples" id="basic-nav-dropdown">
                         <NavDropdown.Item href=""
                                           onClick={() => handleSample(1)}>P2WPKH</NavDropdown.Item>
@@ -151,6 +169,7 @@ function AppExplorer() {
                         <NavDropdown.Item href="" onClick={() => handleSample(50)}>Block
                             700000</NavDropdown.Item>
                     </NavDropdown>
+                    }
                     <input
                         className="Input robotomono"
                         type="text"
